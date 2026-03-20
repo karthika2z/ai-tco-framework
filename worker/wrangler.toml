@@ -1,0 +1,15 @@
+name            = "droidwork-api"
+main            = "src/index.js"
+compatibility_date = "2024-09-23"
+
+# Routes all traffic on api.droidwork.ai to this Worker
+[[routes]]
+pattern  = "api.droidwork.ai/*"
+zone_name = "droidwork.ai"
+
+# D1 database — replace database_id after running:
+#   wrangler d1 create droidwork-leads
+[[d1_databases]]
+binding       = "DB"
+database_name = "droidwork-leads"
+database_id   = "YOUR-D1-DATABASE-ID" # ← run: wrangler d1 create droidwork-leads

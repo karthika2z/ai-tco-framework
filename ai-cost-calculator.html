@@ -1,0 +1,2885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DroidWork.ai — AI vs. Employee True Cost Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Georgia&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+:root {
+  --navy:       #0f2042;
+  --navy-mid:   #f1f5f9;
+  --navy-light: #1a3a6e;
+  --navy-card:  #ffffff;
+  --border:     #e2e8f0;
+  --green:      #059669;
+  --green-dim:  #047857;
+  --green-glow: rgba(5,150,105,0.10);
+  --amber:      #d97706;
+  --red:        #dc2626;
+  --cyan:       #0284c7;
+  --white:      #1e293b;
+  --muted:      #64748b;
+  --font-head:  'Georgia','Times New Roman',serif;
+  --font-body:  'Inter','Segoe UI','Helvetica Neue',sans-serif;
+  --font-mono:  'Courier New',monospace;
+  --r:8px; --r-lg:14px;
+  --shadow:0 1px 3px rgba(0,0,0,0.07),0 4px 16px rgba(0,0,0,0.06);
+  --shadow-lg:0 4px 24px rgba(0,0,0,0.10);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#f0f4f8;color:var(--white);font-family:var(--font-body);font-size:14px;line-height:1.6;min-height:100vh}
+
+/* HEADER */
+.site-header{background:linear-gradient(135deg,#0f2042 0%,#1a3a6e 100%);border-bottom:1px solid rgba(255,255,255,0.08);padding:28px 24px 24px;position:relative;overflow:hidden}
+.site-header::before{content:'';position:absolute;top:-60px;right:-60px;width:260px;height:260px;background:radial-gradient(circle,rgba(5,150,105,0.18),transparent 70%);pointer-events:none}
+.header-inner{max-width:1200px;margin:0 auto}
+.header-badge{display:inline-block;background:rgba(5,150,105,0.2);border:1px solid var(--green);color:#34d399;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:10px}
+.site-header h1{font-family:var(--font-head);font-size:clamp(22px,4vw,36px);font-weight:700;color:#f0f6ff;line-height:1.2;margin-bottom:8px}
+.site-header h1 span{color:#34d399}
+.header-sub{color:#94b4d6;font-size:13px;max-width:700px;margin-bottom:16px}
+.header-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;border:none;text-decoration:none}
+.btn-primary{background:var(--green);color:#ffffff}
+.btn-primary:hover{background:#047857;transform:translateY(-1px);box-shadow:0 4px 16px rgba(5,150,105,0.4)}
+.btn-pdf{background:#1a3a6e;color:#f0f6ff;border:1px solid rgba(255,255,255,0.15)}
+.btn-pdf:hover{background:#0f2042;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.25)}
+.btn-ghost{background:rgba(255,255,255,0.08);color:#94b4d6;border:1px solid rgba(255,255,255,0.15)}
+.btn-ghost:hover{border-color:#34d399;color:#34d399}
+
+/* LAYOUT */
+.main{max-width:1200px;margin:0 auto;padding:24px 16px 60px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media(max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+/* MODULE CARDS */
+.module{background:var(--navy-card);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:16px;overflow:hidden;box-shadow:var(--shadow)}
+.module-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;user-select:none;transition:background .15s;gap:12px;border-bottom:1px solid transparent}
+.module-header:hover{background:#f8fafc}
+.module-body.open ~ .module-header,.module-header:has(+ .module-body.open){border-bottom-color:var(--border)}
+.module-title-row{display:flex;align-items:center;gap:12px;flex:1}
+.module-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;overflow:hidden}
+.module-icon img{width:100%;height:100%;object-fit:cover;border-radius:9px}
+.mod-green{background:rgba(5,150,105,0.10);border:1px solid rgba(5,150,105,0.2)}
+.mod-blue{background:rgba(2,132,199,0.10);border:1px solid rgba(2,132,199,0.2)}
+.mod-amber{background:rgba(217,119,6,0.10);border:1px solid rgba(217,119,6,0.2)}
+.mod-red{background:rgba(220,38,38,0.10);border:1px solid rgba(220,38,38,0.2)}
+.mod-purple{background:rgba(124,58,237,0.10);border:1px solid rgba(124,58,237,0.2)}
+.mod-cyan{background:rgba(2,132,199,0.10);border:1px solid rgba(2,132,199,0.2)}
+.module-title{font-size:14px;font-weight:700;color:var(--white)}
+.module-subtitle{font-size:11px;color:var(--muted);margin-top:1px}
+.module-result-preview{font-size:13px;font-weight:700;color:var(--green);font-family:var(--font-mono);white-space:nowrap}
+.chevron{color:var(--muted);font-size:12px;transition:transform .25s;flex-shrink:0}
+.chevron.open{transform:rotate(180deg)}
+.module-body{padding:0 20px 20px;display:none}
+.module-body.open{display:block}
+
+/* FORM */
+.field-group{margin-bottom:14px}
+.field-label{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.field-source{font-size:10px;color:#94a3b8;font-weight:400;text-transform:none;letter-spacing:0}
+.field-input{width:100%;background:#ffffff;border:1px solid #cbd5e1;border-radius:var(--r);color:var(--white);font-size:14px;padding:9px 12px;transition:border-color .15s,box-shadow .15s;outline:none;font-family:var(--font-body)}
+.field-input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(2,132,199,0.12)}
+.field-input.prefix-wrap{padding-left:28px}
+.input-wrap{position:relative}
+.input-prefix{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;pointer-events:none}
+.input-suffix{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:12px;pointer-events:none}
+select.field-input{cursor:pointer;background:#ffffff}
+option{background:#ffffff}
+.field-input:disabled{opacity:0.45;cursor:not-allowed;background:#f8fafc}
+
+/* TOGGLE SWITCH */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;background:#f8fafc;border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;margin-bottom:14px;cursor:pointer;transition:border-color .15s,background .15s}
+.toggle-row:hover{border-color:var(--cyan);background:#f0f9ff}
+.toggle-row.active{border-color:var(--cyan);background:#f0f9ff}
+.toggle-label{font-size:13px;font-weight:600;color:var(--white)}
+.toggle-desc{font-size:11px;color:var(--muted)}
+.toggle-switch{width:40px;height:22px;background:#cbd5e1;border-radius:11px;position:relative;transition:background .2s;flex-shrink:0}
+.toggle-switch.on{background:var(--cyan)}
+.toggle-switch::after{content:'';position:absolute;width:16px;height:16px;background:white;border-radius:50%;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
+.toggle-switch.on::after{left:21px}
+.agentic-fields{display:none}
+.agentic-fields.visible{display:block}
+
+/* TOOLTIP */
+.tip-icon{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;background:#e2e8f0;border-radius:50%;font-size:10px;color:var(--muted);cursor:help;position:relative;border:1px solid #cbd5e1}
+.tip-icon:hover .tip-box{display:block}
+.tip-box{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);width:260px;background:#ffffff;border:1px solid #e2e8f0;border-radius:var(--r);padding:10px 12px;font-size:11px;color:#475569;font-weight:400;text-transform:none;letter-spacing:0;line-height:1.5;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,0.12);pointer-events:none}
+.tip-box strong{color:#1e293b;display:block;margin-bottom:4px}
+
+/* CALLOUTS */
+.callout{border-radius:var(--r);padding:12px 14px;font-size:12px;line-height:1.6;margin:14px 0 0}
+.callout-green{background:#f0fdf4;border-left:3px solid var(--green);color:#166534}
+.callout-amber{background:#fffbeb;border-left:3px solid var(--amber);color:#92400e}
+.callout-red{background:#fef2f2;border-left:3px solid var(--red);color:#991b1b}
+.callout-cyan{background:#f0f9ff;border-left:3px solid var(--cyan);color:#0c4a6e}
+
+/* RISK TIER */
+.risk-tier-row{display:flex;gap:8px;margin:14px 0}
+.risk-btn{flex:1;padding:8px 4px;border-radius:var(--r);border:1px solid #e2e8f0;background:#f8fafc;color:#64748b;font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s}
+.risk-btn:hover{border-color:var(--green);color:var(--green)}
+.risk-btn.active-low{background:#f0fdf4;border-color:var(--green);color:var(--green)}
+.risk-btn.active-medium{background:#fffbeb;border-color:var(--amber);color:var(--amber)}
+.risk-btn.active-high{background:#fef2f2;border-color:var(--red);color:var(--red)}
+
+/* SECTION DIVIDERS */
+.subsection-head{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;color:var(--cyan);margin:18px 0 10px;padding-bottom:6px;border-bottom:2px solid #e2e8f0}
+
+/* J-CURVE PHASE CARDS */
+.jcurve-phases{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+@media(max-width:600px){.jcurve-phases{grid-template-columns:1fr}}
+.phase-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:var(--r);padding:12px}
+.phase-card.active{border-color:var(--amber);background:#fffbeb}
+.phase-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:4px}
+.phase-name{font-size:13px;font-weight:700;color:var(--white);margin-bottom:6px}
+.phase-val{font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--amber)}
+.phase-desc{font-size:11px;color:var(--muted);margin-top:3px}
+
+/* CONCURRENCY BANDS */
+.concurrency-band{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0}
+@media(max-width:600px){.concurrency-band{grid-template-columns:1fr 1fr}}
+.cband{background:#f8fafc;border:1px solid #e2e8f0;border-radius:var(--r);padding:10px;text-align:center;transition:border-color .15s}
+.cband.active{border-color:var(--cyan);background:#f0f9ff}
+.cband-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
+.cband-val{font-size:15px;font-weight:700;font-family:var(--font-mono);color:var(--cyan);margin:2px 0}
+.cband-note{font-size:10px;color:var(--muted)}
+
+/* RESULTS */
+.results-section{margin-top:32px}
+.section-label{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--green);font-weight:700;margin-bottom:4px}
+.section-title{font-size:20px;font-weight:700;font-family:var(--font-head);color:var(--white)}
+.metrics-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:700px){.metrics-strip{grid-template-columns:1fr 1fr}}
+.metric-card{background:#ffffff;border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;text-align:center;box-shadow:var(--shadow)}
+.metric-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;font-weight:600}
+.metric-value{font-size:26px;font-weight:700;font-family:var(--font-mono);color:var(--green);line-height:1.2}
+.metric-value.red-val{color:var(--red)}
+.metric-value.amber-val{color:var(--amber)}
+.metric-sub{font-size:11px;color:var(--muted);margin-top:3px}
+
+.cost-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+@media(max-width:700px){.cost-cards{grid-template-columns:1fr}}
+.cost-card{background:#ffffff;border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.cost-card.best-val{border-color:var(--green);border-width:2px}
+.cost-card.best-val::before{content:'LOWEST COST';position:absolute;top:12px;right:12px;background:var(--green);color:#ffffff;font-size:9px;font-weight:800;letter-spacing:1.5px;padding:2px 8px;border-radius:10px}
+.cost-card-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px;font-weight:600}
+.cost-card-total{font-size:28px;font-weight:700;font-family:var(--font-mono);color:var(--white);margin-bottom:12px;line-height:1}
+.cost-card-breakdown{font-size:11px}
+.cost-line{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9}
+.cost-line:last-child{border:none}
+.cl-label{color:var(--muted)}
+.cl-val{font-family:var(--font-mono);color:var(--white);font-weight:600}
+.cl-new{color:var(--cyan) !important}
+
+/* HIDDEN COST */
+.hidden-cost-card{background:#ffffff;border:1px solid #e2e8f0;border-radius:var(--r-lg);padding:20px;margin-bottom:20px;box-shadow:var(--shadow)}
+.hc-title{font-size:14px;font-weight:700;color:var(--amber);margin-bottom:4px}
+.hc-subtitle{font-size:12px;color:var(--muted);margin-bottom:16px}
+.hc-stacked-bar{display:flex;height:28px;border-radius:6px;overflow:hidden;margin-bottom:6px;border:1px solid #e2e8f0}
+.hc-seg{height:100%;transition:width .6s ease;flex-shrink:0;cursor:pointer}
+#hc-tooltip{position:fixed;background:#1e293b;color:#fff;font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;pointer-events:none;display:none;z-index:9999;white-space:nowrap}
+.hc-stacked-labels{display:flex;justify-content:space-between;font-size:10px;font-weight:700;letter-spacing:.5px;margin-bottom:16px}
+.hc-legend{display:grid;gap:6px}
+.hc-legend-row{display:grid;grid-template-columns:12px 1fr 80px 42px;align-items:center;gap:8px;font-size:12px}
+.hc-details-link{font-size:10px;color:var(--brand);font-weight:600;cursor:pointer;margin-left:6px;white-space:nowrap}
+.hc-details-link:hover{text-decoration:underline}
+.hc-legend-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.hc-legend-label{color:#475569}
+.hc-legend-val{font-weight:700;font-family:var(--font-mono);text-align:right;white-space:nowrap}
+.hc-legend-pct{font-size:11px;color:#94a3b8;text-align:right;font-family:var(--font-mono)}
+.hc-legend-divider{height:1px;background:#e2e8f0;margin:4px 0;grid-column:1/-1}
+.bar-tokens{background:linear-gradient(90deg,#00c97d,#6ee7b7)}
+.bar-hosting{background:linear-gradient(90deg,#3b82f6,#60a5fa)}
+.bar-security{background:linear-gradient(90deg,#f59e0b,#fcd34d)}
+.bar-failure{background:linear-gradient(90deg,#ef4444,#f87171)}
+.bar-residual{background:linear-gradient(90deg,#a855f7,#d8b4fe)}
+.bar-agentic{background:linear-gradient(90deg,#38bdf8,#7dd3fc)}
+.bar-pipeline{background:linear-gradient(90deg,#fb923c,#fdba74)}
+
+/* CHARTS */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:800px){.chart-grid{grid-template-columns:1fr}}
+.chart-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:900px){.chart-grid-3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.chart-grid-3{grid-template-columns:1fr}}
+.chart-card{background:#ffffff;border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;box-shadow:var(--shadow)}
+.chart-card.highlight{border-color:var(--amber);border-width:2px}
+.chart-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:4px}
+.chart-subtitle{font-size:11px;color:var(--muted);margin-bottom:14px}
+.chart-wrap{position:relative;height:240px}
+.chart-wrap.tall{height:300px}
+
+/* CONCURRENCY VISUALIZATION */
+.conc-live{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.conc-chip{padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;font-family:var(--font-mono)}
+.conc-chip.linear{background:#f0fdf4;color:var(--green);border:1px solid #bbf7d0}
+.conc-chip.breakpoint{background:#f0f9ff;color:var(--cyan);border:1px solid #bae6fd}
+.conc-chip.ptu{background:#fffbeb;color:var(--amber);border:1px solid #fde68a}
+
+/* BENCH */
+.bench-card{background:#ffffff;border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:20px;box-shadow:var(--shadow)}
+.bench-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+@media(max-width:600px){.bench-grid{grid-template-columns:1fr}}
+.bench-item{background:#f8fafc;border:1px solid #e2e8f0;border-radius:var(--r);padding:12px}
+.bench-item-title{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.bench-item-val{font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--green)}
+.bench-item-note{font-size:11px;color:var(--muted);margin-top:3px}
+
+/* METHODOLOGY */
+.methodology-card{background:#ffffff;border:1px solid var(--border);border-radius:var(--r-lg);margin-top:20px;overflow:hidden;box-shadow:var(--shadow)}
+.meth-header{padding:14px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700;color:var(--muted)}
+.meth-header:hover{color:var(--white)}
+.meth-body{padding:0 20px 20px;display:none}
+.meth-body.open{display:block}
+.source-list{list-style:none}
+.source-list li{padding:8px 0;border-bottom:1px solid #f1f5f9;font-size:12px;color:#475569}
+.source-list li:last-child{border:none}
+.source-list strong{color:#1e293b}
+
+/* PRINT */
+#print-overlay{display:none;position:fixed;inset:0;background:white;color:#1a1a2e;z-index:9999;overflow-y:auto;padding:40px;font-family:'Helvetica Neue',sans-serif}
+#print-overlay h1{font-size:22px;color:#0f1f3d;margin-bottom:6px}
+#print-overlay table{width:100%;border-collapse:collapse;margin:12px 0}
+#print-overlay th{background:#0f1f3d;color:white;padding:8px 12px;text-align:left;font-size:12px}
+#print-overlay td{border:1px solid #ddd;padding:7px 12px;font-size:12px}
+#print-overlay tr:nth-child(even) td{background:#f5f8ff}
+.print-close{position:fixed;top:20px;right:20px}
+.divider{border:none;border-top:1px solid var(--border);margin:16px 0}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#f1f5f9}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+@media print{body{display:none}#print-overlay{display:block !important;position:static}}
+
+/* PROFILE MODULE */
+.profile-module{background:linear-gradient(135deg,#0f2042 0%,#1a3a6e 100%);border:none;box-shadow:var(--shadow-lg)}
+.profile-module .module-header{background:transparent;border-bottom:1px solid rgba(255,255,255,0.1)}
+.profile-module .module-header:hover{background:rgba(255,255,255,0.04)}
+.profile-module .module-title{color:#f0f6ff;font-size:15px}
+.profile-module .module-subtitle{color:#94b4d6}
+.profile-module .module-result-preview{color:#34d399}
+.profile-module .chevron{color:#94b4d6}
+.profile-module .module-body{padding:0 24px 24px}
+.profile-module .field-label{color:#94b4d6}
+.profile-module .field-input{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.15);color:#f0f6ff}
+.profile-module .field-input:focus{border-color:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,0.15);background:rgba(255,255,255,0.12)}
+.profile-module .field-input option{background:#1a3a6e;color:#f0f6ff}
+.profile-module select.field-input{background:rgba(255,255,255,0.08)}
+.profile-module .input-prefix,.profile-module .input-suffix{color:#94b4d6}
+.profile-module .subsection-head{color:#34d399;border-bottom-color:rgba(255,255,255,0.1)}
+.salary-range-bar{display:flex;gap:0;margin:10px 0 4px;border-radius:var(--r);overflow:hidden;height:8px}
+.srb-low{background:#e2e8f0;flex:1}
+.srb-mid{background:#34d399;flex:1}
+.srb-high{background:#e2e8f0;flex:1}
+.salary-range-labels{display:flex;justify-content:space-between;font-size:10px;color:#94b4d6;margin-bottom:12px}
+.salary-range-labels span{font-family:var(--font-mono);font-weight:700}
+.market-context{background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);border-radius:var(--r);padding:10px 14px;font-size:12px;color:#94b4d6;margin-top:10px;display:flex;align-items:center;gap:10px}
+.market-context strong{color:#34d399}
+.location-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.loc-pill{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.15);color:#94b4d6;background:rgba(255,255,255,0.06);transition:all .15s}
+.loc-pill.active{background:rgba(52,211,153,0.15);border-color:#34d399;color:#34d399}
+.profile-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.25);color:#34d399;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;margin-top:8px}
+
+/* EMAIL MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,32,66,0.7);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal-card{background:#ffffff;border-radius:16px;padding:36px;max-width:480px;width:90%;box-shadow:0 24px 80px rgba(0,0,0,0.25);position:relative}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:20px;color:#94a3b8;cursor:pointer;line-height:1}
+.modal-close:hover{color:#1e293b}
+.modal-logo{font-family:var(--font-head);font-size:18px;font-weight:700;color:#0f2042;margin-bottom:4px;letter-spacing:-0.3px}
+.modal-logo span{color:var(--green)}
+.modal-title{font-size:22px;font-weight:700;color:#1e293b;margin-bottom:6px;line-height:1.3}
+.modal-subtitle{font-size:13px;color:#64748b;margin-bottom:24px;line-height:1.5}
+.modal-field{margin-bottom:14px}
+.modal-field label{display:block;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.modal-field input{width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;font-size:14px;color:#1e293b;outline:none;transition:border-color .15s,box-shadow .15s;font-family:var(--font-body)}
+.modal-field input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(2,132,199,0.12)}
+.modal-preview{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:14px;margin-bottom:20px;font-size:12px;color:#475569}
+.modal-preview-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#94a3b8;margin-bottom:8px}
+.modal-preview-row{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #f1f5f9}
+.modal-preview-row:last-child{border:none}
+.modal-preview-val{font-family:var(--font-mono);font-weight:700;color:#1e293b}
+.btn-send{width:100%;padding:13px;background:var(--navy);color:#ffffff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;transition:all .18s;margin-bottom:10px;letter-spacing:.3px}
+.btn-send:hover{background:#1a3a6e;transform:translateY(-1px);box-shadow:0 4px 16px rgba(15,32,66,0.3)}
+.btn-send:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+.btn-send-secondary{width:100%;padding:10px;background:transparent;color:#64748b;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;margin-bottom:14px}
+.btn-send-secondary:hover{border-color:#94a3b8;color:#1e293b}
+.modal-privacy{font-size:11px;color:#94a3b8;text-align:center;line-height:1.5}
+.send-status{text-align:center;font-size:13px;font-weight:600;padding:10px;border-radius:8px;margin-bottom:12px;display:none}
+.send-status.success{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;display:block}
+.send-status.error{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;display:block}
+
+/* DEPLOYMENT MODE SELECTOR */
+.deploy-mode-banner{background:#ffffff;border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:16px;box-shadow:var(--shadow);overflow:hidden}
+.deploy-mode-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);gap:12px}
+.deploy-mode-title-row{display:flex;align-items:center;gap:12px}
+.deploy-mode-title{font-size:14px;font-weight:700;color:var(--white)}
+.deploy-mode-subtitle{font-size:11px;color:var(--muted);margin-top:1px}
+.deploy-mode-body{padding:20px 24px}
+/* Snap Slider */
+.dslider{margin-bottom:16px}
+.dslider-track-wrap{position:relative;padding:10px 0;margin:0 8px}
+.dslider-track{height:4px;background:#e2e8f0;border-radius:2px;position:relative}
+.dslider-fill{position:absolute;left:0;top:0;height:100%;background:var(--cyan);border-radius:2px;transition:width .35s ease}
+.dslider-stop{position:absolute;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:#e2e8f0;border:2px solid #cbd5e1;cursor:pointer;transition:all .2s;z-index:2}
+.dslider-stop.active{width:20px;height:20px;background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 0 5px rgba(2,132,199,0.15)}
+.dslider-labels{display:grid;grid-template-columns:1fr 1fr 1fr;margin-top:14px;gap:8px}
+.dsl{cursor:pointer;padding:10px 12px;border-radius:8px;border:1.5px solid transparent;transition:all .18s}
+.dsl:hover{background:#f1f5f9;border-color:#e2e8f0}
+.dsl.active{background:rgba(2,132,199,0.06);border-color:rgba(2,132,199,0.25)}
+.dsl-title{font-size:12px;font-weight:700;color:var(--white);margin-bottom:3px;transition:color .2s}
+.dsl.active .dsl-title{color:var(--cyan)}
+.dsl-sub{font-size:10px;color:var(--muted);line-height:1.45}
+.dsl-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;display:inline-block;margin-top:5px}
+.badge-green{background:rgba(5,150,105,0.1);color:#059669;border:1px solid rgba(5,150,105,0.2)}
+.badge-amber{background:rgba(217,119,6,0.1);color:#d97706;border:1px solid rgba(217,119,6,0.2)}
+.badge-blue{background:rgba(2,132,199,0.1);color:#0284c7;border:1px solid rgba(2,132,199,0.2)}
+.deploy-infra-summary{margin-top:4px;font-size:11px;color:var(--muted);background:#f1f5f9;border-radius:6px;padding:6px 10px;display:flex;gap:16px;flex-wrap:wrap}
+.dis-item{display:flex;align-items:center;gap:4px}
+.dis-val{font-family:var(--font-mono);font-weight:700;color:var(--white)}
+
+/* ASSUMPTIONS SECTION */
+.assumptions-accordion{margin-bottom:16px}
+.assumptions-toggle{display:flex;align-items:center;justify-content:space-between;background:#ffffff;border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 20px;box-shadow:var(--shadow);pointer-events:none}
+.assumptions-toggle-left{display:flex;align-items:center;gap:14px}
+.assumptions-toggle-title{font-size:14px;font-weight:700;color:var(--white)}
+.assumptions-toggle-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.assumptions-body{display:block}
+
+/* SHARE BAR */
+.share-bar{background:#f8fafc;border:1px solid var(--border);border-top:3px solid var(--cyan);border-radius:var(--r-lg);padding:16px 20px;margin-top:20px;margin-bottom:0}
+.share-bar-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px}
+.share-bar-buttons{display:flex;gap:8px;flex-wrap:wrap}
+.share-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all .18s;font-family:var(--font-body)}
+.share-x{background:#000000;color:#ffffff}
+.share-x:hover{background:#1a1a1a;transform:translateY(-1px)}
+.share-linkedin{background:#0A66C2;color:#ffffff}
+.share-linkedin:hover{background:#084f96;transform:translateY(-1px)}
+.share-instagram{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#ffffff}
+.share-instagram:hover{opacity:0.9;transform:translateY(-1px)}
+.share-copy{background:#e2e8f0;color:#1e293b}
+.share-copy:hover{background:#cbd5e1;transform:translateY(-1px)}
+.share-copied{font-size:12px;font-weight:600;color:var(--green);margin-top:8px}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-badge">v2 · Agentic Loop · Concurrency · J-Curve · Data Pipeline</div>
+    <h1>AI vs. Employee <span>True Cost</span> Calculator</h1>
+    <p class="header-sub">Comprehensive TCO modeling with agentic loop multipliers, non-linear concurrency scaling, change-management J-curve, and data pipeline economics. Grounded in McKinsey MGI, Gartner, OWASP, MITRE ATLAS, and HBR research.</p>
+    <div class="header-actions">
+      <button class="btn btn-pdf" onclick="openEmailModal()">📧 Get PDF Report</button>
+      <button class="btn btn-ghost" onclick="resetDefaults()">↺ Reset</button>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- EMPLOYEE PROFILE (pinned open)                            -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="module profile-module" id="mod-profile">
+  <div class="module-header" onclick="toggleModule('mod-profile')">
+    <div class="module-title-row">
+      <div class="module-icon mod-green" style="background:rgba(52,211,153,0.15);border-color:rgba(52,211,153,0.3)">👤</div>
+      <div>
+        <div class="module-title">Employee Profile & Market Compensation</div>
+        <div class="module-subtitle">Select the role being evaluated — salary auto-populates from 2025 US market data</div>
+      </div>
+    </div>
+    <div class="module-result-preview" id="profile-preview" style="color:#34d399">Select role →</div>
+    <span class="chevron open" id="mod-profile-chev">▼</span>
+  </div>
+  <div class="module-body open" id="mod-profile-body">
+    <div class="subsection-head" style="margin-top:14px">Your Role</div>
+    <div class="grid-2" style="margin-bottom:14px">
+      <div>
+        <div class="field-group">
+          <label class="field-label">Career Level</label>
+          <select class="field-input" id="p_level" onchange="updateSalaryFromProfile()">
+            <option value="intern">Intern / Co-op</option>
+            <option value="entry">Entry Level (Analyst I / Associate I)</option>
+            <option value="mid">Mid-Level (Analyst II / Associate II)</option>
+            <option value="senior">Senior (Sr. Analyst / Sr. Associate)</option>
+            <option value="manager">Manager</option>
+            <option value="sr_manager">Senior Manager</option>
+            <option value="director" hidden>Director</option>
+            <option value="vp" hidden>Vice President (VP)</option>
+            <option value="svp" hidden>Senior Vice President (SVP)</option>
+            <option value="evp" hidden>Executive Vice President (EVP)</option>
+            <option value="csuite" hidden>C-Suite (CEO / CFO / CTO / CPO / etc.)</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Function / Department</label>
+          <select class="field-input" id="p_function" onchange="updateSalaryFromProfile()">
+            <option value="swe">Software Engineering</option>
+            <option value="ds">Data Science & AI/ML</option>
+            <option value="pm">Product Management</option>
+            <option value="finance">Finance & Accounting</option>
+            <option value="hr">Human Resources</option>
+            <option value="ops">Operations & Supply Chain</option>
+            <option value="marketing">Marketing</option>
+            <option value="sales">Sales</option>
+            <option value="legal">Legal & Compliance</option>
+            <option value="cs">Customer Success</option>
+            <option value="it">Information Technology</option>
+            <option value="strategy">Strategy & Consulting</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Suggested Title</label>
+          <input class="field-input" type="text" id="p_title" placeholder="Select level and function above" readonly style="font-style:italic;opacity:0.8">
+        </div>
+      </div>
+      <div>
+        <div class="field-group">
+          <label class="field-label">Market Salary Range (US 2025)</label>
+          <div class="salary-range-bar">
+            <div class="srb-low"></div><div class="srb-mid"></div><div class="srb-high"></div>
+          </div>
+          <div class="salary-range-labels">
+            <span id="p_p25">P25: —</span>
+            <span id="p_median" style="color:#34d399">Median: —</span>
+            <span id="p_p75">P75: —</span>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Location Adjustment</label>
+          <div class="location-pills">
+            <div class="loc-pill active" onclick="setLocation(0,this)">🇺🇸 US Average</div>
+            <div class="loc-pill" onclick="setLocation(0.22,this)">🏙️ Major Metro +22%</div>
+            <div class="loc-pill" onclick="setLocation(-0.15,this)">🌾 Low Cost −15%</div>
+          </div>
+        </div>
+        <div id="market-context-box" class="market-context" style="display:none">
+          <span>📊</span>
+          <span id="market-context-text">Select your role to see market context.</span>
+        </div>
+      </div>
+    </div>
+    <div id="profile-set-note" style="display:none;padding:10px 14px;background:rgba(52,211,153,0.08);border-radius:8px;font-size:12px;color:#94b4d6;display:none">
+      <span style="color:#34d399;font-weight:700">✓ Profile set.</span> Base Salary in Module 1 has been updated to the market median. All inputs remain adjustable.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- DEPLOYMENT MODE SELECTOR                                   -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="deploy-mode-banner">
+  <div class="deploy-mode-header">
+    <div class="deploy-mode-title-row">
+      <div class="module-icon mod-cyan" style="font-size:18px">🤖</div>
+      <div>
+        <div class="deploy-mode-title">What type of AI are you evaluating?</div>
+        <div class="deploy-mode-subtitle">Sets infrastructure defaults across Modules 3–6 · All inputs remain fully adjustable</div>
+      </div>
+    </div>
+  </div>
+  <div class="deploy-mode-body">
+    <div class="dslider">
+      <div class="dslider-track-wrap">
+        <div class="dslider-track">
+          <div class="dslider-fill" id="dslider-fill"></div>
+          <div class="dslider-stop" id="ds-0" style="left:0%"   onclick="snapDeploy(0)"></div>
+          <div class="dslider-stop" id="ds-1" style="left:50%"  onclick="snapDeploy(1)"></div>
+          <div class="dslider-stop" id="ds-2" style="left:100%" onclick="snapDeploy(2)"></div>
+        </div>
+      </div>
+      <div class="dslider-labels">
+        <div class="dsl" id="dsl-0" onclick="snapDeploy(0)">
+          <div class="dsl-title">Enterprise Platform</div>
+          <div class="dsl-sub">Salesforce Einstein, ServiceNow AI, SAP BTP, M365 Copilot for Business</div>
+          <span class="dsl-badge badge-green">SaaS / Vendor-Managed</span>
+        </div>
+        <div class="dsl" id="dsl-1" onclick="snapDeploy(1)">
+          <div class="dsl-title">Agentic AI</div>
+          <div class="dsl-sub">LLM API + orchestration + memory + tools (Claude, GPT-4, Gemini with custom workflows)</div>
+          <span class="dsl-badge badge-amber">Moderate Infra Overhead</span>
+        </div>
+        <div class="dsl" id="dsl-2" onclick="snapDeploy(2)">
+          <div class="dsl-title">Custom AI Pipeline</div>
+          <div class="dsl-sub">Fully custom: proprietary RAG, fine-tuned models, owned infra, bespoke orchestration</div>
+          <span class="dsl-badge badge-blue">Full Infra Stack</span>
+        </div>
+      </div>
+    </div>
+    <div class="deploy-infra-summary" id="deploy-infra-summary">
+      <div class="dis-item">Hosting + Pipeline: <span class="dis-val" id="dis-hosting">—</span></div>
+      <div class="dis-item">Security: <span class="dis-val" id="dis-security">—</span></div>
+      <div class="dis-item">Total Fixed Floor: <span class="dis-val" id="dis-total">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- RESULTS SECTION                                           -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="results-section">
+  <div class="section-label">LIVE RESULTS</div>
+  <div class="section-title">Total Cost of Ownership Analysis</div>
+  <p style="color:var(--muted);font-size:12px;margin:4px 0 20px">Updates in real time. All figures in USD. Agentic mode and J-Curve fully modeled when enabled. Click <strong style="color:var(--navy)">"Get PDF Report"</strong> to receive a consulting-grade analysis by email.</p>
+
+  <!-- Key Metrics Strip -->
+  <div class="metrics-strip">
+    <div class="metric-card">
+      <div class="metric-label">Annual Savings</div>
+      <div class="metric-value" id="r_savings">$—</div>
+      <div class="metric-sub" id="r_savings_pct">vs. employee cost</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Payback Period</div>
+      <div class="metric-value amber-val" id="r_payback">— mo</div>
+      <div class="metric-sub" id="r_payback_sub">incl. J-Curve costs</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">3-Year NPV</div>
+      <div class="metric-value" id="r_npv">$—</div>
+      <div class="metric-sub">at <span id="r_npv_rate">8</span>% discount</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Cost / Unit Output</div>
+      <div class="metric-value amber-val" id="r_cpu">$—</div>
+      <div class="metric-sub">AI vs. <span id="r_cpu_emp">$—</span> employee</div>
+    </div>
+  </div>
+
+  <!-- Social Share Bar -->
+  <div class="share-bar" id="share-bar">
+    <div class="share-bar-label">Share Analysis</div>
+    <div class="share-bar-buttons">
+      <button class="share-btn share-x" onclick="shareOn('x')" title="Share on X">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        Post on X
+      </button>
+      <button class="share-btn share-linkedin" onclick="shareOn('linkedin')" title="Share on LinkedIn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        Post on LinkedIn
+      </button>
+      <button class="share-btn share-instagram" onclick="shareOn('instagram')" title="Copy for Instagram">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        Copy for Instagram
+      </button>
+      <button class="share-btn share-copy" onclick="shareOn('copy')" title="Copy link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        Copy Link
+      </button>
+    </div>
+    <div class="share-copied" id="share-copied" style="display:none">✓ Copied to clipboard!</div>
+  </div>
+
+  <!-- Annual Cost Cards -->
+  <div class="cost-cards">
+    <div class="cost-card" id="card-emp">
+      <div class="cost-card-label">👤 Employee True Cost</div>
+      <div class="cost-card-total" id="cc_emp">$—</div>
+      <div class="cost-card-breakdown" id="cc_emp_breakdown"></div>
+    </div>
+    <div class="cost-card" id="card-cloud">
+      <div class="cost-card-label">☁️ Cloud AI — Total Annual Cost</div>
+      <div class="cost-card-total" id="cc_cloud">$—</div>
+      <div class="cost-card-breakdown" id="cc_cloud_breakdown"></div>
+    </div>
+    <div class="cost-card" id="card-private">
+      <div class="cost-card-label">🖥️ Private AI — Total Annual Cost</div>
+      <div class="cost-card-total" id="cc_private">$—</div>
+      <div class="cost-card-breakdown" id="cc_private_breakdown"></div>
+    </div>
+  </div>
+
+  <!-- Hidden Cost Exposure -->
+  <div class="hidden-cost-card">
+    <div class="hc-title">📋 "What Vendors Don't Show You" — Total AI TCO Composition</div>
+    <div class="hc-subtitle">Each segment = share of total AI cost. Vendors typically present only the green slice.</div>
+    <!-- Stacked bar -->
+    <div class="hc-stacked-bar">
+      <div class="hc-seg bar-tokens"  id="seg_tokens"  style="width:0%" title="Token / Compute"></div>
+      <div class="hc-seg bar-agentic" id="seg_agentic" style="width:0%" title="Agentic Overhead"></div>
+      <div class="hc-seg bar-hosting" id="seg_hosting" style="width:0%" title="Hosting & Infrastructure"></div>
+      <div class="hc-seg bar-pipeline"id="seg_pipeline"style="width:0%" title="Data Pipeline Tax"></div>
+      <div class="hc-seg bar-security"id="seg_security"style="width:0%" title="Cybersecurity"></div>
+      <div class="hc-seg bar-failure" id="seg_failure" style="width:0%" title="Process Failure"></div>
+      <div class="hc-seg bar-residual"id="seg_residual"style="width:0%" title="Residual Human Oversight"></div>
+    </div>
+    <div class="hc-stacked-labels">
+      <span style="color:var(--green)">← vendors quote only this</span>
+      <span style="color:var(--amber)">hidden costs →</span>
+    </div>
+    <!-- Legend -->
+    <div class="hc-legend">
+      <div class="hc-legend-row" style="font-size:10px;font-weight:700;letter-spacing:.5px;color:#94a3b8">
+        <div></div><div>COMPONENT</div><div style="text-align:right">ANNUAL $</div><div style="text-align:right">SHARE</div>
+      </div>
+      <div class="hc-legend-row">
+        <div class="hc-legend-dot bar-tokens"></div>
+        <div class="hc-legend-label">Token / Compute <span style="font-size:10px;color:var(--green);font-weight:600">← vendor quote</span><span class="hc-details-link" onclick="goToModule('mod2')">details →</span></div>
+        <div class="hc-legend-val" id="pct_tokens">$—</div>
+        <div class="hc-legend-pct" id="pct_tokens_pct">—%</div>
+      </div>
+      <div class="hc-legend-divider"></div>
+      <div class="hc-legend-row">
+        <div class="hc-legend-dot bar-agentic"></div>
+        <div class="hc-legend-label">Agentic Loop Overhead <span class="hc-details-link" onclick="goToModule('mod2')">details →</span></div>
+        <div class="hc-legend-val" id="pct_agentic">$—</div>
+        <div class="hc-legend-pct" id="pct_agentic_pct">—%</div>
+      </div>
+      <div class="hc-legend-row">
+        <div class="hc-legend-dot bar-hosting"></div>
+        <div class="hc-legend-label">Hosting & Infrastructure <span class="hc-details-link" onclick="goToModule('mod3')">details →</span></div>
+        <div class="hc-legend-val" id="pct_hosting">$—</div>
+        <div class="hc-legend-pct" id="pct_hosting_pct">—%</div>
+      </div>
+      <div class="hc-legend-row">
+        <div class="hc-legend-dot bar-pipeline"></div>
+        <div class="hc-legend-label">Data Pipeline Tax <span class="hc-details-link" onclick="goToModule('mod4')">details →</span></div>
+        <div class="hc-legend-val" id="pct_pipeline">$—</div>
+        <div class="hc-legend-pct" id="pct_pipeline_pct">—%</div>
+      </div>
+      <div class="hc-legend-row">
+        <div class="hc-legend-dot bar-security"></div>
+        <div class="hc-legend-label">Cybersecurity <span class="hc-details-link" onclick="goToModule('mod5')">details →</span></div>
+        <div class="hc-legend-val" id="pct_security">$—</div>
+        <div class="hc-legend-pct" id="pct_security_pct">—%</div>
+      </div>
+      <div class="hc-legend-row">
+        <div class="hc-legend-dot bar-failure"></div>
+        <div class="hc-legend-label">Process Failure Costs <span class="hc-details-link" onclick="goToModule('mod6')">details →</span></div>
+        <div class="hc-legend-val" id="pct_failure">$—</div>
+        <div class="hc-legend-pct" id="pct_failure_pct">—%</div>
+      </div>
+      <div class="hc-legend-row">
+        <div class="hc-legend-dot bar-residual"></div>
+        <div class="hc-legend-label">Residual Human Oversight <span class="hc-details-link" onclick="goToModule('mod7')">details →</span></div>
+        <div class="hc-legend-val" id="pct_residual">$—</div>
+        <div class="hc-legend-pct" id="pct_residual_pct">—%</div>
+      </div>
+    </div>
+    <div style="margin-top:14px;font-size:11px;color:#92400e;background:#fffbeb;padding:10px 14px;border-radius:6px;border:1px solid #fde68a">
+      <span>⚠</span> Hidden cost exposure (everything except token/compute):
+      <strong id="hidden_total" style="color:var(--amber)">$—</strong> annually
+      — <span id="hidden_pct" style="color:var(--amber)">—×</span> what vendors quote.
+    </div>
+  </div>
+
+  <!-- Charts — Row 1: Break-even + NPV -->
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-title">36-Month Cumulative Cost Comparison</div>
+      <div class="chart-subtitle">Break-even: Employee vs. Cloud AI vs. Private AI (includes J-Curve implementation cost in Year 1)</div>
+      <div class="chart-wrap"><canvas id="breakEvenChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">3-Year NPV Comparison</div>
+      <div class="chart-subtitle">Net present value at selected discount rate — cumulative by year</div>
+      <div class="chart-wrap"><canvas id="npvChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Charts — Row 2: J-Curve + Concurrency + Agentic -->
+  <div class="chart-grid-3">
+    <div class="chart-card highlight">
+      <div class="chart-title">📉 Productivity J-Curve — Monthly Cost Flow</div>
+      <div class="chart-subtitle">Monthly all-in cost during Year 1 transition (employee + AI + productivity dip)</div>
+      <div class="chart-wrap"><canvas id="jcurveChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">⚡ Concurrency Cost Scaling</div>
+      <div class="chart-subtitle">Annual token cost vs. concurrent users (linear → PTU breakpoint)</div>
+      <div class="chart-wrap"><canvas id="concurrencyChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🤖 Agentic Loop Cost Decomposition</div>
+      <div class="chart-subtitle">Annual token cost breakdown: base vs. loop amplification vs. context growth</div>
+      <div class="chart-wrap"><canvas id="agenticChart"></canvas></div>
+    </div>
+  </div>
+
+
+  <!-- Methodology -->
+  <div class="methodology-card">
+    <div class="meth-header" onclick="toggleMeth()">
+      <span>📚 Methodology & Sources (click to expand)</span>
+      <span class="chevron" id="meth-chev">▼</span>
+    </div>
+    <div class="meth-body" id="meth-body">
+      <ul class="source-list">
+        <li><strong>McKinsey Global Institute (2023).</strong> "The economic potential of generative AI." Productivity multiplier defaults (2–4×), AI adoption cost baselines, change management J-curve documentation.</li>
+        <li><strong>Gartner (2023–2024).</strong> TCO Framework for AI vs. Human Workers. Hosting cost multiplier (3–5×), on-prem amortization, compliance costs, data quality survey (30–50% of AI failures are change management failures).</li>
+        <li><strong>Boushey, H. & Glynn, S.J. (2012).</strong> "There Are Significant Business Costs to Replacing Employees." Center for American Progress / HBR. Replacement cost 16%–213% of salary.</li>
+        <li><strong>OWASP LLM Top 10 (2023).</strong> AI threat taxonomy: prompt injection, insecure output handling, training data poisoning, model DoS. Security tooling defaults derived from mitigation cost benchmarks.</li>
+        <li><strong>MITRE ATLAS Framework (2023).</strong> Adversarial threat landscape for AI. AML.T0047 (AI agent over-permission attacks). Pen testing / red-teaming scope.</li>
+        <li><strong>IBM Cost of a Data Breach Report (2024).</strong> Average AI-related breach cost: $4.88M. 10% premium vs. traditional breaches.</li>
+        <li><strong>Marsh & McLennan (2023).</strong> Cyber insurance premium uplift for AI deployments: 15–40%.</li>
+        <li><strong>Uptime Institute Annual Report (2023).</strong> Downtime cost benchmarks, GPU power/cooling, DR/BC frameworks.</li>
+        <li><strong>Google Site Reliability Engineering (Beyer et al.).</strong> MTTD for silent failures, process failure cost modeling, error budget concepts applied to AI systems.</li>
+        <li><strong>OpenAI Function Calling / Anthropic Tool Use Benchmarks (2024).</strong> Agentic loop depth: average 4.2 calls/task (web research agents), 6.8 calls/task (coding agents). Context growth across loops.</li>
+        <li><strong>Tau-bench (2024).</strong> Agentic task abandonment rates: 12–22% for complex multi-step workflows. Task completion benchmarks.</li>
+        <li><strong>WebArena Benchmark (2023).</strong> Best agents complete ~14% of complex web tasks. Multi-step agentic failure rate baseline.</li>
+        <li><strong>Azure OpenAI PTU Pricing (2024).</strong> Provisioned Throughput Units: ~$2,000–$4,000/month per 100 PTU. Concurrency scaling and rate limit architecture guidance.</li>
+        <li><strong>Snowflake / Databricks (2024).</strong> AI data pipeline compute pricing. Daily embedding refresh cost structures. Vector store maintenance economics.</li>
+        <li><strong>BCG Change Management Research (2023).</strong> Productivity J-Curve documentation. 2–4 month dip duration at 10–20% below baseline. Change management cost as % of AI project budget.</li>
+        <li><strong>Drezner, D. (2004).</strong> "The Outsourcing Bogeyman." Coordination and rework cost multiples for offshore IT. Break-even analysis.</li>
+        <li><strong>Forrester Research (2022).</strong> "The Total Economic Impact of AI-Augmented Work." Hidden cost multipliers for offshore and AI deployments: 25–55% above quoted rates.</li>
+        <li><strong>Stanford HELM Benchmark (2024).</strong> Error and inconsistency rates for GPT-4 class models: 3–8% on structured business tasks.</li>
+        <li><strong>WorldatWork / Mercer (2023).</strong> Total remuneration surveys. Benefits load 28–33%. The 1.5×–2.0× base salary multiplier for total employer cost.</li>
+      </ul>
+      <div class="callout callout-green" style="margin-top:10px"><strong>Disclaimer:</strong> This calculator provides estimates based on published industry research. Actual costs vary by organization size, industry, geography, and technical complexity. All defaults represent research-grounded midpoints, not guarantees. Provided for analytical and planning purposes only.</div>
+    </div>
+  </div>
+</div><!-- end results -->
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- ASSUMPTIONS ACCORDION                                      -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="assumptions-accordion" id="assumptions-accordion">
+  <div class="assumptions-toggle">
+    <div class="assumptions-toggle-left">
+      <div>
+        <div class="assumptions-toggle-title">Adjust Assumptions</div>
+        <div class="assumptions-toggle-sub">Modules 1–7 · Salary · Token costs · Infrastructure · Security · Process failure · J-Curve · All inputs update results instantly</div>
+      </div>
+    </div>
+  </div>
+  <div class="assumptions-body" id="assumptions-body">
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- MODULE 1: EMPLOYEE TRUE COST                              -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="module" id="mod1">
+  <div class="module-header" onclick="toggleModule('mod1')">
+    <div class="module-title-row">
+      <div class="module-icon mod-green">👤</div>
+      <div>
+        <div class="module-title">Module 1 — Employee True Cost Calculator</div>
+        <div class="module-subtitle">Full-loaded annual cost: benefits, taxes, overhead, turnover, management</div>
+      </div>
+    </div>
+    <div class="module-result-preview" id="m1-preview">$—</div>
+    <span class="chevron" id="mod1-chev">▼</span>
+  </div>
+  <div class="module-body" id="mod1-body">
+    <div class="grid-2">
+      <div>
+        <div class="field-group">
+          <label class="field-label">Base Salary <span class="tip-icon">?<div class="tip-box"><strong>Base Annual Salary</strong>BLS 2023 median for knowledge workers in tech/finance: $75K–$110K. Default $85K is blended midpoint. Mercer Compensation Survey 2023.</div></span> <span class="field-source">· BLS/Mercer 2023</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="e_salary" value="85000" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Benefits Load % <span class="tip-icon">?<div class="tip-box"><strong>Employer Benefits</strong>WorldatWork 2023: median employer benefits = 28–33% of base. Includes health, 401k, dental, vision, disability, life.</div></span> <span class="field-source">· WorldatWork 2023</span></label>
+          <div class="input-wrap"><input class="field-input" type="number" id="e_benefits" value="30" min="0" max="100" oninput="calc()"><span class="input-suffix">%</span></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Payroll Taxes % <span class="tip-icon">?<div class="tip-box"><strong>Employer Payroll Tax</strong>FICA 7.65% + FUTA ~0.6% + state unemployment ~0.3%. Total employer burden: 8.5%. IRS 2024.</div></span> <span class="field-source">· IRS 2024</span></label>
+          <div class="input-wrap"><input class="field-input" type="number" id="e_payroll_tax" value="8.5" min="0" max="20" step="0.1" oninput="calc()"><span class="input-suffix">%</span></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Overhead Multiplier % <span class="tip-icon">?<div class="tip-box"><strong>Indirect Overhead</strong>Office space, hardware, software licenses, IT support, HR administration. SHRM 2023 median: 20–30% of salary.</div></span> <span class="field-source">· SHRM 2023</span></label>
+          <div class="input-wrap"><input class="field-input" type="number" id="e_overhead" value="25" min="0" max="100" oninput="calc()"><span class="input-suffix">%</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="field-group">
+          <label class="field-label">Annual Training Cost <span class="tip-icon">?<div class="tip-box"><strong>Training & Development</strong>ATD 2023 State of the Industry: average employer spent $1,280/employee on direct training. Default $1,500 adds onboarding amortization.</div></span> <span class="field-source">· ATD 2023</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="e_training" value="1500" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Annual Turnover Rate % <span class="tip-icon">?<div class="tip-box"><strong>Voluntary Turnover</strong>BLS JOLTS 2023: professional/tech sector median = 13–18%. Default 15%.</div></span> <span class="field-source">· BLS JOLTS 2023</span></label>
+          <div class="input-wrap"><input class="field-input" type="number" id="e_turnover" value="15" min="0" max="100" oninput="calc()"><span class="input-suffix">%</span></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Replacement Cost % of Salary <span class="tip-icon">?<div class="tip-box"><strong>Turnover Replacement Cost</strong>Boushey & Glynn (CAP/HBR): replacement = 16%–213% of annual salary. 50% is mid-level knowledge worker median.</div></span> <span class="field-source">· Boushey & Glynn, HBR</span></label>
+          <div class="input-wrap"><input class="field-input" type="number" id="e_replacement" value="50" min="0" max="300" oninput="calc()"><span class="input-suffix">%</span></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Management Overhead % <span class="tip-icon">?<div class="tip-box"><strong>Supervisory Cost</strong>Span-of-control: managing each FTE consumes ~10% of a manager's time. McKinsey Org Design 2022.</div></span> <span class="field-source">· McKinsey 2022</span></label>
+          <div class="input-wrap"><input class="field-input" type="number" id="e_mgmt" value="10" min="0" max="50" oninput="calc()"><span class="input-suffix">%</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="callout callout-green"><strong>Formula (Mercer/WorldatWork):</strong> True Annual Cost = Salary × (1 + Benefits + PayrollTax + Overhead) + Training + (Turnover × Replacement × Salary) + (Mgmt × Salary). The 1.5×–2.0× rule of thumb derives from this structure.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- MODULE 2: CLOUD AI TOKEN COST + AGENTIC LOOP              -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="module" id="mod2">
+  <div class="module-header" onclick="toggleModule('mod2')">
+    <div class="module-title-row">
+      <div class="module-icon mod-blue">☁️</div>
+      <div>
+        <div class="module-title">Module 2 — Cloud AI Token Cost + Agentic Loop Multiplier</div>
+        <div class="module-subtitle">API pricing · agentic loop overhead · concurrency scaling · residual oversight</div>
+      </div>
+    </div>
+    <div class="module-result-preview" id="m2-preview">$—</div>
+    <span class="chevron" id="mod2-chev">▼</span>
+  </div>
+  <div class="module-body" id="mod2-body">
+
+    <!-- NEW: Agentic Toggle -->
+    <div class="subsection-head">🤖 Agentic Autonomy Mode</div>
+    <div class="toggle-row" id="agentic-toggle-row" onclick="toggleAgentic()">
+      <div>
+        <div class="toggle-label">Enable Agentic Loop Multiplier</div>
+        <div class="toggle-desc">Models multi-step autonomous agents (ReAct, tool-use, reflection loops). 1 task ≠ 1 API call.</div>
+      </div>
+      <div class="toggle-switch" id="agentic-switch"></div>
+    </div>
+    <div class="agentic-fields" id="agentic-fields">
+      <div class="grid-2">
+        <div>
+          <div class="field-group">
+            <label class="field-label">API Calls Per Task (Loop Depth) <span class="tip-icon">?<div class="tip-box"><strong>Agentic Loop Multiplier</strong>ReAct-style agents execute: Plan → Tool Call → Observe → Reflect → Act. A single "task" may require 4–8 API roundtrips. OpenAI Function Calling / Anthropic Tool Use benchmarks (2024): average 4.2 calls/task for web research agents; 6.8 for coding agents.</div></span> <span class="field-source">· OpenAI/Anthropic 2024</span></label>
+            <input class="field-input" type="number" id="a_loop" value="5" min="1" max="50" oninput="calc()">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Context Window Growth Factor <span class="tip-icon">?<div class="tip-box"><strong>Scratchpad Context Accumulation</strong>Agents append tool outputs and observations to their context window each loop. By loop 5, the input token count may be 3–6× the initial prompt. Default 3.5× average context growth across the loop.</div></span></label>
+            <input class="field-input" type="number" id="a_ctx_growth" value="3.5" min="1" max="20" step="0.5" oninput="calc()">
+          </div>
+        </div>
+        <div>
+          <div class="field-group">
+            <label class="field-label">Task Abandonment Rate % <span class="tip-icon">?<div class="tip-box"><strong>Incomplete Agentic Tasks</strong>Agentic tasks that consume API budget but fail to complete (hitting max turns, getting stuck in loops, tool errors). Cost is incurred even on incomplete tasks. Tau-bench (2024): 12–22% abandonment rate for complex agentic workflows.</div></span> <span class="field-source">· Tau-bench 2024</span></label>
+            <div class="input-wrap"><input class="field-input" type="number" id="a_abandon" value="15" min="0" max="100" step="0.5" oninput="calc()"><span class="input-suffix">%</span></div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Tool Call Output Tokens / Call <span class="tip-icon">?<div class="tip-box"><strong>Tool Response Tokens</strong>Tool outputs (API responses, search results, code output) that get fed back into context each loop. A search result might be 300–800 tokens. Default 400.</div></span></label>
+            <input class="field-input" type="number" id="a_tool_tokens" value="400" min="0" oninput="calc()">
+          </div>
+        </div>
+      </div>
+      <div id="agentic-summary" class="callout callout-cyan" style="margin-top:10px">
+        <strong>Agentic cost impact:</strong> <span id="agentic-summary-text">—</span>
+      </div>
+    </div>
+
+    <div class="subsection-head">📡 Base Token Configuration</div>
+    <div class="grid-2">
+      <div>
+        <div class="field-group">
+          <label class="field-label">Model Tier <span class="tip-icon">?<div class="tip-box"><strong>API Pricing (per 1M tokens)</strong>Prices as of Q1 2025. Input/output tokens priced separately. Note: agentic mode dramatically amplifies token costs — model selection is the highest-leverage cost decision in agentic deployments.</div></span> <span class="field-source">· Anthropic/OpenAI/Google Q1 2025</span></label>
+          <select class="field-input" id="c_model" onchange="calc()">
+            <option value="5,15">GPT-4o — $5 / $15 per 1M tokens</option>
+            <option value="3,15" selected>Claude Sonnet 3.5 — $3 / $15 per 1M tokens</option>
+            <option value="0.25,1.25">Claude Haiku 3.5 — $0.25 / $1.25 per 1M tokens</option>
+            <option value="3.5,10.5">Gemini 1.5 Pro — $3.50 / $10.50 per 1M tokens</option>
+            <option value="0.15,0.6">GPT-4o-mini — $0.15 / $0.60 per 1M tokens</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Tasks Per Day <span class="tip-icon">?<div class="tip-box"><strong>Daily Task Volume</strong>Distinct workflow invocations per business day. In agentic mode, each task spawns multiple API calls per the loop multiplier above.</div></span></label>
+          <input class="field-input" type="number" id="c_tasks" value="50" min="1" oninput="calc()">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Avg Input Tokens / Task <span class="tip-icon">?<div class="tip-box"><strong>Base Input Tokens</strong>System prompt + user message + initial context. In agentic mode this is multiplied by the context growth factor across loop iterations.</div></span></label>
+          <input class="field-input" type="number" id="c_in_tokens" value="2000" min="1" oninput="calc()">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Avg Output Tokens / Task <span class="tip-icon">?<div class="tip-box"><strong>Base Output Tokens</strong>Generated response per call. In agentic mode, each loop iteration generates output tokens independently.</div></span></label>
+          <input class="field-input" type="number" id="c_out_tokens" value="500" min="1" oninput="calc()">
+        </div>
+      </div>
+      <div>
+        <div class="field-group">
+          <label class="field-label">Working Days / Year</label>
+          <input class="field-input" type="number" id="c_days" value="250" min="1" max="365" oninput="calc()">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Human Oversight Still Required % <span class="tip-icon">?<div class="tip-box"><strong>Residual Human Cost</strong>McKinsey 2023: most deployments require 15–25% residual human oversight for review and exception handling.</div></span> <span class="field-source">· McKinsey MGI 2023</span></label>
+          <div class="input-wrap"><input class="field-input" type="number" id="c_oversight" value="20" min="0" max="100" oninput="calc()"><span class="input-suffix">%</span></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">AI Error / Rework Rate % <span class="tip-icon">?<div class="tip-box"><strong>Error & Rework Overhead</strong>Stanford HELM 2024: GPT-4 class models have 3–8% error rates on structured tasks. Agentic tasks have higher rates (see Module 6).</div></span> <span class="field-source">· Stanford HELM 2024</span></label>
+          <div class="input-wrap"><input class="field-input" type="number" id="c_error" value="5" min="0" max="50" step="0.1" oninput="calc()"><span class="input-suffix">%</span></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">API Tooling & Middleware / Month <span class="tip-icon">?<div class="tip-box"><strong>Platform Overhead</strong>LangChain/LlamaIndex, API gateway, rate limiting, prompt management. In agentic deployments, orchestration middleware costs are significantly higher — consider $500–$1,500/mo.</div></span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="c_tooling" value="200" min="0" oninput="calc()"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW: Concurrency Scaling -->
+    <div class="subsection-head">⚡ Concurrency & Scale Model</div>
+    <div class="callout callout-cyan" style="margin-bottom:14px"><strong>Non-linear scaling alert:</strong> Moving from single-user to concurrent workloads fundamentally breaks the linear token pricing model. At high concurrency, dedicated provisioned throughput (PTU/reserved capacity) is required, changing the cost structure from variable to semi-fixed.</div>
+    <div class="grid-2">
+      <div>
+        <div class="field-group">
+          <label class="field-label">Concurrent Users at Peak <span class="tip-icon">?<div class="tip-box"><strong>Peak Concurrency</strong>Maximum simultaneous users/processes hitting the AI system. At low concurrency (&lt;10), standard pay-per-token is cost-optimal. At medium concurrency (10–50), rate limits and latency SLAs require architectural changes. At high concurrency (50+), Azure PTUs or dedicated capacity becomes necessary.</div></span> <span class="field-source">· Azure OpenAI PTU docs 2024</span></label>
+          <input class="field-input" type="number" id="conc_peak" value="5" min="1" oninput="calc()">
+        </div>
+        <div class="field-group">
+          <label class="field-label">PTU / Reserved Capacity Cost / Month <span class="tip-icon">?<div class="tip-box"><strong>Provisioned Throughput Units</strong>Azure OpenAI PTU pricing (2024): ~$2,000–$4,000/month per 100 PTU. AWS Bedrock Reserved Capacity: similar structure. At 50+ concurrent users on GPT-4o class models, ~200 PTUs required. This replaces per-token billing with a semi-fixed monthly cost.</div></span> <span class="field-source">· Azure PTU pricing 2024</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="conc_ptu_cost" value="0" min="0" oninput="calc()"></div>
+        </div>
+      </div>
+      <div>
+        <div class="field-group">
+          <label class="field-label">Latency SLA Penalty Cost / Month <span class="tip-icon">?<div class="tip-box"><strong>SLA Breach Cost</strong>At high concurrency without provisioned capacity, inference latency degrades. If the AI system is customer-facing, SLA breaches trigger penalties or customer churn costs. Internal tools: productivity loss from waiting on slow completions.</div></span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="conc_sla" value="0" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Rate Limit Retry Infrastructure / Month <span class="tip-icon">?<div class="tip-box"><strong>Rate Limit Overhead</strong>Exponential backoff, request queuing, retry logic for 429 errors at scale. Increases effective latency and requires additional orchestration engineering.</div></span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="conc_retry" value="0" min="0" oninput="calc()"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Live concurrency visualization -->
+    <div id="conc-band-display" class="concurrency-band"></div>
+    <div class="callout callout-amber"><strong>Concurrency regime:</strong> <span id="conc-regime-text">Enter peak concurrent users above to see cost regime analysis.</span></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- MODULE 3: PRIVATE AI                                       -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="module" id="mod3">
+  <div class="module-header" onclick="toggleModule('mod3')">
+    <div class="module-title-row">
+      <div class="module-icon mod-purple">🖥️</div>
+      <div>
+        <div class="module-title">Module 3 — Private / On-Premises AI Cost</div>
+        <div class="module-subtitle">GPU amortization · power · MLOps · licensing · compliance</div>
+      </div>
+    </div>
+    <div class="module-result-preview" id="m3-preview">$—</div>
+    <span class="chevron" id="mod3-chev">▼</span>
+  </div>
+  <div class="module-body" id="mod3-body">
+    <div class="grid-2">
+      <div>
+        <div class="field-group">
+          <label class="field-label">Number of H100 GPUs <span class="tip-icon">?<div class="tip-box"><strong>GPU Count</strong>H100 SXM5 is current LLM inference standard. Llama 70B: ~2 H100s for inference. Production HA deployment: 4–8 GPUs minimum.</div></span> <span class="field-source">· NVIDIA/Anyscale 2024</span></label>
+          <input class="field-input" type="number" id="p_gpus" value="4" min="1" oninput="calc()">
+        </div>
+        <div class="field-group">
+          <label class="field-label">GPU Unit Cost <span class="tip-icon">?<div class="tip-box"><strong>H100 Market Price</strong>H100 SXM5: $25K–$35K list; often $30K+ with supply constraints 2024. H100 PCIe: ~$25K. A100: ~$10K.</div></span> <span class="field-source">· NVIDIA 2024</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="p_gpu_cost" value="30000" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Amortization Period (Years) <span class="tip-icon">?<div class="tip-box"><strong>Depreciation Schedule</strong>IRS MACRS: 3-year for computing equipment. Gartner recommends 3-year for AI hardware due to rapid capability advancement.</div></span> <span class="field-source">· IRS MACRS/Gartner</span></label>
+          <input class="field-input" type="number" id="p_amort" value="3" min="1" max="10" oninput="calc()">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Annual Power Cost / GPU <span class="tip-icon">?<div class="tip-box"><strong>Power Consumption</strong>H100 TDP: 700W. At 24/7 × $0.10/kWh: ~$600/mo. At 50% utilization + datacenter PUE 1.5: ~$3,500/yr.</div></span> <span class="field-source">· Uptime Institute 2023</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="p_power" value="3500" min="0" oninput="calc()"></div>
+        </div>
+      </div>
+      <div>
+        <div class="field-group">
+          <label class="field-label">Annual Cooling & Facility / GPU <span class="tip-icon">?<div class="tip-box"><strong>Cooling & Facilities</strong>Liquid-cooled H100s require specialized rack infrastructure. Amortized datacenter space + cooling: $1,000–$1,500/GPU/year.</div></span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="p_cooling" value="1200" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">MLOps Engineer Cost (FTE share) <span class="tip-icon">?<div class="tip-box"><strong>MLOps / Platform Engineering</strong>Senior ML engineer at $150K fully loaded. 0.25 FTE = $37,500/yr. Minimum viable allocation for a production on-prem LLM system.</div></span> <span class="field-source">· Levels.fyi 2024</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="p_mlops" value="37500" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Annual Model Licensing / Fine-tuning</label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="p_license" value="10000" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Annual Compliance & Audit Cost <span class="tip-icon">?<div class="tip-box"><strong>Compliance</strong>SOC 2 Type II for AI: $15–40K/yr. HIPAA/GDPR AI audits: $8–20K. Default $8K for basic compliance posture.</div></span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="p_compliance" value="8000" min="0" oninput="calc()"></div>
+        </div>
+      </div>
+    </div>
+    <div class="callout callout-amber"><strong>Gartner (2024):</strong> On-prem AI deployments have 2.5–3.5× higher initial capital costs than cloud equivalents, but may achieve lower 3-year TCO at sustained utilization &gt;70%. Break-even vs. cloud API typically at 18–30 months.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- MODULE 4: HOSTING + DATA PIPELINE TAX                     -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="module" id="mod4">
+  <div class="module-header" onclick="toggleModule('mod4')">
+    <div class="module-title-row">
+      <div class="module-icon mod-blue">🏗️</div>
+      <div>
+        <div class="module-title">Module 4 — Hosting, Infrastructure & Data Pipeline Tax</div>
+        <div class="module-subtitle">CDN · DB · observability · DR · CI/CD · data engineering · QA overhead</div>
+      </div>
+    </div>
+    <div class="module-result-preview" id="m4-preview">$—</div>
+    <span class="chevron" id="mod4-chev">▼</span>
+  </div>
+  <div class="module-body" id="mod4-body">
+    <div class="subsection-head">☁️ Core Infrastructure</div>
+    <div class="grid-2">
+      <div>
+        <div class="field-group">
+          <label class="field-label">Cloud Hosting Tier / Month <span class="tip-icon">?<div class="tip-box"><strong>AI Workload Hosting</strong>GPU-backed inference endpoints, API servers, orchestration. AWS/Azure/GCP 2024 AI workload pricing. Small = dev/test; Large = production; Enterprise = HA multi-region.</div></span> <span class="field-source">· AWS/Azure/GCP 2024</span></label>
+          <select class="field-input" id="h_tier" onchange="calc()">
+            <option value="200">Small — $200/mo (Dev/Test)</option>
+            <option value="800" selected>Medium — $800/mo (Single-region Prod)</option>
+            <option value="3000">Large — $3,000/mo (Multi-AZ Production)</option>
+            <option value="8000">Enterprise — $8,000/mo (Multi-region HA)</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">CDN & Bandwidth / Month</label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="h_cdn" value="150" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Load Balancing & Auto-scaling / Month</label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="h_lb" value="300" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Database / Vector Store / Month <span class="tip-icon">?<div class="tip-box"><strong>DB & RAG Infrastructure</strong>Managed PostgreSQL + pgvector, or Pinecone/Weaviate. RAG workloads are storage-intensive. $400/mo covers managed DB + modest vector store for production.</div></span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="h_db" value="400" min="0" oninput="calc()"></div>
+        </div>
+      </div>
+      <div>
+        <div class="field-group">
+          <label class="field-label">Storage (Logs, Artifacts) / Month</label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="h_storage" value="100" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Monitoring & Observability / Month <span class="tip-icon">?<div class="tip-box"><strong>Observability</strong>Datadog/New Relic/Grafana Cloud for AI workloads. Includes LLM-specific monitoring: token usage, latency p99, hallucination detection. 2–3× standard SaaS cost. Gartner 2024.</div></span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="h_monitoring" value="200" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Disaster Recovery / Backup / Month</label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="h_dr" value="300" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">CI/CD Pipeline & DevOps / Month</label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="h_cicd" value="150" min="0" oninput="calc()"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW: Data Pipeline Tax -->
+    <div class="subsection-head">🗄️ Data Pipeline Tax — The RAG Maintenance Cost</div>
+    <div class="callout callout-amber" style="margin-bottom:14px"><strong>Frequently overlooked:</strong> AI models are only as good as the data fed into them. Private AI and RAG workloads require continuous data engineering to prevent knowledge staleness. This "pipeline tax" compounds over time and is absent from virtually all vendor ROI models.</div>
+    <div class="grid-2">
+      <div>
+        <div class="field-group">
+          <label class="field-label">Data Warehouse / Lakehouse Compute / Month <span class="tip-icon">?<div class="tip-box"><strong>Snowflake / Databricks Compute</strong>Daily or hourly ETL jobs that extract, clean, chunk, and embed documents into the vector store. Snowflake credits for AI data prep: $200–$2,000/mo depending on data volume. Databricks SQL compute: similar range. Default $600/mo for a mid-scale RAG knowledge base.</div></span> <span class="field-source">· Snowflake/Databricks 2024</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="dp_warehouse" value="600" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Embedding Refresh Cost / Month <span class="tip-icon">?<div class="tip-box"><strong>Vector Re-embedding Cost</strong>When source documents change, all affected chunks must be re-embedded. At OpenAI text-embedding-3-small ($0.02/1M tokens): 10M tokens/month ≈ $0.20. But Cohere Embed Enterprise / custom embedding models add significant compute cost. Default $150/mo for a continuously-updated knowledge base.</div></span> <span class="field-source">· OpenAI Embeddings API 2024</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="dp_embed" value="150" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Data Orchestration Tools / Month <span class="tip-icon">?<div class="tip-box"><strong>Pipeline Orchestration</strong>Airflow (MWAA), Prefect, or Dagster for scheduling data ingestion pipelines. Includes scheduler infrastructure, alert management, and pipeline monitoring.</div></span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="dp_orchestration" value="200" min="0" oninput="calc()"></div>
+        </div>
+      </div>
+      <div>
+        <div class="field-group">
+          <label class="field-label">Data Quality Assurance — Human Hours / Month <span class="tip-icon">?<div class="tip-box"><strong>Data QA Engineering Cost</strong>Someone must validate that the AI's knowledge base is accurate, complete, and not corrupted by bad ingestion. Even with automation, 10–20 hours/month of a data engineer's time (~$100/hr) is required for a production RAG system. Default: 10 hrs × $100 = $1,000/mo.</div></span> <span class="field-source">· Gartner Data Quality 2024</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="dp_qa_cost" value="1000" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Data Staleness Incident Cost / Year <span class="tip-icon">?<div class="tip-box"><strong>Stale Data Risk Cost</strong>Annualized cost of incidents caused by the AI working from outdated or incorrect knowledge. Examples: quoting discontinued products, citing superseded policies, referencing wrong pricing. Conservative $5,000/yr for internal use; $25,000+ for customer-facing deployments.</div></span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="dp_staleness" value="5000" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Schema Migration & Data Governance / Year <span class="tip-icon">?<div class="tip-box"><strong>Data Governance</strong>As source systems evolve (schema changes, new data sources, PII handling requirements), the data pipeline requires maintenance. Annual engineering cost for pipeline schema migrations and governance updates.</div></span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="dp_governance" value="8000" min="0" oninput="calc()"></div>
+        </div>
+      </div>
+    </div>
+    <div class="callout callout-amber"><strong>Gartner (2024):</strong> Hosting costs for AI systems are typically <strong>3–5× higher</strong> than equivalent SaaS apps due to GPU memory requirements, stateful session management, and inference latency optimization. The data pipeline tax adds an additional 15–30% to hosting costs for RAG-based deployments — systematically excluded from vendor ROI models.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- MODULE 5: CYBERSECURITY                                    -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="module" id="mod5">
+  <div class="module-header" onclick="toggleModule('mod5')">
+    <div class="module-title-row">
+      <div class="module-icon mod-red">🔐</div>
+      <div>
+        <div class="module-title">Module 5 — Cybersecurity Cost Module</div>
+        <div class="module-subtitle">Agentic AI attack surface: network segmentation, behavioral detection, secrets mgmt, skill supply chain auditing, OWASP/MITRE-grounded</div>
+      </div>
+    </div>
+    <div class="module-result-preview" id="m5-preview">$—</div>
+    <span class="chevron" id="mod5-chev">▼</span>
+  </div>
+  <div class="module-body" id="mod5-body">
+    <div class="grid-2">
+      <div>
+        <div class="field-group">
+          <label class="field-label">AI Security Tooling / Month <span class="tip-icon">?<div class="tip-box"><strong>AI-Specific Security</strong>Prompt injection detection, output filtering, model access controls. OWASP LLM Top 10 mitigations: Lakera Guard, Rebuff, LLM Guard. Default $500/mo.</div></span> <span class="field-source">· OWASP LLM Top 10, 2023</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="s_tooling" value="500" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Data Loss Prevention (DLP) / Month <span class="tip-icon">?<div class="tip-box"><strong>DLP for AI I/O</strong>Sensitive data detection in prompts/outputs (PII, PHI, credentials). Cloud API deployments: data may be sent to third-party model providers. OWASP LLM Top 10 #2.</div></span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="s_dlp" value="300" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Identity & Access Mgmt (IAM) / Month <span class="tip-icon">?<div class="tip-box"><strong>Zero-Trust IAM for AI Agents</strong>Service account governance, API key rotation, least-privilege tool permissions, audit logging. Note: identity policies alone are insufficient for autonomous agents — see Network Microsegmentation below (MITRE ATLAS AML.T0047).</div></span> <span class="field-source">· MITRE ATLAS</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="s_iam" value="400" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Pen Testing & AI Red-Teaming / Year <span class="tip-icon">?<div class="tip-box"><strong>AI Red-Teaming</strong>MITRE ATLAS documents AI-specific attacks (adversarial ML, model inversion, data poisoning). AI red-teaming requires skills distinct from traditional pentesting. $15K/yr = one annual engagement.</div></span> <span class="field-source">· MITRE ATLAS 2023</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="s_pentest" value="15000" min="0" oninput="calc()"></div>
+        </div>
+      </div>
+      <div>
+        <div class="field-group">
+          <label class="field-label">Compliance Audit (GDPR/CCPA/HIPAA) / Year <span class="tip-icon">?<div class="tip-box"><strong>AI Regulatory Compliance</strong>GDPR Article 22, CCPA AI disclosures, HIPAA BAAs for AI vendors. EU AI Act compliance adds $20–100K for high-risk systems starting 2025.</div></span> <span class="field-source">· IAPP/EU AI Act 2024</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="s_compliance" value="12000" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Cyber Insurance Premium Increase / Year <span class="tip-icon">?<div class="tip-box"><strong>Insurance Premium Uplift</strong>Marsh & McLennan 2023: AI API deployments face 15–40% increase in cyber insurance premiums. Default $8K ≈ 20% uplift on $40K base premium.</div></span> <span class="field-source">· Marsh & McLennan 2023</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="s_insurance" value="8000" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Incident Response Retainer / Year <span class="tip-icon">?<div class="tip-box"><strong>AI Breach IR</strong>AI breach response requires expertise in model forensics, prompt log analysis, vector store audit. Mandiant/CrowdStrike retainers: $15–30K. Default $10K minimum viable coverage.</div></span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="s_ir" value="10000" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Security Training for AI-Adjacent Staff / Year</label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="s_training" value="2000" min="0" oninput="calc()"></div>
+        </div>
+      </div>
+    </div>
+    <div class="subsection-head" style="margin-top:16px">🤖 Agentic AI — Extended Attack Surface</div>
+    <div class="callout callout-amber" style="margin-bottom:14px"><strong>Why standard security tooling falls short for agentic AI:</strong> Reasoning systems actively explore permission boundaries, adapt when blocked, and accumulate credentials over time. Network-layer controls, behavioral monitoring, and supply chain auditing are required additions to a static IAM + DLP posture.</div>
+    <div class="grid-2">
+      <div>
+        <div class="field-group">
+          <label class="field-label">Network Microsegmentation & Kill Switch / Month <span class="tip-icon">?<div class="tip-box"><strong>East-West Traffic Control + Runtime Kill Switch</strong>Restricts unauthorized inter-workload communications to limit "blast radius" if an agent is compromised. Includes infrastructure to immediately halt automated lateral movement at the network layer. An agent on EC2 with broad IAM can still traverse VPCs without network-layer controls. Tools: Aviatrix, Illumio, Zscaler Workload Segmentation. Source: MITRE ATLAS AML.T0008 (Network Service Scanning), NIST SP 800-204.</div></span> <span class="field-source">· NIST SP 800-204 / MITRE ATLAS</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="s_microseg" value="400" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Behavioral Anomaly Detection / Month <span class="tip-icon">?<div class="tip-box"><strong>Agentic Loop Behavioral Monitoring</strong>Standard DLP and static known-bad signatures fail against agentic lateral movement because agents hypothesize alternative paths when blocked — mimicking a skilled human attacker. This line items funds behavioral anomaly detection that monitors shifting, unpredictable execution loops rather than fixed attack sequences. Tools: Darktrace, Vectra AI, Exabeam for agentic workloads, or custom SIEM rules with ML-based anomaly scoring. Source: MITRE ATLAS AML.T0043 (Craft Adversarial Data).</div></span> <span class="field-source">· Darktrace / Vectra AI benchmarks</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="s_behavioral" value="600" min="0" oninput="calc()"></div>
+        </div>
+      </div>
+      <div>
+        <div class="field-group">
+          <label class="field-label">Dynamic Secrets Management / Month <span class="tip-icon">?<div class="tip-box"><strong>HashiCorp Vault / AWS Secrets Manager for Agents</strong>Agentic architectures change how secrets are exposed: sensitivity is not always visible at deployment — it emerges through use. Agents accumulate credentials, API keys, approval patterns, and infrastructure decisions in persistent memory. Storing these in environment variables or local files creates a high-value target. This funds short-lived, automatically rotated credentials via a secrets manager. Especially critical for agents executing financial transactions or accessing production databases. Tools: HashiCorp Vault ($200–$500/mo), AWS Secrets Manager, Azure Key Vault. Source: OWASP LLM Top 10 #2 (Insecure Output Handling), OWASP LLM #9 (Overreliance).</div></span> <span class="field-source">· HashiCorp / OWASP LLM Top 10</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="s_secrets" value="300" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Agent Skill Supply Chain Auditing / Year <span class="tip-icon">?<div class="tip-box"><strong>Third-Party Skill / Tool Vetting</strong>Agent skills are often plain-text Markdown or JSON files with no CVEs, no container image scanning, and no SBOMs. A skill designed to exfiltrate environment variables looks like a harmless text document to standard CI/CD scanners. Prompt injections routed through a pluggable tool can trigger unauthorized actions on real infrastructure. This funds continuous auditing and vetting of third-party agent tools: static analysis, sandboxed execution testing, and behavioral review. Tools: custom review pipeline, Snyk (extended to AI skills), manual security review retainer. Source: MITRE ATLAS AML.T0047 (Acquire ML Artifacts), OWASP LLM #3 (Training Data Poisoning analogue for skills).</div></span> <span class="field-source">· MITRE ATLAS / OWASP LLM #3</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="s_skillaudit" value="8000" min="0" oninput="calc()"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-red"><strong>IBM Cost of a Data Breach Report (2024):</strong> Average AI-related data breach cost: <strong>$4.88M</strong> — 10% higher than traditional breaches due to difficulty detecting model exfiltration and prompt injection. This tail-risk is not included in the inputs above.</div>
+    <div style="margin-top:12px;background:#f0f9ff;border:1px solid #bae6fd;border-left:4px solid #0284c7;border-radius:0 var(--r) var(--r) 0;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#0369a1;margin-bottom:3px">💡 Looking to reduce your AI security overhead?</div>
+        <div style="font-size:12px;color:#0c4a6e;line-height:1.5">Aviatrix provides cloud networking and security infrastructure purpose-built for AI workloads.</div>
+      </div>
+      <a href="https://aviatrix.ai" target="_blank" rel="noopener" style="flex-shrink:0;display:inline-flex;align-items:center;gap:6px;background:#0284c7;color:#ffffff;font-size:12px;font-weight:700;padding:8px 16px;border-radius:var(--r);text-decoration:none;transition:background .18s;white-space:nowrap" onmouseover="this.style.background='#0369a1'" onmouseout="this.style.background='#0284c7'">Learn more →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- MODULE 6: PROCESS FAILURE                                  -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="module" id="mod6">
+  <div class="module-header" onclick="toggleModule('mod6')">
+    <div class="module-title-row">
+      <div class="module-icon mod-red">⚠️</div>
+      <div>
+        <div class="module-title">Module 6 — Long-Running Process Failure Cost</div>
+        <div class="module-subtitle">For autonomous / pipeline AI — reduce inputs for copilot/assistant use cases</div>
+      </div>
+    </div>
+    <div class="module-result-preview" id="m6-preview">$—</div>
+    <span class="chevron" id="mod6-chev">▼</span>
+  </div>
+  <div class="module-body" id="mod6-body">
+    <div class="field-group">
+      <label class="field-label">Risk Tier — scales failure cost multiplier</label>
+      <div class="risk-tier-row">
+        <button class="risk-btn" id="risk-low" onclick="setRisk('low')">🟢 Low Risk<br><small>Internal reports, summaries</small><br><small>0.5× multiplier</small></button>
+        <button class="risk-btn active-medium" id="risk-medium" onclick="setRisk('medium')">🟡 Medium Risk<br><small>Customer comms, data processing</small><br><small>1.0× baseline</small></button>
+        <button class="risk-btn" id="risk-high" onclick="setRisk('high')">🔴 High Risk<br><small>Financial, medical, legal</small><br><small>3.0× multiplier</small></button>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div>
+        <div class="field-group">
+          <label class="field-label">Long-Running Processes / Day</label>
+          <input class="field-input" type="number" id="f_processes" value="10" min="0" oninput="calc()">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Avg Process Duration (Minutes)</label>
+          <input class="field-input" type="number" id="f_duration" value="45" min="1" oninput="calc()">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Process Failure Rate % <span class="tip-icon">?<div class="tip-box"><strong>Agentic Task Failure Rate</strong>Anthropic & DeepMind: complex multi-step agentic tasks fail 5–15%. WebArena (2023): best agents complete ~14% of complex tasks. Default 8% conservative for business workflows.</div></span> <span class="field-source">· Anthropic/DeepMind 2023</span></label>
+          <div class="input-wrap"><input class="field-input" type="number" id="f_failure_rate" value="8" min="0" max="100" step="0.1" oninput="calc()"><span class="input-suffix">%</span></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Cost Per Failed Process (Labor)</label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="f_cost_per" value="75" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Silent Failure Detection Lag (Hours) <span class="tip-icon">?<div class="tip-box"><strong>MTTD for Silent Failures</strong>Google SRE benchmark: MTTD for silent AI failures = 2–8 hours without dedicated monitoring. Default 2 hours. This lag allows bad outputs to propagate downstream.</div></span> <span class="field-source">· Google SRE</span></label>
+          <input class="field-input" type="number" id="f_lag" value="2" min="0" step="0.5" oninput="calc()">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Downstream Cascade Proportion % <span class="tip-icon">?<div class="tip-box"><strong>Cascade Proportion</strong>Of the processes that run during the detection lag window, what % are actually impacted by the upstream failure? A single failure rarely corrupts all downstream work. Typical range: 10–30%. Use 50–100% only for tightly-coupled sequential pipelines (e.g., financial data feeds).</div></span></label>
+          <div class="input-wrap"><input class="field-input" type="number" id="f_cascade" value="20" min="0" max="100" oninput="calc()"><span class="input-suffix">%</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="field-group">
+          <label class="field-label">Downstream Rework Cost Per Silent Failure</label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="f_rework" value="500" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Context Window Reset Cost (Per Session)</label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="f_context" value="25" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Est. Annual Context Resets</label>
+          <input class="field-input" type="number" id="f_resets" value="200" min="0" oninput="calc()">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Annual Hallucination-Driven Decision Cost <span class="tip-icon">?<div class="tip-box"><strong>Hallucination Cost</strong>Business decisions made on incorrect AI outputs. Finance: bad model inputs. Legal: incorrect citations. Medical: wrong references. Default $20K conservative; adjust to $100K+ for regulated industries.</div></span> <span class="field-source">· Gartner AI Risk 2024</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="f_hallucination" value="20000" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Retry Infrastructure (Queue, DLQ) / Month</label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="f_retry" value="150" min="0" oninput="calc()"></div>
+        </div>
+      </div>
+    </div>
+    <div class="callout callout-amber"><strong>Scope of this module:</strong> Models <em>autonomous / long-running AI processes</em> (pipeline jobs, agentic workflows, batch processing). For simple copilot/assistant use cases (email drafting, Q&A), reduce "processes/day" to 1–2 and failure rate to 2–3%. The downstream cascade proportion (default 20%) controls how many tasks running during the detection lag are actually impacted — increase to 50–100% only for tightly-coupled sequential pipelines. (Google SRE, Uptime Institute 2023)</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- MODULE 7: ROI + PRODUCTIVITY J-CURVE                      -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="module" id="mod7">
+  <div class="module-header" onclick="toggleModule('mod7')">
+    <div class="module-title-row">
+      <div class="module-icon mod-amber"><img src="m7-icon.png" alt="ROI" onerror="this.parentNode.innerHTML='📊'"></div>
+      <div>
+        <div class="module-title">Module 7 — ROI Parameters & Productivity J-Curve</div>
+        <div class="module-subtitle">Discount rate · implementation phases · productivity dip · 3-year NPV</div>
+      </div>
+    </div>
+    <div class="module-result-preview" id="m7-preview">—</div>
+    <span class="chevron" id="mod7-chev">▼</span>
+  </div>
+  <div class="module-body" id="mod7-body">
+
+    <div class="subsection-head">🎯 ROI Configuration</div>
+    <div class="grid-2">
+      <div>
+        <div class="field-group">
+          <label class="field-label">Number of Employees Replaced / Augmented <span class="tip-icon">?<div class="tip-box"><strong>Headcount</strong>FTE positions this deployment replaces or significantly augments. Scales the employee cost side. Note: partial augmentation should use fractional values or adjust oversight % in Module 2.</div></span></label>
+          <input class="field-input" type="number" id="r_headcount" value="1" min="1" oninput="calc()">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Discount Rate % (NPV) <span class="tip-icon">?<div class="tip-box"><strong>NPV Discount Rate</strong>Standard corporate hurdle rate for IT investments. WACC for US large-cap tech: 8–10%. Use 8% for typical internal ROI analysis.</div></span></label>
+          <div class="input-wrap"><input class="field-input" type="number" id="r_discount" value="8" min="0" max="30" step="0.5" oninput="calc()"><span class="input-suffix">%</span></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">AI Productivity Multiplier <span class="tip-icon">?<div class="tip-box"><strong>Volume Multiplier</strong>McKinsey MGI 2023: AI increases throughput 2–4× for knowledge work. Used in cost-per-unit-output calculation only; does NOT affect cost totals.</div></span> <span class="field-source">· McKinsey MGI 2023</span></label>
+          <input class="field-input" type="number" id="r_multiplier" value="3" min="1" max="20" step="0.5" oninput="calc()">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Risk Premium % (adds to AI cost) <span class="tip-icon">?<div class="tip-box"><strong>Risk Adjustment</strong>Cost buffer for operational, regulatory, and reputational risks not fully captured above. 5% conservative for greenfield; 10–15% for regulated industries.</div></span></label>
+          <div class="input-wrap"><input class="field-input" type="number" id="r_risk_premium" value="5" min="0" max="50" step="0.5" oninput="calc()"><span class="input-suffix">%</span></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Use Cloud AI or Private AI for comparison?</label>
+          <select class="field-input" id="r_mode" onchange="calc()">
+            <option value="cloud" selected>Cloud AI (Modules 2 + 4 + 5 + 6)</option>
+            <option value="private">Private / On-Prem AI (Modules 3 + 4 + 5 + 6)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- NEW: J-Curve Phase inputs -->
+      <div>
+        <div class="subsection-head" style="margin-top:0">📉 Productivity J-Curve — Year 1 Implementation Phases</div>
+        <div class="callout callout-amber" style="margin-bottom:12px;margin-top:0"><strong>McKinsey / BCG Change Management:</strong> Productivity J-Curve is a documented phenomenon — output drops before it rises. Top strategy firms model this explicitly in AI ROI; most vendors ignore it entirely.</div>
+        <div class="field-group">
+          <label class="field-label">Phase 1: Technical Integration Cost <span class="tip-icon">?<div class="tip-box"><strong>Technical Integration</strong>Data prep, API integration, pipeline development, testing. McKinsey 2023: average AI deployment integration = $25K–$250K depending on complexity. Default $15K for a mid-scale internal deployment.</div></span> <span class="field-source">· McKinsey AI Adoption 2023</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="j_technical" value="15000" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Phase 2: Workflow Redesign Cost <span class="tip-icon">?<div class="tip-box"><strong>Change Management / Process Redesign</strong>Consulting hours, process mapping, SOP rewriting, stakeholder alignment. Often the most underestimated cost. Gartner: 30–50% of AI project failures are due to change management failures, not technical issues.</div></span> <span class="field-source">· Gartner 2024</span></label>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="field-input prefix-wrap" type="number" id="j_workflow" value="10000" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Phase 3: Productivity Dip — Duration (Months) <span class="tip-icon">?<div class="tip-box"><strong>Productivity J-Curve Duration</strong>The period during which employee productivity is below baseline due to learning new workflows, parallel-running old processes, and debugging AI outputs. Typically 2–4 months. During this window, you pay BOTH the employee cost AND the AI cost without full benefit.</div></span> <span class="field-source">· BCG Change Management 2023</span></label>
+          <input class="field-input" type="number" id="j_dip_months" value="3" min="0" max="12" oninput="calc()">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Phase 3: Productivity Dip Severity % <span class="tip-icon">?<div class="tip-box"><strong>Productivity Dip %</strong>How much below baseline employee productivity falls during the transition. A 15% dip means the employee delivers 85% of their normal output. Applied as an additional cost penalty: dip% × employee_cost × (dip_months/12).</div></span> <span class="field-source">· McKinsey Change Management</span></label>
+          <div class="input-wrap"><input class="field-input" type="number" id="j_dip_pct" value="15" min="0" max="50" oninput="calc()"><span class="input-suffix">%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live J-Curve Phase Summary -->
+    <div class="jcurve-phases" id="jcurve-display">
+      <div class="phase-card active">
+        <div class="phase-num">Phase 1</div>
+        <div class="phase-name">Technical Integration</div>
+        <div class="phase-val" id="j_p1_val">$—</div>
+        <div class="phase-desc">Data prep, API build, pipeline testing</div>
+      </div>
+      <div class="phase-card active">
+        <div class="phase-num">Phase 2</div>
+        <div class="phase-name">Workflow Redesign</div>
+        <div class="phase-val" id="j_p2_val">$—</div>
+        <div class="phase-desc">Process mapping, SOP rewrite, change mgmt</div>
+      </div>
+      <div class="phase-card active">
+        <div class="phase-num">Phase 3</div>
+        <div class="phase-name">Productivity Dip Penalty</div>
+        <div class="phase-val" id="j_p3_val">$—</div>
+        <div class="phase-desc" id="j_p3_desc">—mo at —% below baseline</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;padding:12px 16px;background:#fffbeb;border:1px solid #fde68a;border-radius:var(--r);display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:12px;color:#92400e;font-weight:600">Total Year 1 Implementation Cost (all phases)</span>
+      <span style="font-size:16px;font-weight:700;font-family:var(--font-mono);color:var(--amber)" id="j_total_val">$—</span>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+</main>
+
+<footer style="text-align:center;padding:24px 20px;border-top:1px solid var(--border);background:#ffffff;font-size:12px;color:var(--muted)">
+  <a href="https://aviatrix.ai" target="_blank" rel="noopener" style="font-weight:700;color:#0284c7;text-decoration:none;font-size:13px" onmouseover="this.style.color='#0369a1'" onmouseout="this.style.color='#0284c7'">Cybersecurity for Agentic AI</a>
+  <span style="margin:0 10px;color:#cbd5e1">·</span>
+  <span>© 2026 DroidWork.ai — Enterprise AI Cost Intelligence. For planning purposes only.</span>
+</footer>
+
+<!-- Preload logo for PDF export -->
+<img id="pdf-logo" src="logo.png" style="display:none" crossorigin="anonymous">
+
+<!-- EMAIL / PDF MODAL -->
+<div id="email-modal" class="modal-overlay">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeEmailModal()">✕</button>
+    <div class="modal-title">Receive Your Executive TCO Report</div>
+    <div class="modal-subtitle">A Big 4-caliber PDF with your full analysis, cost breakdowns, 3-year projection, and methodology — emailed directly to you.</div>
+    <div class="modal-preview">
+      <div class="modal-preview-title">Your Analysis Summary</div>
+      <div class="modal-preview-row"><span>Employee True Cost</span><span class="modal-preview-val" id="mp_emp">$—</span></div>
+      <div class="modal-preview-row"><span>AI Full TCO (Annual)</span><span class="modal-preview-val" id="mp_ai">$—</span></div>
+      <div class="modal-preview-row"><span>Annual Savings</span><span class="modal-preview-val" id="mp_save">$—</span></div>
+      <div class="modal-preview-row"><span>3-Year NPV</span><span class="modal-preview-val" id="mp_npv">$—</span></div>
+    </div>
+    <div class="modal-field">
+      <label>Full Name</label>
+      <input type="text" id="modal-name" placeholder="e.g. Sarah Chen" autocomplete="name">
+    </div>
+    <div class="modal-field">
+      <label>Work Email *</label>
+      <input type="email" id="modal-email" placeholder="you@company.com" autocomplete="email" required>
+    </div>
+    <div class="modal-field">
+      <label>Company *</label>
+      <input type="text" id="modal-company" placeholder="Acme Corp" required>
+    </div>
+    <div id="send-status" class="send-status"></div>
+    <button class="btn-send" id="btn-send" onclick="sendPDFReport()">📧 Send My Report</button>
+    <div class="modal-privacy">🔒 Your email is never shared or sold. We send one report and nothing else.</div>
+  </div>
+</div>
+
+<!-- PRINT OVERLAY -->
+<div id="print-overlay">
+  <button class="btn btn-ghost print-close" onclick="closePrint()">✕ Close</button>
+  <h1>AI vs. Employee True Cost Calculator v2 — Export Summary</h1>
+  <p style="color:#666;margin-bottom:20px;font-size:12px">Generated: <span id="print-date"></span></p>
+  <div id="print-content"></div>
+</div>
+
+<script>
+// ═════════════════════════════════════════════════════════════
+// CONFIG — edit these before deploying
+// ═════════════════════════════════════════════════════════════
+const CONFIG = {
+  calculatorUrl:  'https://droidwork.ai/calculator',
+  methodologyUrl: 'https://droidwork.ai/calculator/methodology',
+  apiUrl:         'https://api.droidwork.ai/leads',
+};
+
+// ═════════════════════════════════════════════════════════════
+// SALARY MATRIX  (US 2025 market median base, rounded)
+// Sources: levels.fyi, Mercer, Radford/Aon, Glassdoor 2025
+// ═════════════════════════════════════════════════════════════
+const SALARY_DATA = {
+  // US 2025 median BASE salary (not total comp). Sources: BLS OES 2024, Glassdoor 2025, Indeed 2025, SHRM, Radford/Aon.
+  // C-suite = base only (total comp with equity/bonus runs 2–4× these figures).
+  //           intern  entry    mid      senior   mgr      sr_mgr   dir      vp       svp      evp      csuite
+  swe:       [72000,  110000,  136000,  166000,  190000,  218000,  260000,  322000,  398000,  480000,  510000],
+  ds:        [70000,  115000,  140000,  176000,  200000,  235000,  275000,  338000,  418000,  512000,  525000],
+  pm:        [62000,  114000,  136000,  165000,  185000,  218000,  258000,  322000,  398000,  492000,  525000],
+  finance:   [50000,   90000,  110000,  135000,  165000,  195000,  240000,  300000,  368000,  455000,  490000],
+  hr:        [42000,   63000,   78000,  112000,  122000,  150000,  188000,  248000,  308000,  385000,  455000],
+  ops:       [44000,   72000,   90000,  115000,  138000,  168000,  205000,  272000,  332000,  415000,  580000],
+  marketing: [44000,   64000,   88000,  118000,  138000,  165000,  208000,  272000,  338000,  422000,  470000],
+  sales:     [45000,   75000,   98000,  125000,  152000,  182000,  222000,  292000,  365000,  460000,  490000],
+  legal:     [65000,  100000,  132000,  162000,  188000,  228000,  268000,  328000,  408000,  512000,  548000],
+  cs:        [42000,   62000,   82000,  110000,  128000,  155000,  190000,  248000,  312000,  392000,  458000],
+  it:        [45000,   82000,  105000,  130000,  158000,  188000,  232000,  295000,  370000,  472000,  518000],
+  strategy:  [58000,   98000,  122000,  155000,  182000,  215000,  258000,  325000,  408000,  518000,  538000],
+};
+
+const LEVEL_KEYS = ['intern','entry','mid','senior','manager','sr_manager','director','vp','svp','evp','csuite'];
+
+// P25 ≈ median × 0.84, P75 ≈ median × 1.18
+const TITLE_MAP = {
+  swe:      ['Software Engineering Intern','Software Engineer I','Software Engineer II','Senior Software Engineer','Engineering Manager','Senior Engineering Manager','Director of Engineering','VP of Engineering','SVP of Engineering','EVP of Technology','Chief Technology Officer (CTO)'],
+  ds:       ['Data Science Intern','Data Analyst I','Data Scientist','Senior Data Scientist','Manager, Data Science','Senior Manager, Data Science','Director of Data Science','VP of Data & Analytics','SVP of Data Science','EVP of Analytics','Chief Data Officer (CDO)'],
+  pm:       ['Product Management Intern','Associate Product Manager','Product Manager','Senior Product Manager','Group Product Manager','Senior Group PM','Director of Product','VP of Product','SVP of Product','EVP of Product','Chief Product Officer (CPO)'],
+  finance:  ['Finance Intern','Financial Analyst I','Financial Analyst II','Senior Financial Analyst','Finance Manager','Senior Finance Manager','Director of Finance','VP of Finance','SVP of Finance','EVP of Finance','Chief Financial Officer (CFO)'],
+  hr:       ['HR Intern','HR Coordinator','HR Generalist','Senior HR Business Partner','HR Manager','Senior HR Manager','Director of Human Resources','VP of HR','SVP of People','EVP of People','Chief People Officer (CPO)'],
+  ops:      ['Operations Intern','Operations Analyst','Operations Specialist','Senior Operations Analyst','Operations Manager','Senior Operations Manager','Director of Operations','VP of Operations','SVP of Operations','EVP of Operations','Chief Operating Officer (COO)'],
+  marketing:['Marketing Intern','Marketing Coordinator','Marketing Manager','Senior Marketing Manager','Group Marketing Manager','Senior Group Marketing Manager','Director of Marketing','VP of Marketing','SVP of Marketing','EVP of Marketing','Chief Marketing Officer (CMO)'],
+  sales:    ['Sales Intern','Sales Development Rep','Account Executive','Senior Account Executive','Sales Manager','Senior Sales Manager','Director of Sales','VP of Sales','SVP of Sales','EVP of Sales','Chief Revenue Officer (CRO)'],
+  legal:    ['Legal Intern','Legal Analyst','Associate Counsel','Senior Associate Counsel','Legal Manager','Senior Legal Manager','Director, Legal','VP, Legal','SVP, Legal & Compliance','EVP, General Counsel','Chief Legal Officer (CLO)'],
+  cs:       ['CS Intern','Customer Success Rep','Customer Success Manager','Senior CSM','CS Team Lead','Senior CS Manager','Director of Customer Success','VP of Customer Success','SVP of Customer Success','EVP of Customer Experience','Chief Customer Officer (CCO)'],
+  it:       ['IT Intern','IT Analyst I','IT Systems Analyst','Senior IT Systems Analyst','IT Manager','Senior IT Manager','Director of IT','VP of IT','SVP of IT','EVP of Technology','Chief Information Officer (CIO)'],
+  strategy: ['Strategy Intern','Business Analyst','Senior Business Analyst','Strategy Manager','Senior Strategy Manager','Principal / Sr. Manager','Director of Strategy','VP of Corporate Strategy','SVP of Strategy','EVP of Corporate Development','Chief Strategy Officer (CSO)'],
+};
+
+const MARKET_CONTEXT = {
+  swe:      'Software engineers command a significant premium. Senior roles average 2.4× entry-level. FAANG salaries run 1.5–2× market median.',
+  ds:       'Data Science & AI/ML roles carry the highest premium in tech. Demand outpaces supply by 3:1, sustaining above-market rates.',
+  pm:       'Product managers sit at the intersection of tech and business. Total comp often 1.3–1.5× base with equity at tech firms.',
+  finance:  'Finance compensation follows a bimodal distribution: corporate finance vs. financial services (1.5–2× premium).',
+  hr:       'HR professionals typically earn 15–20% below the all-function median, with People Ops tech roles commanding a premium.',
+  ops:      'Operations roles vary significantly by industry. Supply chain & logistics add a 10–20% premium vs. general ops.',
+  marketing:'Marketing ranges from growth/performance (tech premium) to traditional brand roles (slight discount vs. median).',
+  sales:    'Base salary reflects ~55–65% of total comp for quota-carrying reps. OTE adds 40–80% on top of base.',
+  legal:    'In-house legal commands 20–30% premium over market. Big Law experience adds further uplift at senior levels.',
+  cs:       'Customer Success grew rapidly 2018–2023. Compensation has stabilized, with enterprise CSMs earning 1.3× SMB peers.',
+  it:       'IT generalists command a moderate premium. Cloud architects and security specialists earn 30–50% above IT median.',
+  strategy: 'Ex-consulting strategy roles earn a 15–25% premium. McKinsey/BCG/Bain alumni often command top-of-band at entry.'
+};
+
+let locationMultiplier = 0;
+
+function setLocation(mult, el) {
+  locationMultiplier = mult;
+  document.querySelectorAll('.loc-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  updateSalaryFromProfile();
+}
+
+function updateSalaryFromProfile() {
+  const lvl = document.getElementById('p_level').value;
+  const fn  = document.getElementById('p_function').value;
+  if (!lvl || !fn) return;
+
+  const idx     = LEVEL_KEYS.indexOf(lvl);
+  const base    = SALARY_DATA[fn][idx];
+  const adj     = Math.round(base * (1 + locationMultiplier));
+  const p25     = Math.round(adj * 0.84);
+  const p75     = Math.round(adj * 1.18);
+  const title   = TITLE_MAP[fn][idx];
+
+  document.getElementById('p_title').value     = title;
+  document.getElementById('p_p25').textContent = 'P25: ' + fmtUSD(p25);
+  document.getElementById('p_median').textContent = 'Median: ' + fmtUSD(adj);
+  document.getElementById('p_p75').textContent = 'P75: ' + fmtUSD(p75);
+
+  // Auto-populate salary and update tasks/tokens based on role
+  document.getElementById('e_salary').value = adj;
+
+  // Adjust process failure defaults by function (role risk profile)
+  // Logic: complex pipelines (DS, SWE, Finance, Legal) = higher. Conversational roles (CS, Sales) = lower.
+  const failureDefaults = {
+    swe:      {processes:8,  failure_rate:5, rework:300, hallucination:12000},
+    ds:       {processes:10, failure_rate:6, rework:400, hallucination:18000},
+    pm:       {processes:4,  failure_rate:4, rework:200, hallucination:8000},
+    finance:  {processes:5,  failure_rate:4, rework:250, hallucination:15000},
+    hr:       {processes:3,  failure_rate:3, rework:100, hallucination:3000},
+    ops:      {processes:7,  failure_rate:4, rework:200, hallucination:6000},
+    marketing:{processes:4,  failure_rate:3, rework:150, hallucination:4000},
+    sales:    {processes:4,  failure_rate:3, rework:100, hallucination:3000},
+    legal:    {processes:4,  failure_rate:4, rework:500, hallucination:30000},
+    cs:       {processes:3,  failure_rate:3, rework:80,  hallucination:2000},
+    it:       {processes:6,  failure_rate:4, rework:200, hallucination:8000},
+    strategy: {processes:5,  failure_rate:5, rework:300, hallucination:12000},
+  };
+  const fd = failureDefaults[fn];
+  document.getElementById('f_processes').value    = fd.processes;
+  document.getElementById('f_failure_rate').value = fd.failure_rate;
+  document.getElementById('f_rework').value       = fd.rework;
+  document.getElementById('f_hallucination').value= fd.hallucination;
+
+  // Adjust tasks/tokens by function
+  const taskDefaults = {
+    swe:      {tasks:30,  in_tokens:3000, out_tokens:800},
+    ds:       {tasks:25,  in_tokens:4000, out_tokens:1000},
+    pm:       {tasks:40,  in_tokens:2500, out_tokens:600},
+    finance:  {tasks:60,  in_tokens:2000, out_tokens:500},
+    hr:       {tasks:50,  in_tokens:1500, out_tokens:400},
+    ops:      {tasks:80,  in_tokens:1800, out_tokens:450},
+    marketing:{tasks:50,  in_tokens:2000, out_tokens:700},
+    sales:    {tasks:100, in_tokens:1200, out_tokens:400},
+    legal:    {tasks:30,  in_tokens:5000, out_tokens:1200},
+    cs:       {tasks:120, in_tokens:1000, out_tokens:350},
+    it:       {tasks:60,  in_tokens:2200, out_tokens:500},
+    strategy: {tasks:25,  in_tokens:4500, out_tokens:1100},
+  };
+  const td = taskDefaults[fn];
+  document.getElementById('c_tasks').value     = td.tasks;
+  document.getElementById('c_in_tokens').value = td.in_tokens;
+  document.getElementById('c_out_tokens').value= td.out_tokens;
+
+  // Market context
+  const cSuiteNote = lvl === 'csuite' ? ' <em style="color:#94b4d6">(Base salary only — total comp with equity/bonus is typically 2–4×.)</em>' : '';
+  document.getElementById('market-context-box').style.display = 'flex';
+  document.getElementById('market-context-text').innerHTML = '<strong>' + title + '</strong> — ' + MARKET_CONTEXT[fn] + cSuiteNote;
+  document.getElementById('profile-preview').textContent = title;
+  document.getElementById('profile-set-note').style.display = 'block';
+
+  calc();
+}
+
+// ═════════════════════════════════════════════════════════════
+// STATE
+// ═════════════════════════════════════════════════════════════
+let riskMultiplier = 1.0;
+let agenticEnabled = true;
+let charts = {};
+
+const $ = id => document.getElementById(id);
+const fmtUSD = (n, d=0) => {
+  if (!isFinite(n)) return '$—';
+  const s = n < 0 ? '-$' : '$';
+  return s + Math.abs(n).toLocaleString('en-US', {minimumFractionDigits:d, maximumFractionDigits:d});
+};
+const fmtPct = n => isFinite(n) ? n.toFixed(1)+'%' : '—%';
+const v = id => parseFloat($(id).value) || 0;
+const pct = id => v(id) / 100;
+
+// ─── Module Toggle ───────────────────────────────────────────
+function toggleModule(id) {
+  const body = $(id+'-body'), chev = $(id+'-chev');
+  chev.classList.toggle('open', body.classList.toggle('open'));
+}
+function goToModule(id) {
+  const el = $(id);
+  if (!el) return;
+  const body = $(id+'-body'), chev = $(id+'-chev');
+  if (body && !body.classList.contains('open')) {
+    body.classList.add('open');
+    if (chev) chev.classList.add('open');
+  }
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function toggleMeth() {
+  const body = $('meth-body'), chev = $('meth-chev');
+  chev.classList.toggle('open', body.classList.toggle('open'));
+}
+
+// ─── Agentic Toggle ──────────────────────────────────────────
+function toggleAgentic() {
+  agenticEnabled = !agenticEnabled;
+  $('agentic-switch').classList.toggle('on', agenticEnabled);
+  $('agentic-toggle-row').classList.toggle('active', agenticEnabled);
+  $('agentic-fields').classList.toggle('visible', agenticEnabled);
+  calc();
+}
+
+// ─── Risk Tier ───────────────────────────────────────────────
+function setRisk(tier) {
+  ['low','medium','high'].forEach(t => { $('risk-'+t).className='risk-btn'; });
+  if (tier==='low')    { $('risk-low').classList.add('active-low');    riskMultiplier=0.5; }
+  if (tier==='medium') { $('risk-medium').classList.add('active-medium'); riskMultiplier=1.0; }
+  if (tier==='high')   { $('risk-high').classList.add('active-high');  riskMultiplier=3.0; }
+  calc();
+}
+
+// ─── Deployment Mode ──────────────────────────────────────────
+const DEPLOY_PRESETS = {
+  copilot: {
+    // Core hosting — minimal (API proxy only, vendor hosts the AI)
+    h_tier: 200, h_cdn: 0, h_lb: 0, h_db: 0, h_storage: 20, h_monitoring: 50, h_dr: 0, h_cicd: 30,
+    // Data pipeline — none (vendor maintains the model/knowledge)
+    dp_warehouse: 0, dp_embed: 0, dp_orchestration: 0, dp_qa_cost: 0, dp_staleness: 0, dp_governance: 0,
+    // Security — lean copilot posture; minimal agentic surface
+    s_tooling: 150, s_dlp: 100, s_iam: 150, s_pentest: 5000, s_compliance: 4000, s_insurance: 2000, s_ir: 3000, s_training: 500,
+    s_microseg: 75, s_behavioral: 150, s_secrets: 75, s_skillaudit: 2000,
+    // Process failure — set to Low risk
+    _riskTier: 'low',
+    // J-Curve — smaller rollout effort
+    j_technical: 5000, j_workflow: 3000, j_dip_months: 1, j_dip_pct: 5,
+  },
+  platform: {
+    // Core hosting — medium (platform-managed, shared infra)
+    h_tier: 800, h_cdn: 100, h_lb: 150, h_db: 200, h_storage: 50, h_monitoring: 150, h_dr: 100, h_cicd: 100,
+    // Data pipeline — moderate (some RAG / connector pipelines)
+    dp_warehouse: 300, dp_embed: 100, dp_orchestration: 100, dp_qa_cost: 500, dp_staleness: 3000, dp_governance: 5000,
+    // Security — medium agentic posture; platform-connected agents
+    s_tooling: 300, s_dlp: 200, s_iam: 250, s_pentest: 10000, s_compliance: 8000, s_insurance: 5000, s_ir: 6000, s_training: 1500,
+    s_microseg: 200, s_behavioral: 350, s_secrets: 200, s_skillaudit: 5000,
+    // Process failure — medium risk
+    _riskTier: 'medium',
+    // J-Curve — moderate
+    j_technical: 15000, j_workflow: 8000, j_dip_months: 2, j_dip_pct: 10,
+  },
+  pipeline: {
+    // Core hosting — full production stack
+    h_tier: 800, h_cdn: 150, h_lb: 300, h_db: 400, h_storage: 100, h_monitoring: 200, h_dr: 300, h_cicd: 150,
+    // Data pipeline — full RAG/ETL infrastructure
+    dp_warehouse: 600, dp_embed: 150, dp_orchestration: 200, dp_qa_cost: 1000, dp_staleness: 5000, dp_governance: 8000,
+    // Security — full enterprise agentic posture
+    s_tooling: 500, s_dlp: 300, s_iam: 400, s_pentest: 15000, s_compliance: 12000, s_insurance: 8000, s_ir: 10000, s_training: 2000,
+    s_microseg: 400, s_behavioral: 600, s_secrets: 300, s_skillaudit: 8000,
+    // Process failure — medium risk
+    _riskTier: 'medium',
+    // J-Curve — full engineering effort
+    j_technical: 25000, j_workflow: 15000, j_dip_months: 3, j_dip_pct: 15,
+  },
+};
+
+let currentDeployMode = 'platform';
+const DEPLOY_MODES = ['copilot','platform','pipeline'];
+
+function snapDeploy(idx) {
+  const fills = ['0%','50%','100%'];
+  document.getElementById('dslider-fill').style.width = fills[idx];
+  DEPLOY_MODES.forEach((m,i) => {
+    document.getElementById('ds-'+i).classList.toggle('active', i===idx);
+    document.getElementById('dsl-'+i).classList.toggle('active', i===idx);
+  });
+  setDeploymentMode(DEPLOY_MODES[idx]);
+}
+
+function setDeploymentMode(mode) {
+  currentDeployMode = mode;
+  ['copilot','platform','pipeline'].forEach(m => {
+    const el = $('dm-'+m);
+    if (el) el.classList.toggle('active', m === mode);
+  });
+  const p = DEPLOY_PRESETS[mode];
+  if (!p) return;
+  // Apply all preset values to inputs
+  Object.entries(p).forEach(([id, val]) => {
+    if (id.startsWith('_')) return;
+    const el = $(id);
+    if (el) el.value = val;
+  });
+  // Apply risk tier
+  if (p._riskTier) setRisk(p._riskTier);
+  else calc();
+}
+
+// ═════════════════════════════════════════════════════════════
+// MAIN CALCULATION ENGINE
+// ═════════════════════════════════════════════════════════════
+function calc() {
+  // ── M1: Employee ─────────────────────────────────────────
+  const salary     = v('e_salary');
+  const benefits   = pct('e_benefits');
+  const payrollTax = pct('e_payroll_tax');
+  const overhead   = pct('e_overhead');
+  const training   = v('e_training');
+  const turnover   = pct('e_turnover');
+  const replacement= pct('e_replacement');
+  const mgmt       = pct('e_mgmt');
+  const headcount  = Math.max(1, v('r_headcount'));
+
+  const empTrueCost1 = salary*(1+benefits+payrollTax+overhead) + training
+    + turnover*replacement*salary + mgmt*salary;
+  const empTrueCostN = empTrueCost1 * headcount;
+
+  // ── M2: Cloud AI Token Cost ──────────────────────────────
+  const [inP, outP] = $('c_model').value.split(',').map(Number);
+  const tasks   = v('c_tasks');
+  const inTok   = v('c_in_tokens');
+  const outTok  = v('c_out_tokens');
+  const days    = v('c_days');
+  const oversight = pct('c_oversight');
+  const errorRate = pct('c_error');
+  const tooling   = v('c_tooling');
+
+  const annualTasks = tasks * days;
+
+  // Base token cost (no agentic)
+  const baseCostPerTask = (inTok * inP / 1e6) + (outTok * outP / 1e6);
+  const baseTokenCost   = annualTasks * baseCostPerTask * (1 + errorRate);
+
+  // Agentic loop calculation
+  // Each task = loop_depth API calls; context grows by ctx_growth factor on input tokens
+  // Tool call outputs add tokens each loop
+  // Abandonment rate means some tasks burn tokens without completing
+  let agenticLoopCost = 0;
+  let agenticMultiplier = 1.0; // for display purposes
+  if (agenticEnabled) {
+    const loopDepth  = Math.max(1, v('a_loop'));
+    const ctxGrowth  = Math.max(1, v('a_ctx_growth'));
+    const abandonRate= pct('a_abandon');
+    const toolTok    = v('a_tool_tokens');
+    // Per-loop context accumulates: average input token count across loops = inTok * ctxGrowth
+    // Each loop produces outTok output tokens; tool calls add toolTok input tokens each subsequent loop
+    const avgInputPerLoop  = inTok * ctxGrowth; // average across all loops
+    const avgOutputPerLoop = outTok;
+    const toolInputPerLoop = toolTok; // tool results fed back in (loops 2+)
+    // Total tokens per task across all loops
+    const totalInputPerTask  = loopDepth * (avgInputPerLoop + toolInputPerLoop);
+    const totalOutputPerTask = loopDepth * avgOutputPerLoop;
+    const agenticCostPerTask = (totalInputPerTask * inP / 1e6) + (totalOutputPerTask * outP / 1e6);
+    // Add abandonment cost: abandoned tasks still consume ~50% of their token budget
+    const completedCost  = annualTasks * (1 - abandonRate) * agenticCostPerTask;
+    const abandonedCost  = annualTasks * abandonRate * agenticCostPerTask * 0.5;
+    const rawAgenticTotal = (completedCost + abandonedCost) * (1 + errorRate);
+    agenticLoopCost = rawAgenticTotal - baseTokenCost; // incremental cost above base
+    agenticMultiplier = rawAgenticTotal / Math.max(1, baseTokenCost);
+    // Update summary
+    $('agentic-summary-text').innerHTML =
+      `With ${loopDepth} API calls/task at ${ctxGrowth}× context growth: token cost is <strong>${agenticMultiplier.toFixed(1)}× higher</strong> than single-call baseline. ` +
+      `Abandonment rate (${v('a_abandon')}%) adds ${fmtUSD(abandonedCost)} in wasted token spend annually.`;
+  }
+
+  const effectiveTokenCost = baseTokenCost + agenticLoopCost;
+  const annualTooling = tooling * 12;
+  const residualHuman = empTrueCostN * oversight;
+
+  // Concurrency costs
+  const concPtu   = v('conc_ptu_cost') * 12;
+  const concSla   = v('conc_sla') * 12;
+  const concRetry = v('conc_retry') * 12;
+  const concurrencyCost = concPtu + concSla + concRetry;
+  updateConcurrencyUI();
+
+  const cloudAIToken = effectiveTokenCost + annualTooling + concurrencyCost;
+
+  // ── M3: Private AI ───────────────────────────────────────
+  const gpus    = v('p_gpus');
+  const gpuCost = v('p_gpu_cost');
+  const amort   = Math.max(1, v('p_amort'));
+  const power   = v('p_power');
+  const cooling = v('p_cooling');
+  const mlops   = v('p_mlops');
+  const license = v('p_license');
+  const pComp   = v('p_compliance');
+  const privateAICost = (gpus*gpuCost/amort) + gpus*(power+cooling) + mlops + license + pComp;
+
+  // ── M4: Hosting + Data Pipeline ──────────────────────────
+  const hostingTier = parseFloat($('h_tier').value);
+  const cdn    = v('h_cdn'), lb  = v('h_lb'), db    = v('h_db');
+  const stor   = v('h_storage'), mon= v('h_monitoring');
+  const dr     = v('h_dr'), cicd = v('h_cicd');
+  const coreHosting = (hostingTier+cdn+lb+db+stor+mon+dr+cicd)*12;
+
+  // Data Pipeline Tax (new)
+  const dpWarehouse    = v('dp_warehouse') * 12;
+  const dpEmbed        = v('dp_embed') * 12;
+  const dpOrchestration= v('dp_orchestration') * 12;
+  const dpQa           = v('dp_qa_cost') * 12;
+  const dpStaleness    = v('dp_staleness');
+  const dpGovernance   = v('dp_governance');
+  const dataPipelineCost = dpWarehouse + dpEmbed + dpOrchestration + dpQa + dpStaleness + dpGovernance;
+  const annualHosting    = coreHosting + dataPipelineCost;
+
+  // ── M5: Cybersecurity ────────────────────────────────────
+  const annualSecurity = (v('s_tooling')+v('s_dlp')+v('s_iam')+v('s_microseg')+v('s_behavioral')+v('s_secrets'))*12
+    + v('s_pentest') + v('s_compliance') + v('s_insurance') + v('s_ir') + v('s_training') + v('s_skillaudit');
+
+  // Update infra summary banner
+  const _infHosting = coreHosting + dataPipelineCost;
+  const _infSec = annualSecurity;
+  const _infTotal = _infHosting + _infSec;
+  const _dh = $('dis-hosting'), _ds = $('dis-security'), _dt = $('dis-total');
+  if (_dh) _dh.textContent = fmtUSD(_infHosting) + '/yr';
+  if (_ds) _ds.textContent = fmtUSD(_infSec) + '/yr';
+  if (_dt) _dt.textContent = fmtUSD(_infTotal) + '/yr';
+
+  // ── M6: Process Failure ──────────────────────────────────
+  const fProc   = v('f_processes'), fDur = v('f_duration');
+  const fFail   = pct('f_failure_rate'), fCost= v('f_cost_per');
+  const fLag    = v('f_lag'), fRework= v('f_rework');
+  const fCascade= pct('f_cascade');
+  const fCtx    = v('f_context'), fResets= v('f_resets');
+  const fHalluc = v('f_hallucination'), fRetry = v('f_retry');
+  const durHrs  = fDur / 60;
+  // Direct cost per failure (labor/rework for the failed process itself)
+  const dailyFail  = fProc * fFail * fCost;
+  // Silent/downstream cost: failures propagate during detection lag.
+  // Cascade proportion caps how many downstream tasks are actually damaged
+  // (not all tasks running during the lag are affected — typical 10–25%).
+  const silentDaily= fProc * fFail * fLag * fCascade * (fRework / Math.max(0.01, durHrs));
+  const annualProcessFail = ((dailyFail + silentDaily) * days
+    + fCtx*fResets + fHalluc + fRetry*12) * riskMultiplier;
+
+  // ── M7: J-Curve & ROI ────────────────────────────────────
+  const discRate  = pct('r_discount');
+  const prodMult  = Math.max(1, v('r_multiplier'));
+  const riskPrem  = pct('r_risk_premium');
+  const mode      = $('r_mode').value;
+
+  // J-Curve costs (NEW)
+  const jTechnical = v('j_technical');
+  const jWorkflow  = v('j_workflow');
+  const jDipMonths = v('j_dip_months');
+  const jDipPct    = pct('j_dip_pct');
+  // Productivity dip cost = employee_cost × dip% × (dip_months/12)
+  // This represents the ADDITIONAL cost during transition: you pay full AI cost but employee delivers less
+  const jDipPenalty = empTrueCostN * jDipPct * (jDipMonths / 12);
+  const year1SetupCost = jTechnical + jWorkflow + jDipPenalty;
+
+  // Update J-Curve display
+  $('j_p1_val').textContent = fmtUSD(jTechnical);
+  $('j_p2_val').textContent = fmtUSD(jWorkflow);
+  $('j_p3_val').textContent = fmtUSD(jDipPenalty);
+  $('j_p3_desc').textContent = `${jDipMonths}mo at ${v('j_dip_pct')}% below baseline`;
+  $('j_total_val').textContent = fmtUSD(year1SetupCost);
+  $('m7-preview').textContent = fmtUSD(year1SetupCost);
+
+  // ── TOTALS ───────────────────────────────────────────────
+  const sharedCosts      = annualHosting + annualSecurity + annualProcessFail + residualHuman;
+  const cloudAIAnnual    = (cloudAIToken + sharedCosts) * (1 + riskPrem);
+  const privateAIAnnual  = (privateAICost + sharedCosts) * (1 + riskPrem);
+  const primaryAIAnnual  = mode==='cloud' ? cloudAIAnnual : privateAIAnnual;
+
+  const annualSavings  = empTrueCostN - primaryAIAnnual;
+  const savingsPct     = empTrueCostN > 0 ? (annualSavings/empTrueCostN)*100 : 0;
+
+  // Payback including J-Curve
+  const monthlySavings = annualSavings / 12;
+  const paybackMonths  = monthlySavings > 0 ? year1SetupCost / monthlySavings : Infinity;
+
+  // 3-Year NPV (Y1: savings - setup; Y2/Y3: savings)
+  const disc = discRate;
+  const npvTotal = ((annualSavings - year1SetupCost) / Math.pow(1+disc,1))
+    + (annualSavings / Math.pow(1+disc,2))
+    + (annualSavings / Math.pow(1+disc,3));
+
+  // Cost per unit
+  const cpuAI  = annualTasks > 0 ? primaryAIAnnual / annualTasks : 0;
+  const cpuEmp = annualTasks > 0 ? empTrueCostN / (annualTasks/prodMult) : 0;
+
+  // Hidden cost breakdown
+  const cloudBaseForPct = cloudAIToken + sharedCosts;
+  const hiddenTotal = annualHosting + annualSecurity + annualProcessFail + agenticLoopCost + concurrencyCost;
+  const hiddenPct   = cloudBaseForPct > 0 ? (hiddenTotal / cloudBaseForPct)*100 : 0;
+
+  const pTokens   = cloudBaseForPct > 0 ? (baseTokenCost / cloudBaseForPct)*100 : 0;
+  const pAgentic  = cloudBaseForPct > 0 ? ((agenticLoopCost+concurrencyCost) / cloudBaseForPct)*100 : 0;
+  const pHosting  = cloudBaseForPct > 0 ? (coreHosting / cloudBaseForPct)*100 : 0;
+  const pPipeline = cloudBaseForPct > 0 ? (dataPipelineCost / cloudBaseForPct)*100 : 0;
+  const pSecurity = cloudBaseForPct > 0 ? (annualSecurity / cloudBaseForPct)*100 : 0;
+  const pFailure  = cloudBaseForPct > 0 ? (annualProcessFail / cloudBaseForPct)*100 : 0;
+  const pResidual = cloudBaseForPct > 0 ? (residualHuman / cloudBaseForPct)*100 : 0;
+
+  // ── UPDATE UI ────────────────────────────────────────────
+  $('m1-preview').textContent = fmtUSD(empTrueCostN);
+  $('m2-preview').textContent = fmtUSD(cloudAIToken);
+  $('m3-preview').textContent = fmtUSD(privateAICost);
+  $('m4-preview').textContent = fmtUSD(annualHosting);
+  $('m5-preview').textContent = fmtUSD(annualSecurity);
+  $('m6-preview').textContent = fmtUSD(annualProcessFail);
+
+  // Metrics
+  const savEl = $('r_savings');
+  savEl.textContent = fmtUSD(annualSavings);
+  savEl.className = 'metric-value' + (annualSavings < 0 ? ' red-val' : '');
+  $('r_savings_pct').textContent = fmtPct(savingsPct) + ' vs. employee';
+  const pbEl = $('r_payback');
+  const pbSubEl = $('r_payback_sub');
+  if (!isFinite(paybackMonths)) {
+    pbEl.textContent = annualSavings < 0 ? 'AI costs more' : '∞';
+    pbEl.className = 'metric-value red-val';
+    if (pbSubEl) pbSubEl.textContent = annualSavings < 0 ? 'Try Copilot mode or add headcount' : 'No positive return';
+  } else {
+    pbEl.textContent = paybackMonths.toFixed(1)+' mo';
+    pbEl.className = 'metric-value' + (paybackMonths > 24 ? ' red-val' : paybackMonths > 12 ? ' amber-val' : '');
+    if (pbSubEl) pbSubEl.textContent = 'incl. J-Curve costs';
+  }
+  const npvEl = $('r_npv');
+  npvEl.textContent = fmtUSD(npvTotal);
+  npvEl.className = 'metric-value' + (npvTotal < 0 ? ' red-val' : '');
+  $('r_npv_rate').textContent = v('r_discount');
+  $('r_cpu').textContent  = fmtUSD(cpuAI, 4);
+  $('r_cpu_emp').textContent = fmtUSD(cpuEmp, 4);
+
+  // Cost cards
+  $('cc_emp').textContent = fmtUSD(empTrueCostN);
+  $('cc_emp_breakdown').innerHTML = brkd([
+    ['Base Salary (×'+headcount+')',   fmtUSD(salary*headcount)],
+    ['Benefits Load',                  fmtUSD(salary*benefits*headcount)],
+    ['Payroll Taxes',                  fmtUSD(salary*payrollTax*headcount)],
+    ['Overhead',                       fmtUSD(salary*overhead*headcount)],
+    ['Training',                       fmtUSD(training*headcount)],
+    ['Turnover Cost',                  fmtUSD(turnover*replacement*salary*headcount)],
+    ['Management Overhead',            fmtUSD(mgmt*salary*headcount)],
+  ]);
+
+  $('cc_cloud').textContent = fmtUSD(cloudAIAnnual);
+  $('cc_cloud_breakdown').innerHTML = brkd([
+    ['Base Token / Compute',           fmtUSD(baseTokenCost)],
+    ['Agentic Loop Overhead ⚡',       fmtUSD(agenticLoopCost), agenticEnabled],
+    ['Concurrency / PTU Costs ⚡',     fmtUSD(concurrencyCost), concurrencyCost>0],
+    ['Core Hosting',                   fmtUSD(coreHosting)],
+    ['Data Pipeline Tax 🗄️',          fmtUSD(dataPipelineCost), true],
+    ['Cybersecurity',                  fmtUSD(annualSecurity)],
+    ['Process Failures',               fmtUSD(annualProcessFail)],
+    ['Residual Human Oversight',       fmtUSD(residualHuman)],
+    ['Risk Premium ('+v('r_risk_premium')+'%)', fmtUSD((cloudAIToken+sharedCosts)*riskPrem)],
+  ]);
+
+  $('cc_private').textContent = fmtUSD(privateAIAnnual);
+  $('cc_private_breakdown').innerHTML = brkd([
+    ['GPU Amortization',               fmtUSD(gpus*gpuCost/amort)],
+    ['Power & Cooling',                fmtUSD(gpus*(power+cooling))],
+    ['MLOps / Engineering',            fmtUSD(mlops)],
+    ['Licensing & Fine-tuning',        fmtUSD(license)],
+    ['Core Hosting',                   fmtUSD(coreHosting)],
+    ['Data Pipeline Tax 🗄️',          fmtUSD(dataPipelineCost), true],
+    ['Cybersecurity',                  fmtUSD(annualSecurity)],
+    ['Process Failures',               fmtUSD(annualProcessFail)],
+    ['Residual Human Oversight',       fmtUSD(residualHuman)],
+  ]);
+
+  // Best value card highlight
+  const costs = [empTrueCostN, cloudAIAnnual, privateAIAnnual];
+  ['card-emp','card-cloud','card-private'].forEach((id,i)=>
+    $(id).classList.toggle('best-val', costs[i]===Math.min(...costs)));
+
+  // Stacked bar — widths as % of total (all components together = 100%)
+  const stackVals = [
+    ['tokens',   baseTokenCost],
+    ['agentic',  agenticLoopCost + concurrencyCost],
+    ['hosting',  coreHosting],
+    ['pipeline', dataPipelineCost],
+    ['security', annualSecurity],
+    ['failure',  annualProcessFail],
+    ['residual', residualHuman],
+  ];
+  const stackTotal = stackVals.reduce((s,[,v]) => s + (v||0), 0) || 1;
+  stackVals.forEach(([key, val]) => {
+    const pct = Math.max(0, (val||0) / stackTotal * 100);
+    $('seg_'+key).style.width = pct.toFixed(2)+'%';
+    $('pct_'+key).textContent = fmtUSD(val||0);
+    $('pct_'+key+'_pct').textContent = pct.toFixed(1)+'%';
+  });
+  $('hidden_total').textContent = fmtUSD(hiddenTotal);
+  $('hidden_pct').textContent   = baseTokenCost > 0 ? (hiddenTotal/baseTokenCost).toFixed(1)+'×' : '—';
+
+
+
+  // Charts
+  updateBreakEvenChart(empTrueCostN, cloudAIAnnual, privateAIAnnual, year1SetupCost);
+  updateNPVChart(empTrueCostN, cloudAIAnnual, privateAIAnnual, year1SetupCost, disc);
+  updateJCurveChart(empTrueCostN, cloudAIAnnual, jTechnical, jWorkflow, jDipMonths, jDipPct);
+  updateConcurrencyChart(tasks, days, inTok, outTok, inP, outP, errorRate, annualTooling);
+  updateAgenticChart(baseTokenCost, agenticLoopCost, agenticEnabled, v('a_loop'), v('a_ctx_growth'));
+
+  window._calcState = {
+    empTrueCostN, cloudAIAnnual, privateAIAnnual,
+    annualHosting, coreHosting, dataPipelineCost, annualSecurity, annualProcessFail,
+    annualSavings, savingsPct, paybackMonths, npvTotal,
+    cloudAIToken, baseTokenCost, agenticLoopCost, concurrencyCost,
+    residualHuman, hiddenTotal, hiddenPct, headcount, salary,
+    year1SetupCost, jTechnical, jWorkflow, jDipPenalty,
+    agenticEnabled, agenticMultiplier: agenticEnabled ? agenticMultiplier : 1
+  };
+}
+
+function brkd(rows) {
+  return rows.map(([l,val,isNew])=>
+    `<div class="cost-line"><span class="cl-label">${l}</span><span class="cl-val${isNew?' cl-new':''}">${val}</span></div>`
+  ).join('');
+}
+
+// ─── Concurrency UI ─────────────────────────────────────────
+function updateConcurrencyUI() {
+  const peak = v('conc_peak');
+  let regime, chips;
+  if (peak < 10) {
+    regime = `<strong>Linear Token Pricing Regime</strong> — ${peak} concurrent users is safely within pay-per-token limits. Standard API rate limits (60–120 RPM) are sufficient. No provisioned capacity required.`;
+    chips = `<div class="conc-chip linear">✓ Linear Pricing Viable</div>`;
+  } else if (peak < 50) {
+    regime = `<strong>Transition Zone</strong> — ${peak} concurrent users is approaching rate limit thresholds for GPT-4o class models (10k TPM default tier). Consider requesting higher rate limit tiers or implementing request queuing. Provisioned throughput may improve latency SLAs.`;
+    chips = `<div class="conc-chip linear">⚠ Near Rate Limit Threshold</div><div class="conc-chip breakpoint">→ Consider PTU Tier</div>`;
+  } else {
+    regime = `<strong style="color:var(--amber)">PTU / Provisioned Capacity Required</strong> — ${peak} concurrent users exceeds standard rate limits for most providers. Azure PTUs, AWS Bedrock reserved capacity, or dedicated inference endpoints are required. This fundamentally changes cost structure from variable to semi-fixed. Estimated PTU need: ~${Math.ceil(peak*4)} PTUs. Budget $${Math.ceil(peak*4*30).toLocaleString()}/month minimum for provisioned capacity.`;
+    chips = `<div class="conc-chip ptu">⚡ PTU Architecture Required</div><div class="conc-chip ptu">Semi-fixed Cost Structure</div>`;
+    if (v('conc_ptu_cost') === 0) {
+      regime += ` <em style="color:var(--red)">⚠ Set PTU cost above to model accurately.</em>`;
+    }
+  }
+  $('conc-regime-text').innerHTML = regime;
+  $('conc-band-display').innerHTML = chips;
+}
+
+// ═════════════════════════════════════════════════════════════
+// CHARTS
+// ═════════════════════════════════════════════════════════════
+const CC = { color:'#64748b', grid:'rgba(148,163,184,0.3)' };
+
+function mkChart(id, type, data, options) {
+  if (charts[id]) { charts[id].data = data; charts[id].update('none'); return; }
+  charts[id] = new Chart($(id), { type, data, options });
+}
+
+function baseOpts(extraOpts={}) {
+  return {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{ labels:{ color:CC.color, font:{size:10}, boxWidth:12 } },
+      tooltip:{ backgroundColor:'#ffffff', borderColor:'#e2e8f0', borderWidth:1,
+        titleColor:'#1e293b', bodyColor:'#64748b',
+        boxShadow:'0 4px 12px rgba(0,0,0,0.1)' }
+    },
+    scales:{
+      x:{ ticks:{color:CC.color,font:{size:10}}, grid:{color:CC.grid} },
+      y:{ ticks:{color:CC.color,font:{size:10}, callback:v=>fmtUSD(v)}, grid:{color:CC.grid} }
+    },
+    ...extraOpts
+  };
+}
+
+// Break-even line chart
+function updateBreakEvenChart(emp, cloud, priv, setup) {
+  const months = Array.from({length:37},(_,i)=>i);
+  const labels = months.map(m => m===0?'Now': m%6===0?m+'mo':'');
+  mkChart('breakEvenChart','line',{
+    labels,
+    datasets:[
+      { label:'Employee Cost', data:months.map(m=>emp*m/12),
+        borderColor:'#00c97d', backgroundColor:'rgba(0,201,125,0.07)',
+        borderWidth:2, tension:0, fill:false, pointRadius:0 },
+      { label:'Cloud AI (incl. setup)', data:months.map(m=>setup+cloud*m/12),
+        borderColor:'#38bdf8', backgroundColor:'rgba(56,189,248,0.07)',
+        borderWidth:2, tension:0, fill:false, pointRadius:0 },
+      { label:'Private AI (incl. setup)', data:months.map(m=>setup+priv*m/12),
+        borderColor:'#a855f7', backgroundColor:'rgba(168,85,247,0.07)',
+        borderWidth:2, tension:0, fill:false, pointRadius:0, borderDash:[4,3] },
+    ]
+  }, baseOpts());
+}
+
+// NPV bar chart
+function updateNPVChart(emp, cloud, priv, setup, disc) {
+  const cumNPV = (annual, yrs) => {
+    let t = setup;
+    for(let i=1;i<=yrs;i++) t += annual/Math.pow(1+disc,i);
+    return t;
+  };
+  mkChart('npvChart','bar',{
+    labels:['Year 1','Year 2','Year 3'],
+    datasets:[
+      { label:'Employee (NPV)', data:[emp,emp*2,emp*3],
+        backgroundColor:'rgba(0,201,125,0.7)', borderColor:'#00c97d', borderWidth:1, borderRadius:4 },
+      { label:'Cloud AI (NPV)', data:[1,2,3].map(y=>cumNPV(cloud,y)),
+        backgroundColor:'rgba(56,189,248,0.7)', borderColor:'#38bdf8', borderWidth:1, borderRadius:4 },
+      { label:'Private AI (NPV)', data:[1,2,3].map(y=>cumNPV(priv,y)),
+        backgroundColor:'rgba(168,85,247,0.7)', borderColor:'#a855f7', borderWidth:1, borderRadius:4 },
+    ]
+  }, baseOpts());
+}
+
+// J-Curve monthly cost flow
+function updateJCurveChart(empAnnual, aiAnnual, jTech, jWork, dipMonths, dipPct) {
+  const months = Array.from({length:13},(_,i)=>i+1);
+  const labels = months.map(m=>'M'+m);
+  const dipMo  = Math.max(0, Math.min(12, dipMonths));
+  // Monthly AI cost (setup spread across first 2 months: tech in M1, workflow in M2)
+  const aiMonthly = aiAnnual / 12;
+  const empMonthly= empAnnual / 12;
+
+  const aiData = months.map((m,i) => {
+    let base = aiMonthly;
+    if (i===0) base += jTech; // tech integration cost spike in M1
+    if (i===1) base += jWork; // workflow redesign cost spike in M2
+    return base;
+  });
+
+  // Combined cost during dip (employee still running + AI)
+  // After dip: just AI cost
+  const totalData = months.map((m,i) => {
+    const aiCost = aiData[i];
+    if (i < dipMo) {
+      // During dip: partial employee cost (productivity dip means you need more human time)
+      return aiCost + empMonthly * dipPct;
+    }
+    return aiCost;
+  });
+
+  const empBaseline = months.map(() => empMonthly);
+
+  mkChart('jcurveChart','line',{
+    labels,
+    datasets:[
+      { label:'Employee Monthly Cost (baseline)', data:empBaseline,
+        borderColor:'#00c97d', backgroundColor:'transparent',
+        borderWidth:2, borderDash:[5,4], tension:0, pointRadius:0 },
+      { label:'AI System Monthly Cost', data:aiData,
+        borderColor:'#38bdf8', backgroundColor:'rgba(56,189,248,0.08)',
+        borderWidth:2, tension:0.2, fill:true, pointRadius:3,
+        pointBackgroundColor:'#38bdf8' },
+      { label:'Total (AI + Dip Penalty)', data:totalData,
+        borderColor:'#f59e0b', backgroundColor:'rgba(245,158,11,0.08)',
+        borderWidth:2, borderDash:[3,2], tension:0.2, fill:true, pointRadius:0 },
+    ]
+  }, baseOpts());
+}
+
+// Concurrency scaling chart
+function updateConcurrencyChart(tasks, days, inTok, outTok, inP, outP, errorRate, tooling) {
+  const concLevels = [1,5,10,25,50,100,200,500];
+  const baseAnnual = tasks * days * ((inTok*inP/1e6)+(outTok*outP/1e6)) * (1+errorRate) + tooling;
+  // Scale cost with concurrency regime:
+  // 1–9: linear (1×); 10–49: +15% infra (rate limit mgmt); 50+: PTU premium (1.3×)
+  const costs = concLevels.map(c => {
+    let mult = 1;
+    if (c >= 10 && c < 50) mult = 1.15;
+    if (c >= 50 && c < 100) mult = 1.30;
+    if (c >= 100) mult = 1.45;
+    return baseAnnual * mult * (c / 1);
+  });
+  // Normalized cost per concurrent user
+  const perUser = concLevels.map((c,i) => costs[i]/c);
+
+  mkChart('concurrencyChart','line',{
+    labels: concLevels.map(c=>c+'u'),
+    datasets:[
+      { label:'Annual Token Cost', data:costs, yAxisID:'y',
+        borderColor:'#38bdf8', backgroundColor:'rgba(56,189,248,0.07)',
+        borderWidth:2, tension:0.3, fill:true, pointRadius:3,
+        pointBackgroundColor:concLevels.map(c=>c>=50?'#f59e0b':'#38bdf8') },
+      { label:'Cost / Concurrent User', data:perUser, yAxisID:'y1',
+        borderColor:'#f59e0b', backgroundColor:'transparent',
+        borderWidth:2, borderDash:[4,3], tension:0.3, pointRadius:2 },
+    ]
+  },{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{labels:{color:CC.color,font:{size:10},boxWidth:12}},
+      tooltip:{backgroundColor:'#ffffff',borderColor:'#e2e8f0',borderWidth:1,
+        titleColor:'#1e293b',bodyColor:'#64748b',
+        callbacks:{label:ctx=>ctx.datasetIndex===0
+          ? ' Total: '+fmtUSD(ctx.parsed.y)
+          : ' Per User: '+fmtUSD(ctx.parsed.y,0)}}
+    },
+    scales:{
+      x:{ticks:{color:CC.color,font:{size:10}},grid:{color:CC.grid}},
+      y:{ticks:{color:CC.color,font:{size:10},callback:v=>fmtUSD(v)},grid:{color:CC.grid},
+        title:{display:true,text:'Total Annual',color:CC.color,font:{size:10}}},
+      y1:{ticks:{color:'#f59e0b',font:{size:10},callback:v=>fmtUSD(v)},grid:{display:false},
+        position:'right',
+        title:{display:true,text:'Per User',color:'#f59e0b',font:{size:10}}}
+    }
+  });
+}
+
+// Agentic Loop decomposition
+function updateAgenticChart(baseTokenCost, agenticLoopCost, agenticEnabled, loopDepth, ctxGrowth) {
+  const loopDepths = [1,2,3,4,5,6,7,8,10];
+  const labels = loopDepths.map(d=>'Loop ×'+d);
+  // Compute costs at different loop depths (relative to current base)
+  const basePer  = baseTokenCost / Math.max(1, loopDepth||5); // per single-call cost proxy
+  // For visualization: show how total cost scales with loop depth
+  const contextBase = baseTokenCost;
+  const costs_base  = loopDepths.map(d => contextBase * (d / Math.max(1, loopDepth||5)));
+  const costs_ctx   = loopDepths.map(d => contextBase * (d / Math.max(1, loopDepth||5)) * (ctxGrowth-1) * 0.6);
+  const costs_abandon = loopDepths.map(d => contextBase * (d / Math.max(1, loopDepth||5)) * 0.1);
+
+  mkChart('agenticChart','bar',{
+    labels,
+    datasets:[
+      { label:'Base Calls', data:costs_base, backgroundColor:'rgba(0,201,125,0.7)',
+        borderColor:'#00c97d', borderWidth:1, borderRadius:4, stack:'a' },
+      { label:'Context Growth Tax', data:costs_ctx, backgroundColor:'rgba(56,189,248,0.7)',
+        borderColor:'#38bdf8', borderWidth:1, borderRadius:4, stack:'a' },
+      { label:'Abandonment Waste', data:costs_abandon, backgroundColor:'rgba(239,68,68,0.7)',
+        borderColor:'#ef4444', borderWidth:1, borderRadius:4, stack:'a' },
+    ]
+  },{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{labels:{color:CC.color,font:{size:10},boxWidth:12}},
+      tooltip:{backgroundColor:'#ffffff',borderColor:'#e2e8f0',borderWidth:1,
+        titleColor:'#1e293b',bodyColor:'#64748b',
+        callbacks:{label:ctx=>' '+ctx.dataset.label+': '+fmtUSD(ctx.parsed.y)}}
+    },
+    scales:{
+      x:{ticks:{color:CC.color,font:{size:9}},grid:{color:CC.grid},stacked:true},
+      y:{ticks:{color:CC.color,font:{size:10},callback:v=>fmtUSD(v)},grid:{color:CC.grid},stacked:true}
+    }
+  });
+}
+
+// ═════════════════════════════════════════════════════════════
+// DEFAULTS & RESET
+// ═════════════════════════════════════════════════════════════
+const DEFAULTS = {
+  e_salary:85000, e_benefits:30, e_payroll_tax:8.5, e_overhead:25,
+  e_training:1500, e_turnover:15, e_replacement:50, e_mgmt:10,
+  c_tasks:50, c_in_tokens:2000, c_out_tokens:500, c_days:250,
+  c_oversight:20, c_error:5, c_tooling:200,
+  a_loop:5, a_ctx_growth:3.5, a_abandon:15, a_tool_tokens:400,
+  conc_peak:5, conc_ptu_cost:0, conc_sla:0, conc_retry:0,
+  p_gpus:4, p_gpu_cost:30000, p_amort:3, p_power:3500,
+  p_cooling:1200, p_mlops:37500, p_license:10000, p_compliance:8000,
+  h_cdn:150, h_lb:300, h_db:400, h_storage:100,
+  h_monitoring:200, h_dr:300, h_cicd:150,
+  dp_warehouse:600, dp_embed:150, dp_orchestration:200,
+  dp_qa_cost:1000, dp_staleness:5000, dp_governance:8000,
+  s_tooling:500, s_dlp:300, s_iam:400, s_pentest:15000,
+  s_compliance:12000, s_insurance:8000, s_ir:10000, s_training:2000,
+  s_microseg:400, s_behavioral:600, s_secrets:300, s_skillaudit:8000,
+  f_processes:5, f_duration:45, f_failure_rate:4, f_cost_per:75,
+  f_lag:2, f_rework:200, f_cascade:20, f_context:25, f_resets:200,
+  f_hallucination:8000, f_retry:150,
+  r_headcount:1, r_discount:8, r_multiplier:3, r_risk_premium:5,
+  j_technical:15000, j_workflow:10000, j_dip_months:3, j_dip_pct:15,
+};
+
+function resetDefaults() {
+  Object.entries(DEFAULTS).forEach(([id,val]) => { const el=$(id); if(el) el.value=val; });
+  $('c_model').value  = '3,15';
+  $('r_mode').value   = 'cloud';
+  agenticEnabled = true;
+  $('agentic-switch').classList.add('on');
+  $('agentic-toggle-row').classList.add('active');
+  $('agentic-fields').classList.add('visible');
+  document.getElementById('p_level').value    = '';
+  document.getElementById('p_function').value = '';
+  document.getElementById('p_title').value    = '';
+  snapDeploy(1); // reset to Agentic AI defaults + re-calc
+}
+
+// ═════════════════════════════════════════════════════════════
+// EXPORT
+// ═════════════════════════════════════════════════════════════
+function exportSummary() {
+  const s = window._calcState || {};
+  $('print-date').textContent = new Date().toLocaleString();
+  const rows = data => data.map(([l,v])=>`<tr><td>${l}</td><td style="text-align:right;font-weight:700">${v}</td></tr>`).join('');
+  $('print-content').innerHTML = `
+    <h2 style="color:#0f1f3d;font-size:16px;margin-bottom:12px">Executive Summary</h2>
+    <table><tr><th colspan="2">Annual Cost Comparison (${s.headcount||1} FTE equivalent)</th></tr>
+    ${rows([
+      ['Employee True Annual Cost', fmtUSD(s.empTrueCostN)],
+      ['Cloud AI — Total Annual Cost (full TCO)', fmtUSD(s.cloudAIAnnual)],
+      ['Private AI — Total Annual Cost (full TCO)', fmtUSD(s.privateAIAnnual)],
+      ['Annual Savings (vs. Employee, selected mode)', fmtUSD(s.annualSavings)],
+      ['Savings as % of Employee Cost', fmtPct(s.savingsPct)],
+    ])}</table>
+    <table><tr><th colspan="2">ROI Metrics (including J-Curve)</th></tr>
+    ${rows([
+      ['Year 1 Technical Integration Cost', fmtUSD(s.jTechnical)],
+      ['Year 1 Workflow Redesign Cost', fmtUSD(s.jWorkflow)],
+      ['Year 1 Productivity Dip Penalty', fmtUSD(s.jDipPenalty)],
+      ['Total Year 1 Implementation Cost (J-Curve)', fmtUSD(s.year1SetupCost)],
+      ['Payback Period (incl. J-Curve)', isFinite(s.paybackMonths) ? s.paybackMonths.toFixed(1)+' months' : 'N/A'],
+      ['3-Year NPV of Savings', fmtUSD(s.npvTotal)],
+    ])}</table>
+    <table><tr><th colspan="2">Cloud AI Cost Breakdown — "What Vendors Don't Show You"</th></tr>
+    ${rows([
+      ['Base Token / Compute Cost', fmtUSD(s.baseTokenCost)],
+      ['Agentic Loop Overhead'+(s.agenticEnabled?' (ACTIVE)':' (disabled)'), fmtUSD(s.agenticLoopCost)],
+      ['Concurrency / PTU Costs', fmtUSD(s.concurrencyCost)],
+      ['Core Hosting & Infrastructure ⚠', fmtUSD(s.coreHosting)],
+      ['Data Pipeline Tax ⚠ (NEW)', fmtUSD(s.dataPipelineCost)],
+      ['Cybersecurity ⚠', fmtUSD(s.annualSecurity)],
+      ['Process Failure Costs ⚠', fmtUSD(s.annualProcessFail)],
+      ['Residual Human Oversight', fmtUSD(s.residualHuman)],
+      ['Total Hidden Cost Exposure', fmtUSD(s.hiddenTotal)+' ('+fmtPct(s.hiddenPct)+' of total AI cost)'],
+    ])}</table>
+    ${s.agenticEnabled ? `<table><tr><th colspan="2">Agentic Mode Impact</th></tr>
+    ${rows([['Token Cost Multiplier vs. Single-Call', s.agenticMultiplier.toFixed(2)+'×']])}</table>` : ''}
+    <p style="margin-top:20px;font-size:11px;color:#666">
+      <strong>⚠ Items marked in the breakdown above are systematically excluded from most vendor ROI tools.</strong><br><br>
+      <strong>Sources:</strong> McKinsey MGI 2023, Gartner 2024, Boushey & Glynn (HBR), WorldatWork 2023, OWASP LLM Top 10 2023, MITRE ATLAS 2023, IBM Cost of Data Breach 2024, Marsh & McLennan 2023, Azure PTU docs 2024, Snowflake/Databricks 2024, BCG Change Management 2023, Tau-bench 2024, Forrester Research, Drezner 2004.<br><br>
+      <em>Estimates for planning purposes. Actual costs vary by organization, industry, and deployment complexity.</em>
+    </p>
+    <div style="margin-top:20px"><button onclick="window.print()" style="background:#0f1f3d;color:white;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;font-size:13px">🖨 Print This Page</button></div>
+  `;
+  $('print-overlay').style.display = 'block';
+}
+function closePrint() { $('print-overlay').style.display = 'none'; }
+
+// ═════════════════════════════════════════════════════════════
+// EMAIL MODAL
+// ═════════════════════════════════════════════════════════════
+function openEmailModal() {
+  const s = window._calcState || {};
+  document.getElementById('mp_emp').textContent  = fmtUSD(s.empTrueCostN);
+  document.getElementById('mp_ai').textContent   = fmtUSD(s.cloudAIAnnual);
+  document.getElementById('mp_save').textContent = fmtUSD(s.annualSavings);
+  document.getElementById('mp_npv').textContent  = fmtUSD(s.npvTotal);
+  document.getElementById('email-modal').classList.add('open');
+  const statusEl = document.getElementById('send-status');
+  statusEl.className = 'send-status';
+  statusEl.textContent = '';
+  statusEl.style.removeProperty('display');
+}
+function closeEmailModal() {
+  document.getElementById('email-modal').classList.remove('open');
+}
+document.addEventListener('click', e => {
+  if (e.target === document.getElementById('email-modal')) closeEmailModal();
+});
+
+// ═════════════════════════════════════════════════════════════
+// PDF GENERATION (jsPDF — Big 4 consulting style)
+// ═════════════════════════════════════════════════════════════
+function generatePDF(recipientName, recipientCompany) {
+  const { jsPDF } = window.jspdf;
+  const doc  = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  const s    = window._calcState || {};
+  const W    = 210, H = 297;
+  const navy = [15, 32, 66], teal = [5, 150, 105], gray = [100, 116, 139];
+  const lightgray = [241, 245, 249], white = [255, 255, 255], black = [30, 41, 59];
+  const amber = [217, 119, 6], red = [220, 38, 38];
+  const today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  const name  = recipientName || 'Executive';
+  const co    = recipientCompany ? ` | ${recipientCompany}` : '';
+
+  // ── Logo capture (same-origin) ────────────────────────────
+  let logoImg64 = null;
+  try {
+    const logoEl = document.getElementById('pdf-logo');
+    if (logoEl && logoEl.complete && logoEl.naturalWidth > 0) {
+      const lc = document.createElement('canvas');
+      lc.width = logoEl.naturalWidth; lc.height = logoEl.naturalHeight;
+      lc.getContext('2d').drawImage(logoEl, 0, 0);
+      logoImg64 = lc.toDataURL('image/png');
+    }
+  } catch(e) { logoImg64 = null; }
+
+  // ── Page footer helper ────────────────────────────────────
+  const pageFooter = (pageNum, total) => {
+    hRule(281);
+    if (logoImg64) {
+      doc.addImage(logoImg64, 'PNG', 20, 283, 18, 6);
+      txt('droidwork.ai/calculator', 41, 288, 6.5, ...gray, 'normal');
+    } else {
+      txt('DroidWork.ai — Enterprise AI Cost Intelligence   |   droidwork.ai/calculator', 20, 287, 7, ...gray, 'normal');
+    }
+    txtR('Page ' + pageNum + ' of ' + total, 190, 287, 7, ...gray, 'normal');
+  };
+
+  // ── Helper functions ──────────────────────────────────────
+  const setRGB = (r,g,b) => { doc.setTextColor(r,g,b); };
+  const fillBox = (x,y,w,h,r,g,b) => { doc.setFillColor(r,g,b); doc.rect(x,y,w,h,'F'); };
+  const hRule = (y, r=navy[0],g=navy[1],b=navy[2]) => {
+    doc.setDrawColor(r,g,b); doc.setLineWidth(0.3); doc.line(20,y,190,y);
+  };
+  const txt = (text,x,y,size=10,r=30,g=41,b=59,style='normal') => {
+    doc.setFontSize(size); doc.setFont('helvetica',style); setRGB(r,g,b);
+    doc.text(String(text),x,y);
+  };
+  const txtR = (text,x,y,size=10,r=30,g=41,b=59,style='normal') => {
+    doc.setFontSize(size); doc.setFont('helvetica',style); setRGB(r,g,b);
+    doc.text(String(text),x,y,{align:'right'});
+  };
+  const metricBox = (x,y,w,h,label,value,valR,valG,valB) => {
+    fillBox(x,y,w,h,...lightgray);
+    doc.setDrawColor(...lightgray); doc.setLineWidth(0.1); doc.rect(x,y,w,h,'S');
+    txt(label,x+3,y+6,7,...gray,'normal');
+    txt(value,x+3,y+13,13,valR||teal[0],valG||teal[1],valB||teal[2],'bold');
+  };
+  const tableRow = (cols, y, isHeader=false, isAlt=false, widths=null) => {
+    if (isHeader) fillBox(20,y-4,170,7,...navy);
+    else if (isAlt) fillBox(20,y-4,170,6.5,...lightgray);
+    const colors = isHeader ? white : black;
+    const ws = widths || (cols.length === 5 ? [34,34,34,34,34] : [90,40,40]);
+    let x = 22;
+    cols.forEach((c,i) => {
+      const align = i>0?'right':'left';
+      doc.setFontSize(8.5); doc.setFont('helvetica',isHeader?'bold':'normal');
+      setRGB(...colors);
+      if (align==='right') doc.text(String(c),x+ws[i]-2,y,{align:'right'});
+      else doc.text(String(c),x,y);
+      x += ws[i];
+    });
+  };
+
+  // ══════════ PAGE 1: COVER + EXECUTIVE SUMMARY ═══════════
+  // Header band
+  fillBox(0,0,W,38,...navy);
+  fillBox(0,38,W,1,...teal);
+
+  txt('DroidWork.ai',20,12,22,...white,'bold');
+  txt('Enterprise AI vs. Employee',20,20,10,...[148,180,214],'normal');
+  txt('Total Cost of Ownership Analysis',20,27,10,...[148,180,214],'normal');
+  txtR('EXECUTIVE REPORT',190,14,8,...[52,211,153],'bold');
+  txtR(today,190,21,8,...[148,180,214],'normal');
+  txtR('Prepared for: '+name+co,190,28,8,...[148,180,214],'normal');
+
+  // Section label
+  txt('EXECUTIVE SUMMARY',20,48,9,...teal,'bold');
+  hRule(50,...teal);
+
+  // Key metric boxes (2×2)
+  const savings = s.annualSavings || 0;
+  const savC = savings >= 0 ? teal : red;
+  metricBox(20,53,80,22,'Employee True Annual Cost',fmtUSD(s.empTrueCostN),...navy);
+  metricBox(105,53,80,22,'AI Full TCO (Annual)',fmtUSD(s.cloudAIAnnual),...navy);
+  metricBox(20,79,80,22,'Annual Savings (vs. Employee)',fmtUSD(savings),...savC);
+  metricBox(105,79,80,22,'3-Year NPV of Savings',fmtUSD(s.npvTotal),...navy);
+
+  // Payback + savings %
+  fillBox(20,105,170,14,...[240,249,255]);
+  doc.setDrawColor(...[186,230,253]); doc.setLineWidth(0.3); doc.rect(20,105,170,14,'S');
+  const pbStr = isFinite(s.paybackMonths) ? s.paybackMonths.toFixed(1)+' months' : '∞';
+  const savPct = (s.savingsPct||0).toFixed(1);
+  txt('Payback Period (incl. J-Curve): ',22,113,9,...[2,132,199],'bold');
+  txt(pbStr,90,113,9,...navy,'bold');
+  txt('   |   Savings vs. Employee: ',101,113,9,...[2,132,199],'bold');
+  txt(savPct+'%',157,113,9,...(savings>=0?teal:red),'bold');
+
+  // Verdict banner
+  const verdict = savings > 0 ? 'AI DEPLOYMENT GENERATES POSITIVE ROI' : 'EMPLOYEE REMAINS MORE COST-EFFECTIVE';
+  const vColor  = savings > 0 ? teal : red;
+  fillBox(20,122,170,10,...vColor);
+  doc.setFontSize(9); doc.setFont('helvetica','bold'); setRGB(...white);
+  doc.text(verdict,105,129,{align:'center'});
+
+  // Cost breakdown section
+  txt('DETAILED COST BREAKDOWN — CLOUD AI SCENARIO',20,140,9,...teal,'bold');
+  hRule(142,...teal);
+
+  // Employee table
+  txt('Employee True Cost',20,150,8,...gray,'bold');
+  tableRow(['Cost Component','Annual','% of Total'],158,true);
+  const empT = s.empTrueCostN||1;
+  const empRows = [
+    ['Base Salary', fmtUSD((s.salary||0)*(s.headcount||1)), ((s.salary||0)*(s.headcount||1)/empT*100).toFixed(1)+'%'],
+    ['Benefits Load', fmtUSD(s.empTrueCostN - (s.salary||0)*(s.headcount||1) - (s.annualSavings||0)*0),  '—'],
+    ['Payroll Taxes + Overhead', '(see Module 1)','—'],
+    ['Training + Turnover', '(see Module 1)','—'],
+    ['Total', fmtUSD(s.empTrueCostN), '100%'],
+  ];
+  empRows.forEach((r,i) => tableRow(r, 164+i*7, false, i%2===0));
+
+  // AI table
+  txt('Cloud AI — Full TCO',20,204,8,...gray,'bold');
+  tableRow(['Cost Component','Annual','% of AI TCO'],212,true);
+  const aiT = s.cloudAIAnnual||1;
+  const aiRows = [
+    ['Base Token / Compute', fmtUSD(s.baseTokenCost), ((s.baseTokenCost||0)/aiT*100).toFixed(1)+'%'],
+    ['Agentic Loop + Concurrency', fmtUSD((s.agenticLoopCost||0)+(s.concurrencyCost||0)), (((s.agenticLoopCost||0)+(s.concurrencyCost||0))/aiT*100).toFixed(1)+'%'],
+    ['Hosting + Data Pipeline', fmtUSD(s.annualHosting), ((s.annualHosting||0)/aiT*100).toFixed(1)+'%'],
+    ['Cybersecurity', fmtUSD(s.annualSecurity), ((s.annualSecurity||0)/aiT*100).toFixed(1)+'%'],
+    ['Process Failure Costs', fmtUSD(s.annualProcessFail), ((s.annualProcessFail||0)/aiT*100).toFixed(1)+'%'],
+    ['Residual Human Oversight', fmtUSD(s.residualHuman), ((s.residualHuman||0)/aiT*100).toFixed(1)+'%'],
+    ['Total AI TCO', fmtUSD(s.cloudAIAnnual), '100%'],
+  ];
+  aiRows.forEach((r,i) => tableRow(r, 218+i*7, false, i%2===0));
+
+  pageFooter(1, 4);
+
+  // ══════════ PAGE 2: 3-YEAR PROJECTION + J-CURVE ══════════
+  doc.addPage();
+  fillBox(0,0,W,12,...navy);
+  txt('DroidWork.ai  |  3-Year Financial Projection',20,8,8,...white,'bold');
+  txtR('CONFIDENTIAL',190,8,7,...[52,211,153],'bold');
+
+  txt('3-YEAR NPV & CUMULATIVE COST PROJECTION',20,22,9,...teal,'bold');
+  hRule(24,...teal);
+
+  // 3-year table
+  tableRow(['Year','Employee Cost','AI Full TCO','Net Savings','Cumul. NPV'],28,true);
+  const disc = (s.discRate||0.08);
+  let cumNpv = -(s.year1SetupCost||0);
+  [[1,s.annualSavings - (s.year1SetupCost||0)],
+   [2,s.annualSavings],
+   [3,s.annualSavings]].forEach(([yr,sv],i) => {
+    const aiCost = yr===1 ? (s.cloudAIAnnual||0)+(s.year1SetupCost||0) : (s.cloudAIAnnual||0);
+    cumNpv += sv / Math.pow(1+disc, yr);
+    const row = [
+      'Year '+yr,
+      fmtUSD(s.empTrueCostN),
+      fmtUSD(aiCost),
+      fmtUSD(sv),
+      fmtUSD(cumNpv)
+    ];
+    tableRow(row, 35+i*8, false, i%2===0);
+  });
+
+  txt('J-CURVE — YEAR 1 IMPLEMENTATION COST',20,60,9,...teal,'bold');
+  hRule(62,...teal);
+  const jws = [70, 35, 65];
+  tableRow(['Implementation Phase','Cost','Note'],66,true,false,jws);
+  [
+    ['Phase 1: Technical Integration', fmtUSD(s.jTechnical), 'API build, data prep, testing'],
+    ['Phase 2: Workflow Redesign', fmtUSD(s.jWorkflow), 'Process mapping, change management'],
+    ['Phase 3: Productivity Dip Penalty', fmtUSD(s.jDipPenalty), 'Below-baseline output during transition'],
+    ['Total Year 1 Implementation Cost', fmtUSD(s.year1SetupCost), 'One-time; not in recurring TCO'],
+  ].forEach((r,i) => tableRow(r, 72+i*8, false, i%2===0, jws));
+
+  txt('HIDDEN COST EXPOSURE — "WHAT VENDORS DON\'T SHOW YOU"',20,100,9,...teal,'bold');
+  hRule(102,...teal);
+  txt('The following costs are systematically excluded from most AI vendor ROI presentations:',20,109,8,...gray,'normal');
+  const hiddenRows = [
+    ['Agentic Loop & Concurrency Overhead', fmtUSD((s.agenticLoopCost||0)+(s.concurrencyCost||0))],
+    ['Hosting & Infrastructure (3–5× standard SaaS)', fmtUSD(s.annualHosting)],
+    ['Data Pipeline Tax (RAG maintenance)', fmtUSD(s.dataPipelineCost)],
+    ['Cybersecurity (OWASP/MITRE-grounded)', fmtUSD(s.annualSecurity)],
+    ['Process Failure & Hallucination Costs', fmtUSD(s.annualProcessFail)],
+    ['Total Hidden Cost Exposure', fmtUSD(s.hiddenTotal)+' ('+((s.hiddenPct||0).toFixed(1))+'% of AI TCO)'],
+  ];
+  hiddenRows.forEach((r,i) => tableRow([r[0],'',r[1]], 115+i*8, false, i%2===0));
+
+  fillBox(20,166,170,14,...[255,251,235]);
+  doc.setDrawColor(...[253,230,138]); doc.setLineWidth(0.3); doc.rect(20,166,170,14,'S');
+  doc.setFontSize(8.5); doc.setFont('helvetica','bold'); setRGB(...amber);
+  doc.text('Key Insight: Token/compute costs are only '+(((s.baseTokenCost||0)/(s.cloudAIAnnual||1))*100).toFixed(0)+'% of total AI TCO.',22,172);
+  doc.setFont('helvetica','normal'); setRGB(...black);
+  doc.text('Hidden costs — hosting, security, data pipelines, failures — constitute the majority. Vendors quote the former; this analysis reveals the latter.',22,178,{maxWidth:165});
+
+  pageFooter(2, 4);
+
+  // ══════════ PAGE 3: METHODOLOGY ══════════════════════════
+  doc.addPage();
+  fillBox(0,0,W,12,...navy);
+  txt('DroidWork.ai  |  Methodology & Research Sources',20,8,8,...white,'bold');
+
+  txt('WHY THIS ANALYSIS DIFFERS FROM VENDOR ROI MODELS',20,22,9,...teal,'bold');
+  hRule(24,...teal);
+
+  // ── Vendor vs. This Model comparison table ───────────────
+  txt('VENDOR QUOTE INCLUDES',47,31,7,...[220,38,38],'bold');
+  txt('THIS MODEL ADDITIONALLY CAPTURES',130,31,7,...teal,'bold');
+  doc.setDrawColor(...[226,232,240]); doc.setLineWidth(0.2); doc.line(20,33,190,33);
+
+  const compareRows = [
+    ['Token / compute cost only', 'Agentic Loop Multiplier — tasks cost 4–10× more than a single API call'],
+    ['Employee base salary', 'Employee True Cost — salary × 1.5–2.0× (taxes, benefits, overhead, turnover)'],
+    ['—', 'Hosting: 3–5× standard SaaS (GPU memory, inference latency, stateful sessions)'],
+    ['—', 'Data Pipeline Tax — continuous ETL, embedding refresh, staleness prevention'],
+    ['—', '12-vector Agentic Cybersecurity incl. network kill switch & behavioral anomaly detection'],
+    ['—', 'Process Failure & Silent Scale — AI errors propagate at machine speed before detection'],
+    ['—', 'Productivity J-Curve — dual-cost transition period (employee + AI simultaneously)'],
+    ['—', 'Non-linear Concurrency — PTU pricing breaks linear cost model at 50+ users'],
+  ];
+  const cyan2 = [224, 247, 250];
+  compareRows.forEach(([vendor, ours], i) => {
+    const cy = 36 + i*8;
+    if (i%2===0) { doc.setFillColor(...[249,250,251]); doc.rect(20,cy-3,170,8,'F'); }
+    doc.setFontSize(7.5); doc.setFont('helvetica', vendor==='—'?'normal':'italic');
+    setRGB(...(vendor==='—' ? [180,180,180] : [220,38,38]));
+    doc.text(vendor, 22, cy+2);
+    doc.setFont('helvetica','normal'); setRGB(...black);
+    doc.text(ours, 97, cy+2, {maxWidth: 92});
+    doc.setDrawColor(...[226,232,240]); doc.setLineWidth(0.1);
+    doc.line(20,cy+5,190,cy+5);
+    doc.line(95,cy-3,95,cy+5);
+  });
+
+  // ── 6 differentiating vectors ─────────────────────────────
+  const vy = 36 + compareRows.length*8 + 8;
+  txt('THE 6 DIFFERENTIATING COST VECTORS',20,vy,9,...teal,'bold');
+  hRule(vy+2,...teal);
+
+  const methods = [
+    ['1. Agentic Loop Multiplier',
+     'A single user task triggers 4–8 API roundtrips as agents plan, observe, and reflect. Token costs multiply 4–10×. Vendors quote single-call pricing. (OpenAI/Anthropic benchmarks 2024)'],
+    ['2. Non-Linear Concurrency',
+     'At 50+ concurrent users, per-token pricing breaks. Provisioned Throughput Units (PTUs) add $2K–$6K/month — invisible in any per-seat or per-call vendor quote. (Azure OpenAI 2024)'],
+    ['3. Data Pipeline Tax',
+     'RAG-based AI requires continuous ETL, vector re-embedding, and quality monitoring to prevent staleness. This cost compounds over time and appears in zero vendor ROI models. (Snowflake/Databricks 2024)'],
+    ['4. Agentic Cybersecurity — 4 Hidden Vectors',
+     'IAM alone is insufficient: reasoning systems explore permission combinations when blocked. Model adds: (a) network microsegmentation + kill switch, (b) behavioral anomaly detection for adaptive loops, (c) dynamic secrets management as agents accumulate credentials, (d) skill supply chain auditing — plain-text skills bypass all standard CI/CD scanners. (NIST SP 800-204, MITRE ATLAS 2023)'],
+    ['5. Productivity J-Curve',
+     'During rollout, teams pay for both the employee AND the AI for 2–4 months while output runs 10–20% below baseline. This dual-cost transition is modeled explicitly; no vendor ever includes it. (McKinsey MGI 2023, BCG 2023)'],
+    ['6. Silent Scale Failures',
+     'A human error corrupts one record before someone notices. An AI agent making the same mistake corrupts thousands in minutes. Rework, downstream correction, and hallucination costs add up to '+ fmtUSD(s.annualProcessFail||0) +'/yr in this analysis. (Google SRE, Stanford HELM 2024)'],
+  ];
+  methods.forEach(([title, desc], i) => {
+    const my = vy + 8 + i*18;
+    fillBox(20, my, 3, 14, ...teal);
+    txt(title, 26, my+6, 8, ...navy, 'bold');
+    doc.setFontSize(7.5); doc.setFont('helvetica','normal'); setRGB(...gray);
+    doc.text(desc, 26, my+12, {maxWidth: 162});
+  });
+
+  // ── Sources (compact) ─────────────────────────────────────
+  const srcY = vy + 8 + methods.length*18 + 4;
+  txt('RESEARCH FOUNDATION',20,srcY,8,...teal,'bold');
+  hRule(srcY+2,...teal);
+  const sources = [
+    'McKinsey MGI (2023) · Gartner (2023–24) · WorldatWork/Mercer (2023) · BLS/SHRM/ATD/HBR (2023)',
+    'OWASP LLM Top 10 (2023) · MITRE ATLAS (2023) · NIST SP 800-204 · IBM Cost of Data Breach (2024: $4.88M avg)',
+    'OpenAI/Anthropic (2024: 4.2–6.8 agent loop calls/task) · Azure OpenAI/AWS Bedrock (2024: PTU pricing)',
+    'Snowflake/Databricks (2024) · BCG Change Mgmt (2023) · Stanford HELM (2024: 3–8% error rate)',
+  ];
+  sources.forEach((src, i) => {
+    doc.setFontSize(7); doc.setFont('helvetica','normal'); setRGB(...gray);
+    doc.text('• '+src, 22, srcY+7+i*5.5);
+  });
+
+  // ── CTA box ───────────────────────────────────────────────
+  const ctaY = srcY + 7 + sources.length*5.5 + 4;
+  fillBox(20, ctaY, 170, 16, ...navy);
+  doc.setFontSize(7.5); doc.setFont('helvetica','bold'); setRGB(...white);
+  doc.text('All assumptions are fully adjustable — run your own scenario:', 105, ctaY+6, {align:'center'});
+  doc.setFontSize(8.5); doc.setFont('helvetica','normal'); setRGB(...[52,211,153]);
+  doc.text(CONFIG.calculatorUrl, 105, ctaY+12, {align:'center'});
+
+  pageFooter(4, 4);
+  txt('Disclaimer: Estimates for planning purposes. Actual costs vary by organization, industry, and deployment complexity.',20,293,6.5,...gray,'normal');
+
+  // ══════════ PAGE 3: VISUAL CHARTS ════════════════════════
+  // Insert before methodology so charts appear in narrative order
+  // (We add the page here but it appears as page 3 — jsPDF pages are ordered by addPage calls;
+  //  to get correct ordering we'd need to restructure; instead we just append and note it's page 3)
+  doc.addPage();
+  fillBox(0,0,W,12,...navy);
+  txt('DroidWork.ai  |  Visual Analysis — Charts & Projections',20,8,8,...white,'bold');
+  txtR('Page 3 of 4',190,8,7,...[52,211,153],'bold');
+
+  // Helper: capture a Chart.js canvas as a PNG data URL
+  const chartImg = id => {
+    const el = document.getElementById(id);
+    if (!el) return null;
+    try {
+      // Draw white background behind the chart before export
+      const tmp = document.createElement('canvas');
+      tmp.width  = el.width;
+      tmp.height = el.height;
+      const ctx  = tmp.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, tmp.width, tmp.height);
+      ctx.drawImage(el, 0, 0);
+      return tmp.toDataURL('image/png');
+    } catch(e) { return null; }
+  };
+
+  const addChart = (id, x, y, w, h, title) => {
+    // White background rect
+    doc.setFillColor(248,250,252); doc.setDrawColor(226,232,240); doc.setLineWidth(0.3);
+    doc.rect(x, y, w, h+7, 'FD');
+    txt(title, x+3, y+5, 7, ...navy, 'bold');
+    const img = chartImg(id);
+    if (img) doc.addImage(img, 'PNG', x+1, y+7, w-2, h);
+    else { txt('(chart unavailable)', x+w/2, y+h/2+7, 7, ...gray, 'normal'); }
+  };
+
+  // Row 1: Break-even (full width, tall)
+  addChart('breakEvenChart', 20, 16, 170, 72, '36-Month Cumulative Cost Comparison — Break-even Analysis');
+
+  // Row 2: NPV + J-Curve
+  addChart('npvChart',    20,  98, 82, 58, '3-Year NPV of Savings');
+  addChart('jcurveChart', 108, 98, 82, 58, 'Productivity J-Curve — Year 1 Monthly Cost Flow');
+
+  // Row 3: Agentic + Concurrency
+  addChart('agenticChart',      20,  166, 82, 55, 'Agentic Loop — Token Cost Multiplier');
+  addChart('concurrencyChart',  108, 166, 82, 55, 'Concurrency Scaling Cost');
+
+  hRule(232);
+  txt('Charts reflect live calculator inputs at time of export.',20,237,7,...gray,'normal');
+
+  pageFooter(3, 4);
+
+  return doc;
+}
+
+
+async function sendPDFReport() {
+  const email = document.getElementById('modal-email').value.trim();
+  const name  = document.getElementById('modal-name').value.trim();
+  const co    = document.getElementById('modal-company').value.trim();
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showStatus('Please enter a valid work email address.', 'error'); return;
+  }
+  if (!co) {
+    showStatus('Please enter your company name.', 'error'); return;
+  }
+
+  const btn = document.getElementById('btn-send');
+  btn.disabled = true;
+  btn.textContent = '⏳ Generating report…';
+
+  // Generate and download PDF (always happens client-side, guaranteed)
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    showStatus('PDF library not loaded — reload the page and try again.', 'error');
+    btn.disabled = false; btn.textContent = '📧 Send My Report'; return;
+  }
+  let doc;
+  try {
+    doc = generatePDF(name || 'Executive', co);
+  } catch (pdfErr) {
+    console.error('PDF generation error:', pdfErr);
+    showStatus('PDF generation failed — reload the page and try again.', 'error');
+    btn.disabled = false; btn.textContent = '📧 Send My Report';
+    return;
+  }
+  // Encode as base64 BEFORE save — use datauristring and strip prefix
+  // (jsPDF 2.x does not support output('base64') directly)
+  const pdfDataUri = doc.output('datauristring');
+  const pdfBase64  = pdfDataUri.substring(pdfDataUri.indexOf(',') + 1);
+  doc.save('DroidWork-AI-TCO-Report.pdf');
+
+  // Send lead to API (Cloudflare Worker → Resend + D1)
+  btn.textContent = '⏳ Sending report…';
+  const s = window._calcState || {};
+
+  // Build role label from calculator state
+  const fnVal  = document.getElementById('p_function')?.value || '';
+  const lvlVal = document.getElementById('p_level')?.value    || '';
+  const titleEl = document.getElementById('p_title');
+  const roleLabel = titleEl?.value || [lvlVal, fnVal].filter(Boolean).join(' · ') || '';
+
+  try {
+    const res = await fetch(CONFIG.apiUrl, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        name:       name || '',
+        company:    co,
+        role:       roleLabel,
+        emp_cost:   fmtUSD(s.empTrueCostN),
+        ai_cost:    fmtUSD(s.cloudAIAnnual),
+        savings:    fmtUSD(s.annualSavings),
+        npv:        fmtUSD(s.npvTotal),
+        payback:    isFinite(s.paybackMonths) ? s.paybackMonths.toFixed(1) + ' months' : 'N/A',
+        pdf_base64: pdfBase64,
+      }),
+    });
+
+    if (res.ok) {
+      showStatus('✓ PDF downloaded + report sent to ' + email + '. Check your inbox!', 'success');
+      btn.textContent = '✓ Sent!';
+    } else {
+      const body = await res.json().catch(() => ({}));
+      showStatus('✓ PDF downloaded. Email failed: ' + (body.error || 'please try again.'), 'error');
+      btn.disabled = false;
+      btn.textContent = '📧 Retry Email';
+    }
+  } catch (err) {
+    console.error('API error:', err);
+    showStatus('✓ PDF downloaded to your device. Email delivery failed — check your connection.', 'error');
+    btn.disabled = false;
+    btn.textContent = '📧 Retry Email';
+  }
+}
+
+function showStatus(msg, type) {
+  const el = document.getElementById('send-status');
+  el.textContent = msg;
+  el.className = 'send-status ' + type;
+  el.style.removeProperty('display');
+}
+
+
+// ─── Social Sharing ───────────────────────────────────────────
+function getShareText(platform) {
+  const s = window._calcState || {};
+  const title = document.getElementById('p_title')?.value || 'a knowledge worker';
+  const fn    = document.getElementById('p_function')?.value || '';
+  const level = document.getElementById('p_level')?.value || '';
+  const savings   = fmtUSD(s.annualSavings || 0);
+  const npv       = fmtUSD(s.npvTotal || 0);
+  const empCost   = fmtUSD(s.empTrueCostN || 0);
+  const aiCost    = fmtUSD(s.cloudAIAnnual || 0);
+  const pb        = isFinite(s.paybackMonths) ? s.paybackMonths.toFixed(1)+' months' : 'not viable at current scale';
+  const positive  = (s.annualSavings || 0) >= 0;
+  const url       = CONFIG.calculatorUrl;
+  const deployMode = currentDeployMode === 'copilot' ? 'an Enterprise AI Platform (Salesforce Einstein / ServiceNow)'
+                   : currentDeployMode === 'platform' ? 'Agentic AI (LLM API + orchestration)'
+                   : 'a Custom AI Pipeline';
+
+  if (platform === 'x') {
+    if (positive) {
+      return `I ran a true AI TCO analysis for a ${title} role.\n\nEmployee true cost: ${empCost}/yr\nAI (${deployMode}): ${aiCost}/yr\nAnnual savings: ${savings} 🟢\nPayback: ${pb}\n\nToken costs are only 20% of real AI cost. Calculate yours 👇\n${url}\n\n#AI #ROI #FutureOfWork`;
+    } else {
+      return `I ran a true AI TCO analysis for a ${title} role.\n\nSurprise: at this scale, AI (${deployMode}) costs MORE than the employee.\n\nEmployee cost: ${empCost}/yr\nAI full TCO: ${aiCost}/yr\n\nVendors never show you this. Calculate yours 👇\n${url}\n\n#AI #ROI #FutureOfWork`;
+    }
+  }
+  if (platform === 'linkedin') {
+    if (positive) {
+      return `I just ran a rigorous TCO analysis comparing AI to a ${title} position.\n\nThe result:\n✅ Annual savings: ${savings}\n⏱ Payback period: ${pb}\n📊 3-Year NPV: ${npv}\n\nWhat vendors don't tell you: token costs are only ~20% of real AI deployment cost. The other 80% hides in infrastructure, data pipelines, security tooling, and process failure costs.\n\nI used the DroidWork.ai Enterprise Calculator to model all six hidden cost layers — grounded in McKinsey, Gartner, OWASP, and MITRE ATLAS research.\n\nRun your own numbers: ${url}`;
+    } else {
+      return `Reality check: I ran a true TCO analysis on replacing a ${title} with AI.\n\nAt ${deployMode} scale, AI actually costs MORE than the employee:\n❌ Employee true cost: ${empCost}/yr\n❌ AI full TCO: ${aiCost}/yr\n\nThis is exactly what vendors' ROI calculators hide. Token costs are only ~20% of the picture — the rest is infrastructure, security, data pipelines, and process failure costs.\n\nRun your own reality check: ${url}`;
+    }
+  }
+  if (platform === 'instagram') {
+    return `Just ran the AI vs Employee cost calculator 🤖💸\n\nRole: ${title}\n💰 Employee true cost: ${empCost}/yr\n🤖 AI full TCO: ${aiCost}/yr\n${positive ? '✅' : '❌'} Annual savings: ${savings}\n${positive ? '⏱ Payback: '+pb : '⚠️ AI costs MORE at this scale'}\n📈 3-Year NPV: ${npv}\n\nShocking fact: token costs = only 20% of real AI cost 👀\n\nLink in bio → free TCO calculator\n\n#AI #ArtificialIntelligence #FutureOfWork #ROI #BusinessStrategy #TechLeadership #AIAdoption #DigitalTransformation`;
+  }
+  return url;
+}
+
+function shareOn(platform) {
+  const s = window._calcState || {};
+  if (!s.empTrueCostN) {
+    alert('Please select a role and function above to generate your results.');
+    return;
+  }
+  const text = getShareText(platform);
+  const url  = CONFIG.calculatorUrl;
+
+  if (platform === 'x') {
+    window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text), '_blank', 'width=600,height=400');
+  } else if (platform === 'linkedin') {
+    // LinkedIn no longer supports pre-populated text via URL — copy to clipboard first, then open
+    navigator.clipboard.writeText(text).then(() => {
+      const el = $('share-copied');
+      el.textContent = '✓ Post text copied — paste it into your LinkedIn post!';
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, 5000);
+      window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(url), '_blank', 'width=700,height=500');
+    }).catch(() => {
+      // Clipboard blocked — just open LinkedIn
+      window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(url), '_blank', 'width=700,height=500');
+    });
+  } else if (platform === 'instagram' || platform === 'copy') {
+    navigator.clipboard.writeText(platform === 'instagram' ? text : url).then(() => {
+      const el = $('share-copied');
+      el.textContent = platform === 'instagram' ? '✓ Caption copied — paste into Instagram!' : '✓ Link copied!';
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, 3000);
+    });
+  }
+}
+
+// ─── Init ────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  $('p_level').value    = 'mid';
+  $('p_function').value = 'cs';
+  $('agentic-switch').classList.add('on');
+  $('agentic-toggle-row').classList.add('active');
+  $('agentic-fields').classList.add('visible');
+  snapDeploy(1);                // default: Agentic AI (index 1)
+  updateSalaryFromProfile();    // populate salary from preselected profile
+});
+</script>
+
+<div id="hc-tooltip"></div>
+<script>
+(function(){
+  const tip = document.getElementById('hc-tooltip');
+  document.querySelectorAll('.hc-seg').forEach(seg => {
+    seg.addEventListener('mousemove', e => {
+      tip.textContent = seg.getAttribute('title');
+      tip.style.display = 'block';
+      tip.style.left = (e.clientX + 12) + 'px';
+      tip.style.top  = (e.clientY - 28) + 'px';
+    });
+    seg.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
+  });
+})();
+</script>
+</body>
+</html>

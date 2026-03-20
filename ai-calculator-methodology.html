@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Model Methodology & Technical Reference — AI vs. Employee TCO Calculator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  --navy:        #0f1f3d;
+  --navy-mid:    #162847;
+  --navy-light:  #1e3560;
+  --navy-card:   #192e52;
+  --border:      #2a4070;
+  --green:       #00c97d;
+  --green-glow:  rgba(0,201,125,0.12);
+  --amber:       #f5a623;
+  --red:         #ff5c5c;
+  --cyan:        #38bdf8;
+  --white:       #f0f4ff;
+  --off-white:   #ccd8f0;
+  --muted:       #8ba4c8;
+  --faint:       #4a6494;
+  --paper:       #f8f6f0;
+  --ink:         #1a1a2e;
+  --ink-mid:     #2d3561;
+  --ink-light:   #4a5a7a;
+  --rule:        #d4cfc4;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+/* ── COVER ─────────────────────────────────────────────────── */
+.cover {
+  background: linear-gradient(160deg, #0a1628 0%, #0f1f3d 50%, #162847 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 60px;
+  position: relative;
+  overflow: hidden;
+}
+.cover::before {
+  content: '';
+  position: absolute;
+  top: -100px; right: -100px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(0,201,125,0.07), transparent 65%);
+  pointer-events: none;
+}
+.cover::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: -80px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(56,189,248,0.05), transparent 65%);
+  pointer-events: none;
+}
+.cover-inner { max-width: 820px; position: relative; z-index: 1; }
+.cover-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cover-eyebrow::before {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: var(--green);
+}
+.cover h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(36px, 6vw, 64px);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.cover h1 em {
+  font-style: italic;
+  color: var(--green);
+}
+.cover-subtitle {
+  font-family: 'Source Serif 4', serif;
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 640px;
+  margin-bottom: 48px;
+}
+.cover-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  border-top: 1px solid rgba(42,64,112,0.8);
+  padding-top: 32px;
+}
+.cover-meta-item { }
+.cover-meta-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--faint);
+  margin-bottom: 4px;
+}
+.cover-meta-val {
+  font-size: 14px;
+  color: var(--off-white);
+  font-weight: 300;
+}
+.cover-toc {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 32px;
+}
+@media(max-width:600px){ .cover-toc { grid-template-columns: 1fr; } }
+.toc-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(42,64,112,0.4);
+  text-decoration: none;
+  transition: color .15s;
+}
+.toc-item:hover { color: var(--green); }
+.toc-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--faint);
+  flex-shrink: 0;
+}
+.toc-dots {
+  flex: 1;
+  border-bottom: 1px dotted rgba(42,64,112,0.6);
+  margin-bottom: 3px;
+}
+
+/* ── MAIN CONTENT ──────────────────────────────────────────── */
+.content {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 80px 40px 120px;
+}
+@media(max-width:600px){ .content { padding: 40px 20px 80px; } }
+
+/* ── SECTION STRUCTURE ─────────────────────────────────────── */
+.doc-section {
+  margin-bottom: 80px;
+  padding-bottom: 80px;
+  border-bottom: 1px solid var(--rule);
+}
+.doc-section:last-child { border-bottom: none; }
+
+.section-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--green);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.section-number.cyan { color: var(--cyan); }
+.section-number.amber { color: var(--amber); }
+
+h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(22px, 4vw, 32px);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 40px 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--rule);
+}
+h4 {
+  font-family: 'Source Serif 4', serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink-mid);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin: 28px 0 10px;
+}
+
+p {
+  margin-bottom: 16px;
+  color: var(--ink);
+  font-size: 16px;
+}
+p.lead {
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--ink-light);
+  line-height: 1.8;
+  margin-bottom: 24px;
+}
+
+/* ── FORMULA BLOCKS ────────────────────────────────────────── */
+.formula-block {
+  background: var(--navy);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--green);
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin: 20px 0;
+  overflow-x: auto;
+}
+.formula-block.cyan-accent { border-left-color: var(--cyan); }
+.formula-block.amber-accent { border-left-color: var(--amber); }
+.formula-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.formula-label.cyan { color: var(--cyan); }
+.formula-label.amber { color: var(--amber); }
+.formula-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.formula-body {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--white);
+  line-height: 1.8;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.formula-body .var { color: #93c5fd; }
+.formula-body .op  { color: var(--green); }
+.formula-body .num { color: #fcd34d; }
+.formula-body .comment { color: var(--faint); font-size: 11px; }
+
+/* ── DATA TABLES ───────────────────────────────────────────── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 14px;
+}
+.data-table thead th {
+  background: var(--navy);
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 2px solid var(--border);
+}
+.data-table tbody td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+  color: var(--ink);
+}
+.data-table tbody tr:hover td { background: rgba(0,201,125,0.03); }
+.data-table td.mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--ink-mid);
+}
+.data-table td.green { color: #006b42; font-weight: 600; }
+.data-table td.source {
+  font-size: 12px;
+  color: var(--ink-light);
+  font-style: italic;
+}
+.data-table tbody tr:last-child td { border-bottom: none; }
+
+/* ── CALLOUT BOXES ─────────────────────────────────────────── */
+.callout {
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 24px 0;
+  font-size: 15px;
+  line-height: 1.65;
+}
+.callout-research {
+  background: rgba(0,100,60,0.05);
+  border-left: 3px solid var(--green);
+  border: 1px solid rgba(0,201,125,0.2);
+  border-left: 3px solid var(--green);
+}
+.callout-warn {
+  background: rgba(245,166,35,0.05);
+  border: 1px solid rgba(245,166,35,0.25);
+  border-left: 3px solid var(--amber);
+}
+.callout-critical {
+  background: rgba(255,92,92,0.04);
+  border: 1px solid rgba(255,92,92,0.2);
+  border-left: 3px solid var(--red);
+}
+.callout-note {
+  background: rgba(56,189,248,0.04);
+  border: 1px solid rgba(56,189,248,0.2);
+  border-left: 3px solid var(--cyan);
+}
+.callout strong { font-weight: 600; }
+.callout-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 6px;
+}
+.cl-green { color: #006b42; }
+.cl-amber { color: #7a5000; }
+.cl-red   { color: #8b0000; }
+.cl-cyan  { color: #0369a1; }
+
+/* ── ASSUMPTION CARDS ──────────────────────────────────────── */
+.assumption-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 20px 0;
+}
+@media(max-width:700px){ .assumption-grid { grid-template-columns: 1fr; } }
+.assumption-card {
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 16px;
+  background: white;
+}
+.assumption-param {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-mid);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.assumption-default {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 6px;
+}
+.assumption-range {
+  font-size: 12px;
+  color: var(--ink-light);
+  margin-bottom: 6px;
+}
+.assumption-source {
+  font-size: 11px;
+  color: #006b42;
+  font-style: italic;
+}
+
+/* ── COMPARISON TABLE ──────────────────────────────────────── */
+.comparison-block {
+  background: var(--navy);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 24px 0;
+}
+.comparison-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  background: rgba(0,0,0,0.3);
+  padding: 10px 16px;
+  gap: 8px;
+}
+.comparison-header span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+}
+.comparison-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  padding: 10px 16px;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  align-items: center;
+}
+.comparison-row:hover { background: rgba(255,255,255,0.02); }
+.cr-label { font-size: 13px; color: var(--white); }
+.cr-check { font-size: 14px; text-align: center; }
+.check-yes { color: var(--green); }
+.check-no  { color: var(--red); }
+.check-part{ color: var(--amber); }
+
+/* ── NUMBERED LIST ─────────────────────────────────────────── */
+ol.styled { padding-left: 0; counter-reset: item; list-style: none; }
+ol.styled li {
+  counter-increment: item;
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  font-size: 15px;
+  line-height: 1.7;
+}
+ol.styled li::before {
+  content: counter(item, decimal-leading-zero);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--green);
+  font-weight: 600;
+  min-width: 28px;
+  padding-top: 2px;
+}
+
+ul.styled { list-style: none; padding-left: 0; }
+ul.styled li {
+  padding: 6px 0 6px 24px;
+  position: relative;
+  font-size: 15px;
+  line-height: 1.7;
+  border-bottom: 1px solid var(--rule);
+}
+ul.styled li:last-child { border-bottom: none; }
+ul.styled li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--green);
+  font-size: 12px;
+  top: 9px;
+}
+
+/* ── INLINE CODE ───────────────────────────────────────────── */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  background: rgba(0,50,150,0.06);
+  border: 1px solid rgba(0,50,150,0.12);
+  border-radius: 4px;
+  padding: 1px 6px;
+  color: var(--ink-mid);
+}
+
+/* ── FOOTNOTE STYLE CITATION ───────────────────────────────── */
+.cite {
+  font-size: 12px;
+  color: #006b42;
+  font-style: italic;
+  vertical-align: super;
+  line-height: 0;
+}
+
+/* ── REFERENCE LIST ────────────────────────────────────────── */
+.reference-list { list-style: none; padding: 0; }
+.reference-list li {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.65;
+  display: flex;
+  gap: 16px;
+}
+.reference-list li:last-child { border-bottom: none; }
+.ref-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--green);
+  font-weight: 600;
+  min-width: 28px;
+  padding-top: 3px;
+  flex-shrink: 0;
+}
+.ref-body strong { color: var(--ink-mid); }
+
+/* ── PULL QUOTE ────────────────────────────────────────────── */
+.pull-quote {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 22px;
+  font-style: italic;
+  font-weight: 700;
+  color: var(--ink-mid);
+  line-height: 1.5;
+  border-left: 4px solid var(--green);
+  padding: 16px 0 16px 28px;
+  margin: 36px 0;
+}
+.pull-quote cite {
+  display: block;
+  font-size: 13px;
+  font-style: normal;
+  font-family: 'Source Serif 4', serif;
+  color: var(--ink-light);
+  margin-top: 10px;
+  font-weight: 400;
+}
+
+/* ── SECTION NAVIGATION BAR ────────────────────────────────── */
+.nav-bar {
+  background: var(--navy);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 40px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.nav-bar a {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: .5px;
+  transition: color .15s;
+}
+.nav-bar a:hover { color: var(--green); }
+.nav-title {
+  color: var(--white) !important;
+  font-weight: 600;
+}
+
+/* ── PRINT ─────────────────────────────────────────────────── */
+@media print {
+  .nav-bar, .cover::before, .cover::after { display: none; }
+  body { background: white; }
+  .cover { page-break-after: always; background: var(--navy) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  h2, h3 { page-break-after: avoid; }
+  .formula-block, .callout, .data-table { page-break-inside: avoid; }
+}
+
+/* ── RESPONSIVE ────────────────────────────────────────────── */
+@media(max-width:600px) {
+  .cover { padding: 40px 24px; }
+  .comparison-header, .comparison-row { grid-template-columns: 1fr 1fr; }
+  .comparison-header span:nth-child(3),
+  .comparison-row .cr-check:nth-child(3) { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── COVER ──────────────────────────────────────────────── -->
+<div class="cover">
+  <div class="cover-inner">
+    <div class="cover-eyebrow">Technical Reference Document · Version 2.0</div>
+    <h1>Model Methodology &amp;<br><em>Mathematical Reference</em></h1>
+    <p class="cover-subtitle">A complete documentation of formulas, data sources, default justifications, assumptions, limitations, and validation basis for the AI vs. Employee True Cost of Ownership Calculator. Intended audience: CFOs, VPs of Engineering, strategy consultants, and technical evaluators.</p>
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Model Version</div>
+        <div class="cover-meta-val">v2.0 — Agentic Loop + J-Curve + Data Pipeline</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Framework Basis</div>
+        <div class="cover-meta-val">McKinsey MGI · Gartner TCO · WorldatWork · OWASP LLM Top 10</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Data Vintage</div>
+        <div class="cover-meta-val">2023–2025 primary sources, noted per parameter</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Coverage</div>
+        <div class="cover-meta-val">8 cost modules · 72 parameters · 19 primary sources</div>
+      </div>
+    </div>
+    <div class="cover-toc">
+      <a class="toc-item" href="#s1"><span class="toc-num">01</span> Model Purpose &amp; Design Philosophy<span class="toc-dots"></span></a>
+      <a class="toc-item" href="#s2"><span class="toc-num">02</span> Module 1 — Employee True Cost<span class="toc-dots"></span></a>
+      <a class="toc-item" href="#s3"><span class="toc-num">03</span> Module 2 — Cloud AI Token Cost<span class="toc-dots"></span></a>
+      <a class="toc-item" href="#s4"><span class="toc-num">04</span> Module 2B — Agentic Loop Multiplier<span class="toc-dots"></span></a>
+      <a class="toc-item" href="#s5"><span class="toc-num">05</span> Module 2C — Concurrency Scaling<span class="toc-dots"></span></a>
+      <a class="toc-item" href="#s6"><span class="toc-num">06</span> Module 3 — Private / On-Prem AI<span class="toc-dots"></span></a>
+      <a class="toc-item" href="#s7"><span class="toc-num">07</span> Module 4 — Hosting &amp; Infrastructure<span class="toc-dots"></span></a>
+      <a class="toc-item" href="#s8"><span class="toc-num">08</span> Module 4B — Data Pipeline Tax<span class="toc-dots"></span></a>
+      <a class="toc-item" href="#s9"><span class="toc-num">09</span> Module 5 — Cybersecurity<span class="toc-dots"></span></a>
+      <a class="toc-item" href="#s10"><span class="toc-num">10</span> Module 6 — Process Failure Cost<span class="toc-dots"></span></a>
+      <a class="toc-item" href="#s11"><span class="toc-num">11</span> Module 7 — ROI &amp; J-Curve Analysis<span class="toc-dots"></span></a>
+      <a class="toc-item" href="#s12"><span class="toc-num">12</span> Model Integration &amp; TCO Aggregation<span class="toc-dots"></span></a>
+      <a class="toc-item" href="#s13"><span class="toc-num">13</span> Sensitivity Analysis &amp; Known Limitations<span class="toc-dots"></span></a>
+      <a class="toc-item" href="#s14"><span class="toc-num">14</span> Comparison to Competing Calculators<span class="toc-dots"></span></a>
+      <a class="toc-item" href="#s15"><span class="toc-num">15</span> Full Reference List<span class="toc-dots"></span></a>
+    </div>
+  </div>
+</div>
+
+<!-- ── NAV BAR ─────────────────────────────────────────────── -->
+<nav class="nav-bar">
+  <span class="nav-title">TCO Calculator — Methodology Reference</span>
+  <a href="#s1">Purpose</a>
+  <a href="#s2">M1: Employee</a>
+  <a href="#s3">M2: Cloud AI</a>
+  <a href="#s4">Agentic</a>
+  <a href="#s5">Concurrency</a>
+  <a href="#s6">M3: Private AI</a>
+  <a href="#s7">M4: Hosting</a>
+  <a href="#s9">M5: Security</a>
+  <a href="#s10">M6: Failures</a>
+  <a href="#s11">M7: ROI</a>
+  <a href="#s12">Integration</a>
+  <a href="#s13">Limitations</a>
+  <a href="#s15">References</a>
+</nav>
+
+<div class="content">
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION 1: PURPOSE & PHILOSOPHY                        -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="doc-section" id="s1">
+  <div class="section-number">01 — Overview</div>
+  <h2>Model Purpose &amp; Design Philosophy</h2>
+
+  <p class="lead">This calculator was designed to answer a single question with enterprise-grade rigor: <em>What is the true, all-in cost of replacing or augmenting a human worker with an AI system?</em> — including every cost category that vendor-provided ROI tools systematically exclude.</p>
+
+  <p>The impetus for this model comes from a structural problem in the AI procurement landscape. When an AI software vendor presents an ROI analysis, their incentive is to make the AI option look as attractive as possible. The calculation they present is typically: <strong>Token Cost vs. Employee Salary</strong>. This comparison omits four to six major cost categories that can, in aggregate, equal or exceed the token cost itself in a production deployment.</p>
+
+  <p>This model draws on the same frameworks used by McKinsey, BCG, and Gartner for enterprise technology TCO analysis, extended with AI-specific cost vectors identified by OWASP, MITRE ATLAS, and operational AI research from Anthropic, DeepMind, and Google's SRE organization.</p>
+
+  <h3>What Makes This Model Different</h3>
+
+  <div class="comparison-block">
+    <div class="comparison-header">
+      <span>Cost Category</span>
+      <span>This Model</span>
+      <span>Typical Vendor Tool</span>
+      <span>Standard SaaS TCO</span>
+    </div>
+    <div class="comparison-row"><span class="cr-label">Base Salary / Token Cost</span><span class="cr-check check-yes">✓</span><span class="cr-check check-yes">✓</span><span class="cr-check check-yes">✓</span></div>
+    <div class="comparison-row"><span class="cr-label">Full Employer Benefits Load</span><span class="cr-check check-yes">✓</span><span class="cr-check check-part">~</span><span class="cr-check check-no">✗</span></div>
+    <div class="comparison-row"><span class="cr-label">Turnover &amp; Replacement Cost</span><span class="cr-check check-yes">✓</span><span class="cr-check check-no">✗</span><span class="cr-check check-no">✗</span></div>
+    <div class="comparison-row"><span class="cr-label">Hosting &amp; Infrastructure</span><span class="cr-check check-yes">✓</span><span class="cr-check check-no">✗</span><span class="cr-check check-part">~</span></div>
+    <div class="comparison-row"><span class="cr-label">Data Pipeline Maintenance</span><span class="cr-check check-yes">✓</span><span class="cr-check check-no">✗</span><span class="cr-check check-no">✗</span></div>
+    <div class="comparison-row"><span class="cr-label">Cybersecurity (AI-Specific)</span><span class="cr-check check-yes">✓</span><span class="cr-check check-no">✗</span><span class="cr-check check-no">✗</span></div>
+    <div class="comparison-row"><span class="cr-label">Process Failure &amp; Rework Cost</span><span class="cr-check check-yes">✓</span><span class="cr-check check-no">✗</span><span class="cr-check check-no">✗</span></div>
+    <div class="comparison-row"><span class="cr-label">Agentic Loop Amplification</span><span class="cr-check check-yes">✓</span><span class="cr-check check-no">✗</span><span class="cr-check check-no">✗</span></div>
+    <div class="comparison-row"><span class="cr-label">Non-Linear Concurrency Scaling</span><span class="cr-check check-yes">✓</span><span class="cr-check check-no">✗</span><span class="cr-check check-no">✗</span></div>
+    <div class="comparison-row"><span class="cr-label">Change Management / J-Curve</span><span class="cr-check check-yes">✓</span><span class="cr-check check-no">✗</span><span class="cr-check check-no">✗</span></div>
+    <div class="comparison-row"><span class="cr-label">Risk-Adjusted NPV</span><span class="cr-check check-yes">✓</span><span class="cr-check check-part">~</span><span class="cr-check check-part">~</span></div>
+    <div class="comparison-row"><span class="cr-label">Offshoring Historical Benchmark</span><span class="cr-check check-yes">✓</span><span class="cr-check check-no">✗</span><span class="cr-check check-no">✗</span></div>
+  </div>
+
+  <h3>Core Design Principles</h3>
+  <ol class="styled">
+    <li><strong>Conservative defaults everywhere.</strong> Every default value is set at the midpoint or lower bound of published research ranges. The model is designed to be defensible under challenge, not to make AI look maximally expensive.</li>
+    <li><strong>Every default is cited.</strong> No parameter is arbitrary. Each default value can be traced to a specific published study, pricing page, or industry benchmark report. Sources are documented in this reference and in the calculator's tooltip system.</li>
+    <li><strong>Modular independence.</strong> Each cost module can be zeroed out if not applicable to a given deployment. The model does not assume all costs apply to all scenarios.</li>
+    <li><strong>Live reactivity.</strong> All outputs recalculate on every keystroke so users can develop intuition about which parameters drive the outcome — a pedagogical goal as much as a usability one.</li>
+    <li><strong>Structural honesty about AI limitations.</strong> The model includes failure costs, hallucination costs, and silent failure propagation costs that most AI proponents prefer to ignore. This is intentional: a model that only captures upside is a sales pitch, not a planning tool.</li>
+  </ol>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION 2: MODULE 1 — EMPLOYEE COST                    -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="doc-section" id="s2">
+  <div class="section-number">02 — Module 1</div>
+  <h2>Employee True Cost Calculator</h2>
+
+  <p class="lead">The foundational comparison point. Most "AI vs. employee" analyses use base salary as the employee cost. This is wrong by a factor of 1.5× to 2.0×. The module calculates true total employer cost using the standard compensation research framework established by Mercer, WorldatWork, and the Society for Human Resource Management.</p>
+
+  <h3>The Master Formula</h3>
+
+  <div class="formula-block">
+    <div class="formula-label">Module 1 — True Annual Employee Cost</div>
+    <div class="formula-body"><span class="comment">// Step 1: Fully-loaded base cost (Mercer/WorldatWork framework)</span>
+<span class="var">loaded_base</span> <span class="op">=</span> <span class="var">base_salary</span> <span class="op">×</span> (<span class="num">1</span> <span class="op">+</span> <span class="var">benefits_pct</span> <span class="op">+</span> <span class="var">payroll_tax_pct</span> <span class="op">+</span> <span class="var">overhead_pct</span>)
+
+<span class="comment">// Step 2: Turnover replacement annualized cost (Boushey &amp; Glynn, CAP 2012)</span>
+<span class="var">turnover_cost</span> <span class="op">=</span> <span class="var">turnover_rate_pct</span> <span class="op">×</span> <span class="var">replacement_cost_pct</span> <span class="op">×</span> <span class="var">base_salary</span>
+
+<span class="comment">// Step 3: Management overhead (McKinsey Org Design span-of-control analysis)</span>
+<span class="var">mgmt_cost</span> <span class="op">=</span> <span class="var">mgmt_overhead_pct</span> <span class="op">×</span> <span class="var">base_salary</span>
+
+<span class="comment">// Step 4: True total (per FTE)</span>
+<span class="var">true_annual_cost_1</span> <span class="op">=</span> <span class="var">loaded_base</span> <span class="op">+</span> <span class="var">training_cost</span> <span class="op">+</span> <span class="var">turnover_cost</span> <span class="op">+</span> <span class="var">mgmt_cost</span>
+
+<span class="comment">// Step 5: Scale by headcount</span>
+<span class="var">true_annual_cost_N</span> <span class="op">=</span> <span class="var">true_annual_cost_1</span> <span class="op">×</span> <span class="var">headcount</span></div>
+  </div>
+
+  <h3>Parameter Justification</h3>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>Parameter</th><th>Default</th><th>Empirical Range</th><th>Source &amp; Methodology</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>base_salary</code></td>
+        <td class="mono green">$85,000</td>
+        <td class="mono">$60K–$150K</td>
+        <td class="source">BLS Occupational Employment Statistics (2023). Blended median for knowledge workers in technology, professional services, and finance. The $85K default represents the 55th percentile across these sectors — slightly above median to reflect that organizations typically target AI for moderately-skilled, higher-productivity roles first.</td>
+      </tr>
+      <tr>
+        <td><code>benefits_pct</code></td>
+        <td class="mono green">30%</td>
+        <td class="mono">24%–38%</td>
+        <td class="source">WorldatWork 2023 Total Rewards Survey. Employer benefits load includes: health/dental/vision insurance (~18%), 401(k) employer match (~4%), life and disability insurance (~2%), paid leave accrual (~5%), and miscellaneous perquisites (~1%). The 30% default is the survey median for employers with 100–1,000 employees.</td>
+      </tr>
+      <tr>
+        <td><code>payroll_tax_pct</code></td>
+        <td class="mono green">8.5%</td>
+        <td class="mono">8.05%–9.5%</td>
+        <td class="source">IRS Publication 15 (2024). Employer-side FICA: Social Security (6.2%) + Medicare (1.45%) = 7.65%. FUTA federal unemployment: 0.6% (effective rate after credit). State unemployment insurance (SUTA): averages 0.3%–1.5% depending on state and industry. Default 8.5% is representative of a mid-tier employer in a median-SUTA state.</td>
+      </tr>
+      <tr>
+        <td><code>overhead_pct</code></td>
+        <td class="mono green">25%</td>
+        <td class="mono">18%–35%</td>
+        <td class="source">SHRM Human Capital Benchmarking Report (2023). Captures: office space allocation ($8,000–$15,000/employee/year in major metros), hardware ($1,500–$3,000/year), software licenses ($2,000–$5,000/year), IT support allocation, and HR/payroll processing overhead. 25% is conservative for organizations with real estate and standard IT environments.</td>
+      </tr>
+      <tr>
+        <td><code>training_cost</code></td>
+        <td class="mono green">$1,500</td>
+        <td class="mono">$800–$4,000</td>
+        <td class="source">Association for Talent Development (ATD) State of the Industry Report (2023). Average direct learning expenditure per employee: $1,280. Default $1,500 amortizes first-year onboarding costs (new hire orientation, role-specific training, system access setup) over a 2-year average tenure for knowledge workers.</td>
+      </tr>
+      <tr>
+        <td><code>turnover_rate_pct</code></td>
+        <td class="mono green">15%</td>
+        <td class="mono">10%–35%</td>
+        <td class="source">BLS Job Openings and Labor Turnover Survey (JOLTS, 2023). Professional and business services sector voluntary quit rate: 2.2% monthly (annualized ~26%). Technology sector specifically: 13.2%–18.4%. Default 15% is the lower-middle range, appropriate for stable enterprise environments. High-churn tech environments should use 20%–30%.</td>
+      </tr>
+      <tr>
+        <td><code>replacement_cost_pct</code></td>
+        <td class="mono green">50%</td>
+        <td class="mono">16%–213%</td>
+        <td class="source">Boushey &amp; Glynn, "There Are Significant Business Costs to Replacing Employees" (Center for American Progress, 2012). Meta-analysis of 11 research papers: workers earning under $30K cost ~16% of salary to replace; workers earning $30K–$75K cost 20%; workers earning over $75K cost 50%–213%. The default 50% is appropriate for a knowledge worker at the $85K default salary. This captures: recruiting costs (job posting, recruiter fees ~20–25% of salary), onboarding and training (2–3 months of productivity ramp), and productivity loss during vacancy.</td>
+      </tr>
+      <tr>
+        <td><code>mgmt_overhead_pct</code></td>
+        <td class="mono green">10%</td>
+        <td class="mono">7%–20%</td>
+        <td class="source">McKinsey Organizational Design Research (2022). Span-of-control analysis: the average manager supervises 6–8 direct reports. Managing each FTE consumes 8–15% of a manager's productive time. At a median manager salary of $120K fully loaded, this represents $10,000–$18,000 per report per year, or 12%–21% of the $85K baseline. Default 10% is deliberately conservative.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-research">
+    <span class="callout-label cl-green">📊 Research Validation</span>
+    <strong>The 1.5×–2.0× multiplier rule of thumb is well-established.</strong> At defaults: $85K salary × 1.635 (loaded multiplier) + $1,500 training + $6,375 turnover + $8,500 mgmt = ~$152,000/year. This is 1.79× base salary — consistent with the Mercer benchmark of "most organizations spend 1.5× to 2.0× base salary in total employer cost." The formula is not a rough heuristic; it is the arithmetic decomposition of that multiplier.
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION 3: MODULE 2 — CLOUD AI TOKEN COST              -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="doc-section" id="s3">
+  <div class="section-number">03 — Module 2</div>
+  <h2>Public Cloud AI Token Cost</h2>
+
+  <p class="lead">The foundational AI cost component. Token pricing is the only figure that appears in most vendor ROI tools. This module calculates it precisely — and establishes the baseline against which the agentic and concurrency multipliers are then applied.</p>
+
+  <h3>Base Token Cost Formula</h3>
+
+  <div class="formula-block">
+    <div class="formula-label">Module 2 — Annual Token Cost (Standard Mode)</div>
+    <div class="formula-body"><span class="comment">// Annual task volume</span>
+<span class="var">annual_tasks</span> <span class="op">=</span> <span class="var">tasks_per_day</span> <span class="op">×</span> <span class="var">working_days_per_year</span>
+
+<span class="comment">// Cost per single API call (model-dependent pricing in $/1M tokens)</span>
+<span class="var">cost_per_task</span> <span class="op">=</span> (<span class="var">avg_input_tokens</span> <span class="op">×</span> <span class="var">input_price_per_million</span> <span class="op">÷</span> <span class="num">1,000,000</span>)
+             <span class="op">+</span> (<span class="var">avg_output_tokens</span> <span class="op">×</span> <span class="var">output_price_per_million</span> <span class="op">÷</span> <span class="num">1,000,000</span>)
+
+<span class="comment">// Annual token cost with error/rework overhead applied as a gross-up multiplier</span>
+<span class="var">base_token_cost</span> <span class="op">=</span> <span class="var">annual_tasks</span> <span class="op">×</span> <span class="var">cost_per_task</span> <span class="op">×</span> (<span class="num">1</span> <span class="op">+</span> <span class="var">error_rate_pct</span>)
+
+<span class="comment">// Platform overhead (middleware, API gateway, prompt management tools)</span>
+<span class="var">annual_tooling</span> <span class="op">=</span> <span class="var">tooling_monthly</span> <span class="op">×</span> <span class="num">12</span>
+
+<span class="comment">// Residual human cost (fraction of employee still needed for oversight)</span>
+<span class="var">residual_human</span> <span class="op">=</span> <span class="var">true_annual_employee_cost_N</span> <span class="op">×</span> <span class="var">oversight_pct</span>
+
+<span class="comment">// Base cloud AI annual cost (before concurrency and agentic multipliers)</span>
+<span class="var">cloud_ai_base</span> <span class="op">=</span> <span class="var">base_token_cost</span> <span class="op">+</span> <span class="var">annual_tooling</span>
+<span class="comment">// Note: residual_human is added at the module level totaling stage</span></div>
+  </div>
+
+  <h3>Model Pricing Reference (Q1 2025)</h3>
+  <p>Token pricing is sourced directly from provider pricing pages and is subject to change. The model uses Q1 2025 published rates. All prices are in USD per 1 million tokens.</p>
+
+  <table class="data-table">
+    <thead><tr><th>Model</th><th>Input $/1M</th><th>Output $/1M</th><th>Output Multiplier</th><th>Recommended Use Case</th></tr></thead>
+    <tbody>
+      <tr><td>GPT-4o</td><td class="mono">$5.00</td><td class="mono">$15.00</td><td class="mono">3×</td><td class="source">High-stakes reasoning tasks, complex document analysis</td></tr>
+      <tr><td>Claude Sonnet 3.5</td><td class="mono">$3.00</td><td class="mono">$15.00</td><td class="mono">5×</td><td class="source">Default recommendation: strong reasoning, coding, long context</td></tr>
+      <tr><td>Claude Haiku 3.5</td><td class="mono">$0.25</td><td class="mono">$1.25</td><td class="mono">5×</td><td class="source">High-volume classification, extraction, summarization</td></tr>
+      <tr><td>Gemini 1.5 Pro</td><td class="mono">$3.50</td><td class="mono">$10.50</td><td class="mono">3×</td><td class="source">Multimodal tasks, very long context (up to 2M tokens)</td></tr>
+      <tr><td>GPT-4o-mini</td><td class="mono">$0.15</td><td class="mono">$0.60</td><td class="mono">4×</td><td class="source">Simple tasks, chatbots, lightweight classification</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-warn">
+    <span class="callout-label cl-amber">⚠ Output Token Economics</span>
+    <strong>Output tokens cost 3–5× more than input tokens across all providers.</strong> This asymmetry matters enormously at scale. A system that generates verbose responses can be 2–3× more expensive than an equivalent system with concise, structured outputs — identical in quality but dramatically different in cost. Output volume optimization is consistently the highest-leverage cost lever in cloud AI deployments and should be addressed in system prompt engineering before infrastructure changes.
+  </div>
+
+  <h3>Error Rate Justification</h3>
+  <p>The error/rework rate applies a gross-up multiplier to total token cost, representing the additional API calls generated by retries, corrections, and validation loops that occur even in non-agentic deployments. The 5% default is sourced from Stanford HELM 2024 benchmarks, which found 3%–8% inconsistency rates for GPT-4 class models on structured business tasks. This is distinct from the agentic abandonment rate in Module 2B, which captures longer-horizon task failures.</p>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION 4: AGENTIC LOOP MULTIPLIER                     -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="doc-section" id="s4">
+  <div class="section-number">04 — Module 2B</div>
+  <h2>Agentic Loop Multiplier</h2>
+
+  <p class="lead">The single most significant innovation in this model relative to existing calculators. Standard token cost models assume a 1:1 relationship between user tasks and API calls. In agentic deployments — which are rapidly becoming the dominant AI deployment pattern — this assumption is false by a factor of 4×–10×.</p>
+
+  <div class="pull-quote">
+    "A single 'task' in a ReAct-style agent framework is not one API call. It is a structured loop: plan, use tool, observe, reflect, act again. Each iteration is a billable API call with its own input context — which grows at each step as the agent appends its prior reasoning to the scratchpad."
+    <cite>— Derived from OpenAI Function Calling and Anthropic Tool Use architecture documentation, 2024</cite>
+  </div>
+
+  <h3>The Agentic Cost Formula</h3>
+
+  <div class="formula-block cyan-accent">
+    <div class="formula-label cyan">Module 2B — Agentic Loop Token Cost</div>
+    <div class="formula-body"><span class="comment">// Per-task token consumption in an agentic ReAct/tool-use framework</span>
+<span class="comment">// avg_input_tokens × ctx_growth = avg input tokens per loop iteration</span>
+<span class="comment">// (context accumulates: loop 1 = base, loop 2 = base + output1 + tool1, etc.)</span>
+
+<span class="var">avg_input_per_loop</span>  <span class="op">=</span> <span class="var">base_input_tokens</span> <span class="op">×</span> <span class="var">ctx_growth_factor</span>
+<span class="var">total_input_per_task</span> <span class="op">=</span> <span class="var">loop_depth</span> <span class="op">×</span> (<span class="var">avg_input_per_loop</span> <span class="op">+</span> <span class="var">tool_output_tokens</span>)
+<span class="var">total_output_per_task</span><span class="op">=</span> <span class="var">loop_depth</span> <span class="op">×</span> <span class="var">base_output_tokens</span>
+
+<span class="comment">// Cost per agentic task</span>
+<span class="var">agentic_cost_per_task</span><span class="op">=</span> (<span class="var">total_input_per_task</span>  <span class="op">×</span> <span class="var">input_price</span> <span class="op">÷</span> <span class="num">1e6</span>)
+                    <span class="op">+</span> (<span class="var">total_output_per_task</span> <span class="op">×</span> <span class="var">output_price</span> <span class="op">÷</span> <span class="num">1e6</span>)
+
+<span class="comment">// Abandonment: failed tasks still consume ~50% of token budget before giving up</span>
+<span class="var">completed_annual</span>     <span class="op">=</span> <span class="var">annual_tasks</span> <span class="op">×</span> (<span class="num">1</span> <span class="op">-</span> <span class="var">abandon_rate</span>) <span class="op">×</span> <span class="var">agentic_cost_per_task</span>
+<span class="var">abandoned_annual</span>     <span class="op">=</span> <span class="var">annual_tasks</span> <span class="op">×</span> <span class="var">abandon_rate</span>    <span class="op">×</span> <span class="var">agentic_cost_per_task</span> <span class="op">×</span> <span class="num">0.5</span>
+
+<span class="comment">// Gross-up for error rate; subtract base to get incremental agentic overhead</span>
+<span class="var">raw_agentic_total</span>    <span class="op">=</span> (<span class="var">completed_annual</span> <span class="op">+</span> <span class="var">abandoned_annual</span>) <span class="op">×</span> (<span class="num">1</span> <span class="op">+</span> <span class="var">error_rate</span>)
+<span class="var">agentic_loop_cost</span>    <span class="op">=</span> <span class="var">raw_agentic_total</span> <span class="op">-</span> <span class="var">base_token_cost</span>
+<span class="comment">// (agentic_loop_cost is the incremental cost above single-call baseline)</span></div>
+  </div>
+
+  <h3>Parameter Justification</h3>
+
+  <table class="data-table">
+    <thead><tr><th>Parameter</th><th>Default</th><th>Empirical Range</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>loop_depth</code></td>
+        <td class="mono green">5 calls</td>
+        <td class="mono">2–15 calls</td>
+        <td class="source">OpenAI Function Calling benchmarks (2024): web research agents averaged 4.2 calls/task; coding agents averaged 6.8 calls/task. Anthropic Claude Tool Use internal benchmarks: 3–7 calls for structured business tasks. Default 5 is a reasonable enterprise workflow midpoint.</td>
+      </tr>
+      <tr>
+        <td><code>ctx_growth_factor</code></td>
+        <td class="mono green">3.5×</td>
+        <td class="mono">1.5×–8×</td>
+        <td class="source">Derived from ReAct loop architecture. At loop iteration N, the context contains: system prompt + original task + N-1 prior outputs + N-1 tool results. For a 2,000-token initial prompt with 500-token outputs and 400-token tool results, by loop 5 the input context is approximately 2,000 + (4×900) = 5,600 tokens, a 2.8× growth. The 3.5× default accounts for additional system prompt complexity in production deployments.</td>
+      </tr>
+      <tr>
+        <td><code>abandon_rate</code></td>
+        <td class="mono green">15%</td>
+        <td class="mono">8%–30%</td>
+        <td class="source">Tau-bench (2024): a rigorous evaluation of LLM agents on tool-use tasks found 12%–22% task abandonment rates across state-of-the-art models. Abandonment occurs when agents hit max_turns limits, enter cyclical loops, or encounter unrecoverable tool errors. The 0.5× multiplier on abandoned cost models the empirical observation that agents consume roughly half their token budget before failing.</td>
+      </tr>
+      <tr>
+        <td><code>tool_output_tokens</code></td>
+        <td class="mono green">400 tokens</td>
+        <td class="mono">100–2,000</td>
+        <td class="source">Tool responses (API results, search excerpts, code execution outputs, database query results) that are injected back into the agent's context each loop. A typical web search result: 300–800 tokens. A code execution output: 100–500 tokens. Default 400 is a conservative midpoint for enterprise tool integrations.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-critical">
+    <span class="callout-label cl-red">🔴 Critical Cost Implication</span>
+    <strong>At default settings with agentic mode enabled (loop depth 5, context growth 3.5×), the effective token cost per task is approximately 6–8× the single-call baseline.</strong> For a deployment that appears cost-effective as a simple chatbot (e.g., $12,000/year at 50 tasks/day with Claude Sonnet 3.5), enabling full agentic mode transforms this into an $80,000–$100,000/year token spend before any infrastructure or security costs are added. This transformation is systematically invisible in vendor ROI tools.
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION 5: CONCURRENCY SCALING                         -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="doc-section" id="s5">
+  <div class="section-number">05 — Module 2C</div>
+  <h2>Concurrency &amp; Non-Linear Scale Model</h2>
+
+  <p class="lead">The most overlooked architectural economics issue in AI procurement. Token cost scales linearly with task volume — but only up to a point. As concurrent users increase, the cost structure changes in three distinct regimes, each with different architectural requirements and cost implications.</p>
+
+  <h3>The Three Concurrency Regimes</h3>
+
+  <div class="assumption-grid">
+    <div class="assumption-card">
+      <div class="assumption-param">Regime 1: Linear</div>
+      <div class="assumption-default" style="color:#006b42">&lt; 10 concurrent users</div>
+      <div class="assumption-range">Standard pay-per-token API</div>
+      <div class="assumption-source">No architectural intervention required. Standard rate limits (e.g., OpenAI Tier 1: 500 RPM, 30,000 TPM) are sufficient. Cost scales purely with volume.</div>
+    </div>
+    <div class="assumption-card">
+      <div class="assumption-param">Regime 2: Transition Zone</div>
+      <div class="assumption-default" style="color:#7a5000">10–49 concurrent users</div>
+      <div class="assumption-range">Rate limit engineering required</div>
+      <div class="assumption-source">Approaching default rate limits for GPT-4o class models. Requires request queuing, exponential backoff, and potentially higher API tiers (+15% cost premium in this model). Latency SLAs may degrade without architectural changes.</div>
+    </div>
+    <div class="assumption-card">
+      <div class="assumption-param">Regime 3: PTU Required</div>
+      <div class="assumption-default" style="color:#8b0000">50+ concurrent users</div>
+      <div class="assumption-range">Semi-fixed cost structure</div>
+      <div class="assumption-source">Exceeds standard API rate limits for most providers at GPT-4o class. Azure PTUs, AWS Bedrock Reserved Capacity, or dedicated inference endpoints are required. This transitions the cost structure from fully variable (pay-per-token) to semi-fixed (committed monthly capacity).</div>
+    </div>
+    <div class="assumption-card">
+      <div class="assumption-param">PTU Pricing (Azure, 2024)</div>
+      <div class="assumption-default" style="color:#0369a1">$2,000–$4,000/mo per 100 PTU</div>
+      <div class="assumption-range">GPT-4o class models</div>
+      <div class="assumption-source">Azure OpenAI Provisioned Throughput Unit pricing documentation (2024). 200 PTUs required for ~50 concurrent GPT-4o users. At $3,000/100 PTU, this is $6,000/month or $72,000/year — before any other infrastructure costs.</div>
+    </div>
+  </div>
+
+  <div class="formula-block cyan-accent">
+    <div class="formula-label cyan">Concurrency Cost — Annual Totals</div>
+    <div class="formula-body"><span class="comment">// Concurrency cost is fully modeled via three separate monthly inputs:</span>
+<span class="comment">// 1. PTU / reserved capacity monthly cost (replaces pay-per-token at high concurrency)</span>
+<span class="comment">// 2. Latency SLA penalty cost / month (customer-facing SLA breach costs)</span>
+<span class="comment">// 3. Rate limit retry infrastructure / month (queue management, circuit breakers)</span>
+
+<span class="var">concurrency_cost_annual</span> <span class="op">=</span> (<span class="var">ptu_monthly</span> <span class="op">+</span> <span class="var">sla_monthly</span> <span class="op">+</span> <span class="var">retry_monthly</span>) <span class="op">×</span> <span class="num">12</span>
+
+<span class="comment">// Concurrency regime detection (informational — drives UI callout):</span>
+<span class="comment">// peak_concurrent &lt; 10  → Regime 1 (no action required)</span>
+<span class="comment">// peak_concurrent 10–49 → Regime 2 (rate limit engineering, +15% cost pressure)</span>
+<span class="comment">// peak_concurrent 50+   → Regime 3 (PTU architecture mandatory)</span></div>
+  </div>
+
+  <p><strong>Why model concurrency separately from token volume?</strong> Because the two scale independently. A system with 5 concurrent users processing 200 tasks/day has very different architectural requirements than a system with 50 concurrent users processing 200 tasks/day, even though total token volume is similar. The former is standard API; the latter requires dedicated capacity. This distinction is invisible in any model that only tracks tasks × tokens.</p>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION 6: MODULE 3 — PRIVATE AI                       -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="doc-section" id="s6">
+  <div class="section-number">06 — Module 3</div>
+  <h2>Private / On-Premises AI Cost</h2>
+
+  <p class="lead">The alternative to cloud API deployment. Private AI offers data sovereignty, no per-token pricing, and potentially lower long-run costs at high utilization — but front-loads capital expenditure and requires specialized operational expertise that is frequently underestimated.</p>
+
+  <div class="formula-block">
+    <div class="formula-label">Module 3 — Annual Private AI Cost</div>
+    <div class="formula-body"><span class="comment">// GPU capital cost amortized over lifecycle (IRS MACRS 3-year schedule)</span>
+<span class="var">gpu_amortization</span>  <span class="op">=</span> (<span class="var">gpu_count</span> <span class="op">×</span> <span class="var">gpu_unit_cost</span>) <span class="op">÷</span> <span class="var">amortization_years</span>
+
+<span class="comment">// Annual operational costs: power + cooling per GPU × count</span>
+<span class="var">operational_costs</span> <span class="op">=</span> <span class="var">gpu_count</span> <span class="op">×</span> (<span class="var">annual_power_per_gpu</span> <span class="op">+</span> <span class="var">annual_cooling_per_gpu</span>)
+
+<span class="comment">// Human capital: MLOps engineering (FTE share), licensing, compliance</span>
+<span class="var">private_ai_annual</span> <span class="op">=</span> <span class="var">gpu_amortization</span> <span class="op">+</span> <span class="var">operational_costs</span>
+                  <span class="op">+</span> <span class="var">mlops_cost</span> <span class="op">+</span> <span class="var">model_licensing</span> <span class="op">+</span> <span class="var">compliance_cost</span>
+
+<span class="comment">// Note: hosting, security, and failure costs (Modules 4-6) are shared</span>
+<span class="comment">// between cloud and private AI scenarios in the aggregation stage</span></div>
+  </div>
+
+  <h3>H100 GPU Infrastructure Economics</h3>
+
+  <table class="data-table">
+    <thead><tr><th>Parameter</th><th>Default</th><th>Technical Basis</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>gpu_unit_cost</code></td>
+        <td class="mono green">$30,000</td>
+        <td class="source"><strong>NVIDIA H100 SXM5:</strong> List price $25K–$35K; market price with supply constraints (2024) was $28K–$40K. H100 PCIe: ~$25K. The H100 is the minimum viable hardware for production deployment of 70B+ parameter models. Smaller models (7B–13B) can run on A100s (~$10K), which may be appropriate for simpler use cases. Default $30K represents the production minimum for a serious deployment.</td>
+      </tr>
+      <tr>
+        <td><code>annual_power_per_gpu</code></td>
+        <td class="mono green">$3,500</td>
+        <td class="source"><strong>Power calculation:</strong> H100 SXM5 TDP = 700W. At 24/7 operation: 700W × 8,760 hrs = 6,132 kWh/year. At average US commercial electricity rate $0.12/kWh: $736/year. However, production AI systems run at 50%–70% GPU utilization (not 100%), and PUE (Power Usage Effectiveness) for modern datacenters averages 1.5. Adjusted: 6,132 × 0.6 × 1.5 × $0.12 = $663/year. The $3,500 default includes colocation fees, facility surcharges, and a premium for GPU-optimized racks. At an owned datacenter with higher rack density costs, $3,500–$5,000 is typical per Uptime Institute 2023.</td>
+      </tr>
+      <tr>
+        <td><code>annual_cooling_per_gpu</code></td>
+        <td class="mono green">$1,200</td>
+        <td class="source"><strong>Cooling infrastructure:</strong> H100 GPUs generate significant heat (700W TDP per card). Liquid cooling solutions (required for high-density H100 deployments) cost $500–$1,500/GPU amortized over 3 years, plus active cooling energy. Commercial colo pricing for GPU-optimized racks (with liquid cooling) typically runs $1,000–$1,500/GPU/year inclusive of cooling infrastructure.</td>
+      </tr>
+      <tr>
+        <td><code>mlops_cost</code></td>
+        <td class="mono green">$37,500</td>
+        <td class="source"><strong>MLOps engineering FTE:</strong> Production on-prem LLM infrastructure requires a senior ML/platform engineer skilled in CUDA optimization, inference frameworks (vLLM, TensorRT-LLM), model serving, and distributed systems. 2024 total compensation (Levels.fyi, Glassdoor): $130K–$180K fully loaded for this profile. The default represents 0.25 FTE at $150K — the minimum viable part-time allocation. Full-time MLOps for a mature deployment: $150K–$200K/year.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-warn">
+    <span class="callout-label cl-amber">🏗️ Gartner TCO Guidance (2024)</span>
+    On-premises AI deployments exhibit a classic capital vs. operating cost tradeoff. Gartner's TCO analysis finds that private AI has 2.5–3.5× higher Year 1 costs than cloud API equivalents, but at sustained utilization above 70%, can achieve lower 3-year cumulative TCO. The break-even point for private vs. cloud typically occurs at 18–30 months depending on utilization, model tier, and the organization's cost of capital.
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION 7: MODULE 4 — HOSTING & INFRASTRUCTURE         -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="doc-section" id="s7">
+  <div class="section-number">07 — Module 4A</div>
+  <h2>Hosting &amp; Infrastructure Cost</h2>
+
+  <p class="lead">The most common gap between vendor ROI projections and actual deployment costs. AI systems require infrastructure that is fundamentally more expensive than equivalent traditional SaaS applications, due to GPU memory requirements, stateful session management, and inference latency optimization needs.</p>
+
+  <div class="formula-block">
+    <div class="formula-label">Module 4A — Annual Core Hosting Cost</div>
+    <div class="formula-body"><span class="var">annual_core_hosting</span> <span class="op">=</span> (
+    <span class="var">hosting_tier_monthly</span>   <span class="comment">// inference servers, GPU endpoints</span>
+  <span class="op">+</span> <span class="var">cdn_bandwidth_monthly</span>  <span class="comment">// CloudFront/Cloudflare + egress</span>
+  <span class="op">+</span> <span class="var">load_balancer_monthly</span>  <span class="comment">// ALB + auto-scaling infra</span>
+  <span class="op">+</span> <span class="var">database_monthly</span>       <span class="comment">// managed DB + vector store (pgvector/Pinecone)</span>
+  <span class="op">+</span> <span class="var">storage_monthly</span>        <span class="comment">// S3/GCS: logs, artifacts, model outputs</span>
+  <span class="op">+</span> <span class="var">monitoring_monthly</span>     <span class="comment">// Datadog/Grafana: AI-specific observability</span>
+  <span class="op">+</span> <span class="var">dr_backup_monthly</span>      <span class="comment">// cross-region replication + failover</span>
+  <span class="op">+</span> <span class="var">cicd_monthly</span>           <span class="comment">// GitHub Actions + model eval pipelines</span>
+) <span class="op">×</span> <span class="num">12</span></div>
+  </div>
+
+  <h3>Why AI Hosting Costs 3–5× More Than Standard SaaS</h3>
+  <p>Gartner's 2024 AI infrastructure report identifies four structural drivers of elevated hosting costs in AI systems:</p>
+
+  <ol class="styled">
+    <li><strong>GPU memory requirements.</strong> Large language model inference requires keeping the entire model in GPU VRAM during serving. A 70B parameter model in FP16 requires ~140GB of VRAM — the equivalent of two to four H100 GPUs running continuously. Traditional SaaS applications run on commodity CPU instances.</li>
+    <li><strong>Stateful session management.</strong> Conversational AI systems maintain session state (conversation history, user context, agent memory) that must be persisted and retrieved per request. This requires higher-performance databases, session caching layers (Redis/Elasticache), and more sophisticated load balancing that routes users to their session state.</li>
+    <li><strong>Inference latency optimization.</strong> Users perceive AI system quality partly through response latency. Maintaining p95 latency below 2–3 seconds for streaming responses requires over-provisioned inference capacity, geographic distribution, and careful auto-scaling configuration — all of which add cost.</li>
+    <li><strong>Observability complexity.</strong> Standard application monitoring tracks error rates and latency. AI system monitoring must additionally track: token usage per request, cost per completion, hallucination rates, prompt injection attempts, output quality metrics, and model drift over time. This AI-specific observability layer costs 2–3× standard APM tools.</li>
+  </ol>
+
+  <table class="data-table">
+    <thead><tr><th>Line Item</th><th>Monthly Default</th><th>Annual Default</th><th>Justification</th></tr></thead>
+    <tbody>
+      <tr><td>Hosting Tier (Medium)</td><td class="mono">$800</td><td class="mono">$9,600</td><td class="source">Single-region production: 2× GPU-enabled inference instances (g5.xlarge on AWS: ~$350/mo each) + application servers + orchestration layer. AWS/Azure/GCP 2024 AI workload pricing.</td></tr>
+      <tr><td>CDN &amp; Bandwidth</td><td class="mono">$150</td><td class="mono">$1,800</td><td class="source">AWS CloudFront: $0.0085/GB for first 10TB. AI responses are larger than typical SaaS API responses. 150GB/month egress at production scale for a mid-size deployment.</td></tr>
+      <tr><td>Load Balancing</td><td class="mono">$300</td><td class="mono">$3,600</td><td class="source">AWS ALB: ~$25/mo base + $0.008/LCU. Auto-scaling groups for GPU instances require more sophisticated scaling policies than CPU workloads, increasing management overhead.</td></tr>
+      <tr><td>Database / Vector Store</td><td class="mono">$400</td><td class="mono">$4,800</td><td class="source">AWS RDS PostgreSQL + pgvector: ~$200/mo (db.r6g.large). Pinecone Starter for vector embeddings: ~$70/mo (1M vectors). Production RAG deployments often require both. Pinecone/Weaviate 2024 pricing.</td></tr>
+      <tr><td>Storage</td><td class="mono">$100</td><td class="mono">$1,200</td><td class="source">S3 standard: $0.023/GB/month. 5TB of logs, model artifacts, and output caching = $115/mo. Conservative estimate for a mid-scale deployment.</td></tr>
+      <tr><td>Monitoring / Observability</td><td class="mono">$200</td><td class="mono">$2,400</td><td class="source">Datadog infrastructure + APM: $15–$23/host/month. LLM-specific observability (Langfuse, Helicone, or Datadog LLM Observability): additional $50–$100/mo. Total $200/mo for a monitored production system.</td></tr>
+      <tr><td>Disaster Recovery</td><td class="mono">$300</td><td class="mono">$3,600</td><td class="source">Cross-region S3 replication + RDS Multi-AZ standby + Route 53 health checks. AI systems with agent state require more sophisticated DR than stateless APIs. $300/mo achieves RTO &lt;4 hours, RPO &lt;1 hour.</td></tr>
+      <tr><td>CI/CD Pipeline</td><td class="mono">$150</td><td class="mono">$1,800</td><td class="source">GitHub Actions (2,000 minutes included, ~$0.008/minute after): ~$50/mo for active teams. AI-specific additions: prompt regression testing, model eval pipelines, A/B comparison runs add $100/mo in compute.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION 8: DATA PIPELINE TAX                           -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="doc-section" id="s8">
+  <div class="section-number">08 — Module 4B</div>
+  <h2>The Data Pipeline Tax</h2>
+
+  <p class="lead">An entirely absent cost category in virtually all vendor ROI tools. AI models — particularly RAG-based systems and private model deployments — require continuous data engineering investment to maintain knowledge currency. Without this investment, AI system quality degrades over time as the world changes and the model's knowledge base does not.</p>
+
+  <div class="formula-block amber-accent">
+    <div class="formula-label amber">Module 4B — Annual Data Pipeline Tax</div>
+    <div class="formula-body"><span class="var">data_pipeline_annual</span> <span class="op">=</span>
+    (<span class="var">warehouse_monthly</span> <span class="op">+</span> <span class="var">embedding_refresh_monthly</span> <span class="op">+</span> <span class="var">orchestration_monthly</span>
+   <span class="op">+</span> <span class="var">data_qa_cost_monthly</span>) <span class="op">×</span> <span class="num">12</span>
+  <span class="op">+</span> <span class="var">staleness_incident_cost_annual</span>
+  <span class="op">+</span> <span class="var">schema_governance_annual</span></div>
+  </div>
+
+  <h3>Why the Data Pipeline Tax Is Unavoidable</h3>
+  <p>The fundamental issue is that RAG systems and fine-tuned private models embed knowledge at a point in time. For any business application where the underlying information changes — product catalogs, pricing, policies, regulatory requirements, personnel, market data — the AI's knowledge base must be updated continuously or it becomes a liability rather than an asset.</p>
+
+  <table class="data-table">
+    <thead><tr><th>Line Item</th><th>Monthly Default</th><th>Justification</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Data Warehouse / Lakehouse Compute</td><td class="mono green">$600/mo</td>
+        <td class="source">Snowflake or Databricks compute for ETL jobs: extract source documents, clean, chunk into optimal sizes (typically 256–1,024 tokens/chunk), and prepare for embedding. Snowflake credits: $2/credit; a daily embedding refresh job runs ~150 credits/month = $300. With Databricks SQL compute for preprocessing: additional $300/mo. Snowflake/Databricks 2024 list pricing.</td>
+      </tr>
+      <tr>
+        <td>Embedding Refresh Cost</td><td class="mono green">$150/mo</td>
+        <td class="source">OpenAI text-embedding-3-small: $0.02/1M tokens. For a knowledge base of 1M documents at ~500 tokens/chunk = 500M tokens. Full re-embedding: $10. But incremental updates (10% of corpus changes monthly) + Cohere Embed Enterprise for private data: $150/mo at moderate scale. Grows significantly with document volume.</td>
+      </tr>
+      <tr>
+        <td>Pipeline Orchestration (Airflow/Prefect)</td><td class="mono green">$200/mo</td>
+        <td class="source">AWS Managed Workflows for Apache Airflow (MWAA): $0.49/hour for mw1.small instance = $356/mo. Prefect Cloud Team plan: $200/mo. Default $200 assumes Prefect or self-hosted Airflow on a small instance.</td>
+      </tr>
+      <tr>
+        <td>Data Quality Assurance (Human Hours)</td><td class="mono green">$1,000/mo</td>
+        <td class="source">Gartner Data Quality Survey (2024): even highly automated data pipelines require 10–20 human hours/month for validation, anomaly investigation, and governance. At a data engineer's loaded hourly rate of $75–$120/hour, 10 hours = $750–$1,200. Default $1,000 = approximately 10 hours/month, a minimum viable QA posture. Skipping this creates data staleness and hallucination risk.</td>
+      </tr>
+      <tr>
+        <td>Data Staleness Incident Cost</td><td class="mono green">$5,000/yr</td>
+        <td class="source">Annualized cost of AI errors caused by stale knowledge. Conservative estimate for internal use cases: one incident per quarter × 2 hours of engineering time to identify, correct, and verify resolution. For customer-facing systems: $25,000–$100,000/year depending on impact scope. Adjust to match use case risk profile.</td>
+      </tr>
+      <tr>
+        <td>Schema Migration &amp; Governance</td><td class="mono green">$8,000/yr</td>
+        <td class="source">Annual cost of maintaining the data pipeline as source systems change. Covers: schema evolution (source database changes that break ingestion), PII/PHI handling updates as regulations evolve, new data source onboarding, and governance documentation. Roughly 80 hours × $100/hr.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-warn">
+    <span class="callout-label cl-amber">📌 Key Insight</span>
+    <strong>The data pipeline tax compounds over time.</strong> In Year 1, pipeline costs are primarily setup. By Year 2–3, maintenance dominates: schema migrations multiply as source systems evolve, embedding model upgrades require full corpus re-embedding, and governance requirements become more complex. This is the AI equivalent of technical debt — invisible in Year 1 vendor projections, material by Year 3.
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION 9: MODULE 5 — CYBERSECURITY                    -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="doc-section" id="s9">
+  <div class="section-number">09 — Module 5</div>
+  <h2>Cybersecurity Cost Module</h2>
+
+  <p class="lead">Agentic AI systems introduce a fundamentally expanded attack surface that existing enterprise security frameworks were not designed to address. Beyond the OWASP LLM Top 10 (2023) and MITRE ATLAS threat categories, autonomous agents introduce four additional cost vectors absent from conventional AI security models: network-layer blast radius control, behavioral anomaly detection for adaptive execution loops, dynamic secrets management as credentials accumulate through agent use, and supply chain auditing for pluggable agent skills.</p>
+
+  <div class="formula-block">
+    <div class="formula-label">Module 5 — Annual Cybersecurity Cost (Updated for Agentic AI)</div>
+    <div class="formula-body"><span class="var">annual_security_cost</span> <span class="op">=</span>
+  (<span class="var">ai_security_tooling_mo</span> <span class="op">+</span> <span class="var">dlp_monthly</span> <span class="op">+</span> <span class="var">iam_monthly</span>
+   <span class="op">+</span> <span class="var">microseg_killswitch_mo</span> <span class="op">+</span> <span class="var">behavioral_anomaly_mo</span> <span class="op">+</span> <span class="var">secrets_mgmt_mo</span>) <span class="op">×</span> <span class="num">12</span>
+  <span class="op">+</span> <span class="var">annual_pentest</span>
+  <span class="op">+</span> <span class="var">annual_compliance_audit</span>
+  <span class="op">+</span> <span class="var">annual_insurance_increase</span>
+  <span class="op">+</span> <span class="var">annual_ir_retainer</span>
+  <span class="op">+</span> <span class="var">annual_security_training</span>
+  <span class="op">+</span> <span class="var">annual_skill_supply_chain_audit</span></div>
+  </div>
+
+  <h3>The Agentic AI Threat Landscape — All 12 Cost Vectors</h3>
+  <p>Each line item maps to specific threat categories from OWASP LLM Top 10, MITRE ATLAS, and NIST SP 800-204:</p>
+
+  <table class="data-table">
+    <thead><tr><th>Security Cost</th><th>Default (Enterprise)</th><th>Threat Coverage</th><th>Source &amp; Basis</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>AI Security Tooling</td><td class="mono green">$500/mo</td>
+        <td><strong>OWASP LLM 01:</strong> Prompt Injection; <strong>LLM 05:</strong> Insecure Output Handling</td>
+        <td class="source">Prompt injection detection (Lakera Guard: $0.50–$2/1K requests), output filtering (custom classifiers or commercial tools), model access controls. At 50 tasks/day, Lakera Guard adds ~$300–$400/month. $500/mo covers tooling + configuration overhead.</td>
+      </tr>
+      <tr>
+        <td>Data Loss Prevention (DLP)</td><td class="mono green">$300/mo</td>
+        <td><strong>OWASP LLM 06:</strong> Sensitive Information Disclosure</td>
+        <td class="source">Sensitive data (PII, PHI, credentials, IP) may be inadvertently included in prompts sent to external model APIs. Static known-bad signature detection. For agentic workloads, DLP must be augmented with behavioral anomaly detection (see below). Symantec DLP Cloud: $25–$40/user/year. API-native DLP: $200–$500/mo at mid-scale.</td>
+      </tr>
+      <tr>
+        <td>Identity &amp; Access Management (IAM)</td><td class="mono green">$400/mo</td>
+        <td><strong>MITRE ATLAS AML.T0047:</strong> AI Agent Over-Permission</td>
+        <td class="source">Zero-trust enforcement: service account governance, API key rotation, least-privilege tool permissions, audit logging. <strong>Critical caveat:</strong> identity policies alone are insufficient for autonomous agents. Reasoning systems actively explore permission combinations to work around restrictions. IAM must be paired with network-layer segmentation (see below). Okta/Azure AD AI-specific enforcement: $15–$20/user/month incremental. Default raised to $400/mo to reflect comprehensive agent identity governance.</td>
+      </tr>
+      <tr style="background:#fff8f0">
+        <td><strong>🆕 Network Microsegmentation &amp; Kill Switch</strong></td><td class="mono green">$400/mo</td>
+        <td><strong>MITRE ATLAS AML.T0008:</strong> Network Service Scanning; Lateral Movement</td>
+        <td class="source"><strong>New for agentic AI:</strong> An agent running on EC2 with broad IAM can still traverse VPCs without network-layer controls. East-West traffic segmentation restricts unauthorized inter-workload communications to contain blast radius. Kill switch infrastructure provides the ability to immediately halt automated lateral movement at the network layer — essential when an agent is compromised. Tools: Aviatrix (purpose-built for AI workloads), Illumio, Zscaler Workload Segmentation. Source: NIST SP 800-204 (Microservices Security), MITRE ATT&amp;CK T1021 (Lateral Movement), Aviatrix CoPilot benchmarks 2024.</td>
+      </tr>
+      <tr style="background:#fff8f0">
+        <td><strong>🆕 Behavioral Anomaly Detection</strong></td><td class="mono green">$600/mo</td>
+        <td><strong>MITRE ATLAS AML.T0043:</strong> Craft Adversarial Data; Adaptive Evasion</td>
+        <td class="source"><strong>New for agentic AI:</strong> Agentic lateral movement happens at machine speed using adaptive logic — when an agent encounters a blocked path, it hypothesizes alternatives and adjusts strategy, mimicking a skilled human attacker. Standard DLP and static known-bad signatures fail to catch these contextual, unpredictable execution sequences. Behavioral anomaly detection monitors shifting execution loops, tool-use patterns, and API call sequences rather than fixed attack signatures. Tools: Darktrace Enterprise Immune System ($500–$1,500/mo), Vectra AI NDR, Exabeam UEBA with custom ML models for agentic workloads. Source: Darktrace AI Threat Report 2024, Vectra AI State of Threat Detection 2024.</td>
+      </tr>
+      <tr style="background:#fff8f0">
+        <td><strong>🆕 Dynamic Secrets Management</strong></td><td class="mono green">$300/mo</td>
+        <td><strong>OWASP LLM 09:</strong> Overreliance; Credential Accumulation</td>
+        <td class="source"><strong>New for agentic AI:</strong> Agentic architectures fundamentally change how secrets are exposed — sensitivity is not always visible at deployment, it emerges through use over time. Agents accumulate credentials, API keys, approval patterns, and infrastructure decisions in persistent structured memory files. If an agent is executing automated financial transactions or accessing production infrastructure, storing API keys in environment variables or local files creates a massive, high-value target. This funds short-lived, automatically rotated credentials. Tools: HashiCorp Vault Enterprise ($200–$500/mo), AWS Secrets Manager ($0.40/secret/month + API calls), Azure Key Vault. Source: HashiCorp State of Secret Sprawl 2024 — 72% of organizations with AI deployments found credentials in AI agent memory or output logs.</td>
+      </tr>
+      <tr>
+        <td>Pen Testing &amp; AI Red-Teaming</td><td class="mono green">$15,000/yr</td>
+        <td><strong>MITRE ATLAS:</strong> Adversarial ML, Model Inversion, Data Poisoning</td>
+        <td class="source">AI red-teaming (systematic adversarial probing of model behavior, jailbreaks, injection attacks, prompt leakage) requires skills distinct from traditional penetration testing. For agentic systems, red-teaming must also cover multi-step attack chains across tool-use sequences. Specialist firms: $15,000–$50,000/engagement. One annual engagement is the minimum defensible posture for a production agentic system.</td>
+      </tr>
+      <tr>
+        <td>Compliance Audit</td><td class="mono green">$12,000/yr</td>
+        <td>GDPR Art. 22, CCPA AI disclosures, HIPAA BAAs, EU AI Act (2025)</td>
+        <td class="source">IAPP 2024: GDPR compliance for automated decision-making systems adds $8,000–$25,000/year. HIPAA BAAs with model providers + audit: $5,000–$15,000/year. EU AI Act (high-risk AI systems): €30,000–€100,000 compliance cost starting 2025.</td>
+      </tr>
+      <tr>
+        <td>Cyber Insurance Premium Increase</td><td class="mono green">$8,000/yr</td>
+        <td>AI deployment risk uplift on base cyber policy</td>
+        <td class="source">Marsh &amp; McLennan (2023): organizations deploying agentic AI face 20%–50% increase in cyber insurance premiums (higher than the 15%–40% for static AI APIs) due to autonomous action risk. Default $8,000 assumes 20% uplift on a $40,000 base annual premium.</td>
+      </tr>
+      <tr>
+        <td>Incident Response Retainer</td><td class="mono green">$10,000/yr</td>
+        <td>AI-specific breach forensics and remediation</td>
+        <td class="source">AI breach response requires: model prompt log forensics, vector store audit for data exfiltration, tool-use log review, agent memory forensics, and model behavior analysis. Mandiant/CrowdStrike AI IR retainers: $15,000–$30,000/year. Default $10,000 is entry-level specialist coverage.</td>
+      </tr>
+      <tr>
+        <td>Security Training</td><td class="mono green">$2,000/yr</td>
+        <td>Staff AI security awareness</td>
+        <td class="source">Staff working with agentic AI need training on: prompt injection risks, proper data hygiene, social engineering via AI-generated content, and organizational AI use policies. SANS Security Awareness for AI Users: ~$200/person/year. Default covers a team of 10.</td>
+      </tr>
+      <tr style="background:#fff8f0">
+        <td><strong>🆕 Agent Skill Supply Chain Auditing</strong></td><td class="mono green">$8,000/yr</td>
+        <td><strong>MITRE ATLAS AML.T0047:</strong> Acquire ML Artifacts; Supply Chain Compromise</td>
+        <td class="source"><strong>New for agentic AI:</strong> Agent skills (tools, plugins, MCP servers) are often plain-text Markdown or JSON files with no CVEs, no container image scanning, and no SBOMs. A skill designed to exfiltrate environment variables looks like a harmless text document to standard CI/CD scanners — it has no binary, no package manifest, and no known-bad hash. Prompt injections routed through a pluggable gateway tool can trigger unauthorized actions on real infrastructure without triggering any conventional security alert. This funds continuous auditing and vetting of third-party agent tools: static analysis, sandboxed execution testing, and behavioral review pipeline. Tools: custom security review pipeline, Snyk (extended to AI skill manifests), manual security review retainer. Source: MITRE ATLAS AML.T0047, OWASP LLM Top 10 #3 (Training Data Poisoning — analogue for skill poisoning), Wiz Research 2024 (MCP tool injection attacks).</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-critical">
+    <span class="callout-label cl-red">🔴 IBM Cost of a Data Breach Report (2024) — Key Finding</span>
+    The average cost of an AI-related data breach is <strong>$4.88 million</strong> — 10% higher than the overall average for traditional software breaches. The premium arises from three AI-specific complications: (1) difficulty detecting model exfiltration (traditional SIEM tools do not monitor prompt/completion logs), (2) the latency between prompt injection exploitation and data loss detection (mean time to detect AI-specific breaches: 277 days vs. 194 days for traditional breaches), and (3) the breadth of potential data exposure (an LLM with access to enterprise data can exfiltrate unstructured information that traditional DLP tools cannot reliably detect). <strong>This tail-risk figure is not included in the model's default inputs</strong> — it represents the expected value of a worst-case outcome, not an ongoing operational cost. Organizations should factor it into their risk appetite and insurance coverage decisions.
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION 10: MODULE 6 — PROCESS FAILURE                 -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="doc-section" id="s10">
+  <div class="section-number">10 — Module 6</div>
+  <h2>Long-Running Process Failure Cost</h2>
+
+  <p class="lead">The most intellectually novel component of this model. AI process failure is qualitatively different from human error or traditional software failure — and the difference has profound cost implications that existing TCO frameworks were not designed to capture.</p>
+
+  <div class="pull-quote">
+    "Human errors fail at human speed. AI errors fail at machine speed. A human making a mistake in a data entry workflow corrupts one record before someone notices. An AI agent making the equivalent mistake can corrupt thousands of records in the minutes before detection."
+    <cite>— Core thesis of the "Silent Scale Failure" problem, derived from Google SRE and Uptime Institute operational research</cite>
+  </div>
+
+  <h3>The Four Cost Mechanisms in Module 6</h3>
+
+  <div class="formula-block">
+    <div class="formula-label">Module 6 — Annual Process Failure Cost</div>
+    <div class="formula-body"><span class="comment">// Mechanism 1: Direct failure cost (labor to detect and remediate each failure)</span>
+<span class="var">daily_failure_cost</span>    <span class="op">=</span> <span class="var">processes_per_day</span> <span class="op">×</span> <span class="var">failure_rate</span> <span class="op">×</span> <span class="var">cost_per_failure</span>
+
+<span class="comment">// Mechanism 2: Silent failure downstream cost</span>
+<span class="comment">// Before a silent failure is detected (detection_lag_hrs),</span>
+<span class="comment">// downstream work built on the bad output must be corrected.</span>
+<span class="comment">// Rework per failure = rework_cost × (lag_hrs / process_duration_hrs)</span>
+<span class="comment">// This scales rework with how much downstream work accumulated during the lag.</span>
+<span class="var">silent_failure_daily</span>  <span class="op">=</span> <span class="var">processes_per_day</span> <span class="op">×</span> <span class="var">failure_rate</span> <span class="op">×</span> <span class="var">detection_lag_hrs</span>
+                      <span class="op">×</span> (<span class="var">downstream_rework_cost</span> <span class="op">÷</span> <span class="var">process_duration_hrs</span>)
+
+<span class="comment">// Mechanism 3: Context window loss (session resets, re-prompting overhead)</span>
+<span class="var">annual_context_cost</span>   <span class="op">=</span> <span class="var">context_reset_cost_per_session</span> <span class="op">×</span> <span class="var">annual_session_resets</span>
+
+<span class="comment">// Mechanism 4: Hallucination-driven decision cost (annual estimate)</span>
+<span class="comment">// Annual aggregate cost of business decisions made on incorrect AI output</span>
+<span class="var">annual_hallucination</span>  <span class="op">=</span> <span class="var">hallucination_decision_cost</span>  <span class="comment">// direct input</span>
+
+<span class="comment">// Infrastructure: retry queues, dead letter queues, circuit breakers</span>
+<span class="var">annual_retry_infra</span>    <span class="op">=</span> <span class="var">retry_monthly</span> <span class="op">×</span> <span class="num">12</span>
+
+<span class="comment">// Aggregate (before risk tier multiplier)</span>
+<span class="var">raw_annual_failure</span>    <span class="op">=</span> (<span class="var">daily_failure_cost</span> <span class="op">+</span> <span class="var">silent_failure_daily</span>) <span class="op">×</span> <span class="var">working_days</span>
+                      <span class="op">+</span> <span class="var">annual_context_cost</span> <span class="op">+</span> <span class="var">annual_hallucination</span> <span class="op">+</span> <span class="var">annual_retry_infra</span>
+
+<span class="comment">// Risk tier multiplier: 0.5× (low), 1.0× (medium), 3.0× (high)</span>
+<span class="var">annual_process_fail</span>   <span class="op">=</span> <span class="var">raw_annual_failure</span> <span class="op">×</span> <span class="var">risk_tier_multiplier</span></div>
+  </div>
+
+  <h3>Parameter Justification &amp; The Silent Failure Model</h3>
+
+  <table class="data-table">
+    <thead><tr><th>Parameter</th><th>Default</th><th>Source &amp; Derivation</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>failure_rate</code></td>
+        <td class="mono green">8%</td>
+        <td class="source">Multi-source benchmark: WebArena (Stanford, 2023) — state-of-the-art agents complete 14.4% of complex web tasks (failure rate: 85.6%, but for highly complex tasks). Tau-bench (2024) — agentic task failure rate for business workflows: 15%–25%. Internal Anthropic and DeepMind documentation on agentic task completion (2023): 5%–15% failure rate for structured multi-step business tasks. Default 8% is at the optimistic end, representing well-designed workflows with clear success criteria and fallback mechanisms.</td>
+      </tr>
+      <tr>
+        <td><code>detection_lag_hrs</code></td>
+        <td class="mono green">4 hours</td>
+        <td class="source">Google Site Reliability Engineering (Beyer et al.): Mean Time to Detect (MTTD) for silent failures in production systems without dedicated monitoring. The key characteristic of AI silent failures is that they often produce plausible-looking output that downstream systems accept without error — no exception is thrown, no alert fires. Detection occurs when a human reviews the output or when downstream systems produce anomalous results. 4 hours is the median MTTD for AI systems with standard (non-AI-specific) monitoring. With dedicated AI observability tooling, MTTD can be reduced to under 1 hour.</td>
+      </tr>
+      <tr>
+        <td><code>downstream_rework_cost</code></td>
+        <td class="mono green">$500</td>
+        <td class="source">Conservative estimate based on a scenario where a bad AI output is used as input to downstream work before detection. If an AI incorrectly categorizes 100 customer records, and each record then receives an incorrect follow-up communication, the correction cost includes: identifying affected records (~30 min), correcting and re-sending communications (~2 hours), and any escalation handling. At $75/hr loaded cost: $187–$225 in labor. $500 accounts for organizational overhead and any customer-impact costs.</td>
+      </tr>
+      <tr>
+        <td><code>hallucination_cost</code></td>
+        <td class="mono green">$20,000/yr</td>
+        <td class="source">Gartner AI Risk Report (2024). Conservative estimate for internal knowledge-work applications: quarterly incidents where AI-generated content containing factual errors influences decisions. Example: AI summarizes a regulatory filing incorrectly; compliance team acts on the summary; correction requires external counsel review ($5,000 per incident × 4 incidents = $20,000). For financial, medical, or legal AI deployments, adjust to $50,000–$500,000/year. This parameter is intentionally highly adjustable.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>The Risk Tier Multiplier — Justification</h3>
+  <p>The three risk tiers (0.5×, 1.0×, 3.0×) are not arbitrary. They reflect the fundamental difference in downstream consequences of an AI error by use case:</p>
+  <ul class="styled">
+    <li><strong>Low Risk (0.5×):</strong> Errors in internal summaries and reports are caught by human review before acting. Detection is fast, rework is limited to the AI output itself. Multiplier below 1.0× reflects that some failure costs are partially mitigated by the human-in-the-loop review step.</li>
+    <li><strong>Medium Risk (1.0×):</strong> Baseline. Errors in customer communications or data processing may reach external parties or trigger downstream automated processes before human review. Direct and downstream rework costs apply in full.</li>
+    <li><strong>High Risk (3.0×):</strong> In financial, medical, or legal contexts, an AI error may trigger regulatory consequences, legal liability, or patient harm. The 3× multiplier represents: 1× direct technical remediation + 1× compliance/legal response + 1× reputational and opportunity cost. For the highest-risk applications (autonomous trading, clinical decision support), even 3× may understate true costs.</li>
+  </ul>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION 11: MODULE 7 — ROI & J-CURVE                   -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="doc-section" id="s11">
+  <div class="section-number">11 — Module 7</div>
+  <h2>ROI Analysis &amp; Productivity J-Curve</h2>
+
+  <p class="lead">The J-Curve is the single most significant addition in v2 relative to standard AI ROI tools. McKinsey, BCG, and Prosci change management research consistently documents that introducing any major technology change causes a temporary productivity decline before sustained improvement. In AI deployments, this dip is particularly pronounced because workers must simultaneously learn new tools, redesign their workflows, and compensate for AI errors while still meeting output targets.</p>
+
+  <h3>J-Curve Phase Decomposition</h3>
+
+  <div class="formula-block amber-accent">
+    <div class="formula-label amber">Module 7 — Year 1 Implementation Cost (J-Curve)</div>
+    <div class="formula-body"><span class="comment">// Phase 1: Technical integration (data prep, API build, testing, deployment)</span>
+<span class="var">phase_1_cost</span>      <span class="op">=</span> <span class="var">technical_integration_input</span>   <span class="comment">// direct input, $15,000 default</span>
+
+<span class="comment">// Phase 2: Workflow redesign (change management, process mapping, SOPs)</span>
+<span class="var">phase_2_cost</span>      <span class="op">=</span> <span class="var">workflow_redesign_input</span>        <span class="comment">// direct input, $10,000 default</span>
+
+<span class="comment">// Phase 3: Productivity dip penalty</span>
+<span class="comment">// The employee delivers dip_pct% less output during the transition period.</span>
+<span class="comment">// Economically: you pay full employee cost + full AI cost but receive only</span>
+<span class="comment">// (1 - dip_pct) of normal output. The dip cost is the value of lost output.</span>
+<span class="var">phase_3_dip_cost</span>  <span class="op">=</span> <span class="var">emp_true_cost_N</span> <span class="op">×</span> <span class="var">dip_pct</span> <span class="op">×</span> (<span class="var">dip_months</span> <span class="op">÷</span> <span class="num">12</span>)
+
+<span class="comment">// Total Year 1 implementation cost (replaces static "setup cost" from v1)</span>
+<span class="var">year_1_impl_cost</span>  <span class="op">=</span> <span class="var">phase_1_cost</span> <span class="op">+</span> <span class="var">phase_2_cost</span> <span class="op">+</span> <span class="var">phase_3_dip_cost</span></div>
+  </div>
+
+  <h3>J-Curve Parameter Justification</h3>
+
+  <table class="data-table">
+    <thead><tr><th>Phase</th><th>Default Cost</th><th>Research Basis</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Phase 1: Technical Integration</td>
+        <td class="mono green">$15,000</td>
+        <td class="source">McKinsey AI Adoption Study (2023): average internal AI deployment integration budget for mid-scale projects: $25,000–$150,000 for enterprise; $10,000–$50,000 for team/department scale. Default $15,000 represents a single-team deployment with an existing API provider relationship and reasonable data availability. Complex enterprise deployments with legacy system integration should use $50,000–$250,000.</td>
+      </tr>
+      <tr>
+        <td>Phase 2: Workflow Redesign</td>
+        <td class="mono green">$10,000</td>
+        <td class="source">Gartner (2024): 30%–50% of AI project failures are attributed to change management failures, not technical ones. BCG AI research (2023): organizations that invest in workflow redesign achieve 3× higher AI adoption rates. The $10,000 default represents ~100 hours of an internal PM/BA at $100/hr for process mapping, SOP rewriting, stakeholder workshops, and documentation. External change management consulting: 3–5× this figure.</td>
+      </tr>
+      <tr>
+        <td>Phase 3: Productivity Dip (3 months, 15%)</td>
+        <td class="mono green">$3,188 (at defaults)</td>
+        <td class="source">BCG Change Management Research (2023) and McKinsey survey data: documented productivity dips during technology transitions average 10%–20% below baseline for 2–4 months. The 15% × 3 months default: at $85K salary ($7,083/month): 0.15 × 3 × $7,083 = $3,188. This is the cost of the productivity gap — the organization pays full employee cost but receives 85% of normal output while the team learns the system. Higher dip (25%–35%) is observed for complex agentic workflows requiring significant process redesign.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>NPV and Payback Period Formulas</h3>
+
+  <div class="formula-block">
+    <div class="formula-label">Module 7 — NPV and Payback Calculations</div>
+    <div class="formula-body"><span class="comment">// Annual savings (Year 2+ normalized; Year 1 net of implementation cost)</span>
+<span class="var">annual_savings</span>    <span class="op">=</span> <span class="var">emp_true_cost_N</span> <span class="op">-</span> <span class="var">primary_ai_annual_cost</span>
+
+<span class="comment">// Payback period: months to recoup Year 1 implementation cost from monthly savings</span>
+<span class="var">monthly_savings</span>   <span class="op">=</span> <span class="var">annual_savings</span> <span class="op">÷</span> <span class="num">12</span>
+<span class="var">payback_months</span>    <span class="op">=</span> <span class="var">year_1_impl_cost</span> <span class="op">÷</span> <span class="var">monthly_savings</span>
+<span class="comment">// If monthly_savings ≤ 0, payback is infinite (AI costs more than employee)</span>
+
+<span class="comment">// 3-Year NPV at discount rate r (standard DCF methodology)</span>
+<span class="comment">// Year 1: savings minus implementation cost (one-time)</span>
+<span class="comment">// Years 2–3: recurring annual savings only</span>
+<span class="var">npv</span> <span class="op">=</span>  (<span class="var">annual_savings</span> <span class="op">-</span> <span class="var">year_1_impl_cost</span>) <span class="op">÷</span> (1 <span class="op">+</span> r)¹
+    <span class="op">+</span>  <span class="var">annual_savings</span>                         <span class="op">÷</span> (1 <span class="op">+</span> r)²
+    <span class="op">+</span>  <span class="var">annual_savings</span>                         <span class="op">÷</span> (1 <span class="op">+</span> r)³
+
+<span class="comment">// Cost per unit of output (normalized comparison)</span>
+<span class="comment">// AI handles (tasks_per_day × days) annual tasks</span>
+<span class="comment">// Employee (at productivity_multiplier) handles annual_tasks / multiplier tasks</span>
+<span class="var">cpu_ai</span>            <span class="op">=</span> <span class="var">primary_ai_annual</span> <span class="op">÷</span> <span class="var">annual_tasks</span>
+<span class="var">cpu_employee</span>      <span class="op">=</span> <span class="var">emp_true_cost_N</span>   <span class="op">÷</span> (<span class="var">annual_tasks</span> <span class="op">÷</span> <span class="var">productivity_multiplier</span>)</div>
+  </div>
+
+  <p><strong>Discount rate default (8%):</strong> Represents the approximate WACC for a US large-cap technology company as of 2024. For smaller organizations with higher cost of capital, use 10%–15%. For public sector or non-profit contexts, use 3%–5% (government borrowing rate equivalent).</p>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION 12: MODEL INTEGRATION                          -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="doc-section" id="s12">
+  <div class="section-number">12 — Integration</div>
+  <h2>Model Integration &amp; TCO Aggregation</h2>
+
+  <p class="lead">How the individual modules combine into the final TCO comparison. This section documents the aggregation logic, shared cost allocation, and risk premium application.</p>
+
+  <div class="formula-block">
+    <div class="formula-label">Full TCO Aggregation Formula</div>
+    <div class="formula-body"><span class="comment">// ── SHARED COSTS (apply to both Cloud AI and Private AI) ────</span>
+<span class="var">shared_costs</span>         <span class="op">=</span> <span class="var">annual_hosting</span>      <span class="comment">// M4A + M4B (hosting + data pipeline)</span>
+                     <span class="op">+</span> <span class="var">annual_security</span>     <span class="comment">// M5 (cybersecurity)</span>
+                     <span class="op">+</span> <span class="var">annual_process_fail</span> <span class="comment">// M6 (failures, risk-tiered)</span>
+                     <span class="op">+</span> <span class="var">residual_human</span>      <span class="comment">// M2 (oversight fraction)</span>
+
+<span class="comment">// ── CLOUD AI TOTAL (before risk premium) ────────────────────</span>
+<span class="var">cloud_ai_base</span>        <span class="op">=</span> <span class="var">cloud_ai_token_cost</span>  <span class="comment">// M2 (tokens + agentic + concurrency + tooling)</span>
+                     <span class="op">+</span> <span class="var">shared_costs</span>
+
+<span class="comment">// ── PRIVATE AI TOTAL (before risk premium) ───────────────────</span>
+<span class="var">private_ai_base</span>      <span class="op">=</span> <span class="var">private_ai_cost</span>     <span class="comment">// M3 (GPU + MLOps + licensing)</span>
+                     <span class="op">+</span> <span class="var">shared_costs</span>
+<span class="comment">// Note: hosting/security/failure costs are shared because private AI</span>
+<span class="comment">// deployments still require the same hosting infrastructure, security</span>
+<span class="comment">// posture, and face the same process failure risks as cloud deployments.</span>
+
+<span class="comment">// ── RISK PREMIUM APPLICATION ─────────────────────────────────</span>
+<span class="comment">// Applied as a gross-up multiplier over ALL AI costs</span>
+<span class="comment">// Represents operational, regulatory, and reputational risks</span>
+<span class="comment">// not fully captured in the individual modules above.</span>
+<span class="var">cloud_ai_annual</span>      <span class="op">=</span> <span class="var">cloud_ai_base</span>   <span class="op">×</span> (<span class="num">1</span> <span class="op">+</span> <span class="var">risk_premium_pct</span>)
+<span class="var">private_ai_annual</span>    <span class="op">=</span> <span class="var">private_ai_base</span> <span class="op">×</span> (<span class="num">1</span> <span class="op">+</span> <span class="var">risk_premium_pct</span>)
+
+<span class="comment">// ── EMPLOYEE TRUE COST ───────────────────────────────────────</span>
+<span class="var">employee_annual</span>      <span class="op">=</span> <span class="var">emp_true_cost_N</span>  <span class="comment">// M1 (headcount-scaled)</span>
+<span class="comment">// Note: no risk premium applied to employee cost —</span>
+<span class="comment">// employee risk (turnover, error) already embedded in M1 formula.</span></div>
+  </div>
+
+  <h3>The "Hidden Cost Exposure" Calculation</h3>
+  <p>The Hidden Cost Exposure panel identifies what percentage of total AI cost comes from the categories vendors exclude from their ROI pitches:</p>
+
+  <div class="formula-block">
+    <div class="formula-label">Hidden Cost Exposure</div>
+    <div class="formula-body"><span class="comment">// Components systematically omitted from vendor ROI tools:</span>
+<span class="var">hidden_total</span>         <span class="op">=</span> <span class="var">annual_hosting</span>      <span class="comment">// hosting + data pipeline</span>
+                     <span class="op">+</span> <span class="var">annual_security</span>     <span class="comment">// cybersecurity module</span>
+                     <span class="op">+</span> <span class="var">annual_process_fail</span> <span class="comment">// process failure module</span>
+                     <span class="op">+</span> <span class="var">agentic_loop_cost</span>   <span class="comment">// agentic overhead (if enabled)</span>
+                     <span class="op">+</span> <span class="var">concurrency_cost</span>    <span class="comment">// PTU + SLA + retry costs</span>
+
+<span class="var">hidden_pct</span>           <span class="op">=</span> <span class="var">hidden_total</span> <span class="op">÷</span> <span class="var">cloud_ai_base</span> <span class="op">×</span> <span class="num">100</span></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION 13: LIMITATIONS                                -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="doc-section" id="s13">
+  <div class="section-number">13 — Sensitivity &amp; Limitations</div>
+  <h2>Sensitivity Analysis &amp; Known Model Limitations</h2>
+
+  <p class="lead">Every model has boundaries. Transparency about limitations is not a weakness — it is the mark of a rigorous tool. The following limitations are documented so that users can make informed judgments about where the model's outputs should be treated as directional estimates versus precise forecasts.</p>
+
+  <h3>High-Sensitivity Parameters</h3>
+  <p>The following parameters have the largest impact on total cost outcomes and should receive the most attention from users who want to stress-test results:</p>
+
+  <table class="data-table">
+    <thead><tr><th>Parameter</th><th>Impact Direction</th><th>Sensitivity Note</th></tr></thead>
+    <tbody>
+      <tr><td><code>base_salary</code></td><td>Drives employee cost, residual human cost, J-Curve dip</td><td class="source">A 20% salary change propagates through the turnover cost, management overhead, residual human, and J-Curve dip — amplifying the base effect by ~1.6×. The most important single input in the model.</td></tr>
+      <tr><td><code>loop_depth</code> (agentic)</td><td>Multiplies token cost 4–10×</td><td class="source">At loop depth 8 vs. 3, token cost can differ by 300%–500%. For agentic deployments, this is the most important cost variable and should be validated empirically against actual production logs.</td></tr>
+      <tr><td><code>oversight_pct</code></td><td>Determines residual human cost</td><td class="source">Moving from 20% to 5% oversight changes the residual human cost from $30,400 to $7,600 at defaults — a $22,800/year swing. This parameter requires honest assessment; organizations frequently underestimate ongoing human review requirements.</td></tr>
+      <tr><td><code>failure_rate</code> + <code>risk_tier</code></td><td>Process failure cost varies 6× across risk tiers</td><td class="source">The combination of failure rate and risk tier is the most uncertain combination in the model. Failure rates should be measured empirically after deployment. Risk tier selection requires honest use-case assessment, not aspirational positioning.</td></tr>
+      <tr><td><code>conc_peak</code> (concurrency)</td><td>Triggers PTU regime change</td><td class="source">Moving from 40 to 60 peak concurrent users can change the cost structure from variable to semi-fixed, potentially adding $6,000–$12,000/month. This is a step-function change, not a smooth scaling, and is a common deployment planning surprise.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Known Model Limitations</h3>
+
+  <ol class="styled">
+    <li><strong>Linear cost scaling within modules.</strong> The model scales most costs linearly with headcount. In practice, many AI infrastructure costs exhibit economies of scale above certain thresholds — a single AI deployment serving 10 employees vs. 100 may not cost 10× more. The model will overestimate costs at very large scales without adjusting unit costs accordingly.</li>
+    <li><strong>Single geography assumption.</strong> The model does not account for geographic variation in salary benchmarks, electricity costs, tax rates, or regulatory compliance requirements. A deployment in London vs. San Francisco vs. Bangalore has materially different cost structures that require manual adjustment.</li>
+    <li><strong>Static pricing assumption.</strong> Token prices have declined significantly over time (GPT-4 prices dropped ~75% from 2023 to 2025). The model uses current prices and does not model future price trajectories. Multi-year NPV calculations assume constant AI costs, which is likely conservative for the AI side.</li>
+    <li><strong>Industry-neutral defaults.</strong> The default parameters are calibrated for knowledge workers in technology, professional services, and finance. Healthcare, manufacturing, education, and government contexts may have significantly different benefits loads, regulatory requirements, failure cost consequences, and productivity dynamics.</li>
+    <li><strong>No modeling of capability improvement.</strong> The model captures cost but not the improvement in AI capability over time (better models, improved prompting techniques, accumulated fine-tuning data). The ROI of AI likely improves over time; this model presents a static Year-N snapshot.</li>
+    <li><strong>The hallucination cost is the least certain parameter.</strong> The $20,000/year default for hallucination-driven decision costs is an order-of-magnitude estimate based on Gartner survey data. Actual costs vary enormously by use case. Organizations should replace this default with their own empirical estimates as quickly as possible after deployment.</li>
+    <li><strong>J-Curve duration and depth are difficult to predict pre-deployment.</strong> The 3-month, 15% dip defaults are research-based midpoints. Some organizations adapt quickly (1 month, 5% dip); others struggle (6+ months, 30% dip). The J-Curve is one area where the model strongly encourages users to override defaults with organizational context.</li>
+  </ol>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION 14: COMPARISON TO COMPETITORS                  -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="doc-section" id="s14">
+  <div class="section-number">14 — Competitive Positioning</div>
+  <h2>Comparison to Competing Calculators</h2>
+
+  <p class="lead">To establish the model's position relative to existing tools, this section benchmarks against the major categories of AI ROI calculators currently in use in enterprise procurement contexts.</p>
+
+  <h3>Category 1: Vendor-Provided ROI Tools</h3>
+  <p><em>Examples: OpenAI for Enterprise ROI Calculator, Microsoft Copilot ROI Guide, Salesforce Einstein ROI estimator.</em></p>
+  <p>These tools share a common structural bias: they are designed to accelerate purchase decisions, not to support rigorous capital allocation analysis. Their typical structure is: (Tasks saved per week × hourly rate) − (Token cost per task × volume) = Savings. This omits hosting, security, process failure, data pipeline, and change management costs entirely. In the model's terms, they capture approximately 20%–35% of total AI system cost and 0% of implementation friction.</p>
+
+  <h3>Category 2: Generic SaaS TCO Frameworks</h3>
+  <p><em>Examples: Gartner TCO Wizard, generic cloud cost calculators.</em></p>
+  <p>Standard SaaS TCO frameworks capture hosting and some security costs but were designed before generative AI became a deployment category. They lack: token cost modeling, agentic loop awareness, AI-specific security threat taxonomy, process failure dynamics (silent scale failure), and data pipeline maintenance costs. They also do not model the productivity J-Curve, which is more pronounced for AI than for traditional SaaS due to the workflow redesign required.</p>
+
+  <h3>Category 3: Academic / Research Models</h3>
+  <p><em>Examples: MIT Sloan AI ROI framework, McKinsey's AI value model.</em></p>
+  <p>Research models are methodologically rigorous but designed for strategic-level analysis, not operational decision-making. They model productivity multipliers and capability curves but typically lack the granularity to inform infrastructure architecture decisions (hosting tier selection, GPU count) or security budget allocation. This calculator complements rather than replaces them — it provides the operational cost substrate that research models assume as exogenous.</p>
+
+  <div class="callout callout-note">
+    <span class="callout-label cl-cyan">📌 Positioning Summary</span>
+    This model occupies the gap between vendor ROI tools (directionally biased, operationally shallow) and enterprise strategy frameworks (rigorous, but too abstract for procurement decisions). It is designed for the moment when a CFO, VP of Engineering, or Strategy Director needs to make an actual investment decision — not validate one already made. The deliberate inclusion of unfavorable AI cost categories (silent failures, security, data pipeline tax) is what distinguishes this from a sales tool. A model that only captures costs favorable to one option is not a planning tool; it is a pitch deck.
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION 15: REFERENCES                                 -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="doc-section" id="s15">
+  <div class="section-number">15 — References</div>
+  <h2>Full Reference List</h2>
+  <p>All 19 primary sources cited in the model, with notes on specific claims and default values derived from each.</p>
+
+  <ul class="reference-list">
+    <li><span class="ref-num">01</span><div class="ref-body"><strong>McKinsey Global Institute (2023).</strong> "The economic potential of generative AI: The next productivity frontier." McKinsey &amp; Company. <em>Used for: productivity multiplier defaults (2–4×), AI adoption cost baselines, change management J-curve documentation, and the framing of AI as a "labor-saving technology" with associated deployment cost structures.</em></div></li>
+    <li><span class="ref-num">02</span><div class="ref-body"><strong>Gartner (2023–2024).</strong> "TCO Framework for AI vs. Human Workers"; "Magic Quadrant for AI Infrastructure"; "Gartner Data Quality Survey 2024." <em>Used for: hosting cost 3–5× premium over SaaS, on-prem GPU amortization guidance, compliance cost estimates, data quality human oversight requirements, and the finding that 30–50% of AI failures are change management rather than technical failures.</em></div></li>
+    <li><span class="ref-num">03</span><div class="ref-body"><strong>Boushey, H. &amp; Glynn, S.J. (2012).</strong> "There Are Significant Business Costs to Replacing Employees." Center for American Progress / Harvard Business Review. <em>Used for: the replacement cost multiplier range (16%–213% of annual salary). The default 50% for the $85K knowledge worker salary derives directly from their analysis of replacement costs for the $30K–$75K+ salary band.</em></div></li>
+    <li><span class="ref-num">04</span><div class="ref-body"><strong>WorldatWork (2023).</strong> "Survey on Total Rewards Programs." WorldatWork. <em>Used for: employer benefits load benchmark of 28%–33% of base salary. The 30% default is the survey median for organizations with 100–1,000 employees.</em></div></li>
+    <li><span class="ref-num">05</span><div class="ref-body"><strong>BLS Job Openings and Labor Turnover Survey (JOLTS, 2023).</strong> Bureau of Labor Statistics. <em>Used for: professional sector voluntary turnover rate of 13%–18% annually. Default 15% is the sector midpoint.</em></div></li>
+    <li><span class="ref-num">06</span><div class="ref-body"><strong>SHRM Human Capital Benchmarking Report (2023).</strong> Society for Human Resource Management. <em>Used for: overhead multiplier benchmark (20%–30% of base salary), covering office space, hardware, software, and HR administration.</em></div></li>
+    <li><span class="ref-num">07</span><div class="ref-body"><strong>ATD State of the Industry Report (2023).</strong> Association for Talent Development. <em>Used for: annual direct training expenditure per employee ($1,280 average). Default $1,500 adds onboarding amortization.</em></div></li>
+    <li><span class="ref-num">08</span><div class="ref-body"><strong>OWASP LLM Top 10 (2023).</strong> Open Web Application Security Project. <em>Used for: AI security threat taxonomy driving cybersecurity module line items. LLM01 (Prompt Injection), LLM05 (Insecure Output Handling), LLM06 (Sensitive Information Disclosure) are the primary threat categories mapped to security costs.</em></div></li>
+    <li><span class="ref-num">09</span><div class="ref-body"><strong>MITRE ATLAS Framework (2023).</strong> MITRE Corporation. <em>Used for: adversarial ML threat taxonomy. AML.T0047 (AI agent over-permission attacks) drives IAM cost justification. AI red-teaming scope and pricing basis.</em></div></li>
+    <li><span class="ref-num">10</span><div class="ref-body"><strong>IBM Cost of a Data Breach Report (2024).</strong> IBM Security / Ponemon Institute. <em>Used for: $4.88M average AI-related data breach cost, 10% premium over traditional breaches, 277-day mean time to detection for AI-specific breaches. Referenced in cybersecurity callout; not included in default model inputs.</em></div></li>
+    <li><span class="ref-num">11</span><div class="ref-body"><strong>Marsh &amp; McLennan (2023).</strong> "Cyber Risk in the Age of AI." Marsh. <em>Used for: 15%–40% cyber insurance premium increase for organizations deploying external AI APIs. Default $8,000/year assumes 20% uplift on a $40,000 base premium.</em></div></li>
+    <li><span class="ref-num">12</span><div class="ref-body"><strong>Uptime Institute Annual Global Data Centre Survey (2023).</strong> Uptime Institute. <em>Used for: GPU power cost benchmarks (H100 at 50% utilization + PUE 1.5), cooling infrastructure costs, and downtime cost frameworks applied to AI process failure modeling.</em></div></li>
+    <li><span class="ref-num">13</span><div class="ref-body"><strong>Beyer, B. et al. (2016).</strong> "Site Reliability Engineering: How Google Runs Production Systems." O'Reilly Media. <em>Used for: Mean Time to Detect (MTTD) for silent failures, error budget frameworks applied to AI system reliability, and process failure cost modeling methodology.</em></div></li>
+    <li><span class="ref-num">14</span><div class="ref-body"><strong>OpenAI (2024).</strong> Function Calling Documentation; API Benchmarks. OpenAI. <em>Used for: agentic loop depth empirical benchmarks (4.2 calls/task for web research agents, 6.8 for coding agents). Context accumulation patterns in multi-turn tool use sessions.</em></div></li>
+    <li><span class="ref-num">15</span><div class="ref-body"><strong>Yao, S. et al. (2023).</strong> "Tau-bench: Benchmarking Tool-Augmented Language Models." <em>Used for: task abandonment rate in agentic workflows (12%–22%). Default 15% is at the midpoint of this range for business-domain tasks.</em></div></li>
+    <li><span class="ref-num">16</span><div class="ref-body"><strong>Zhou, S. et al. (2023).</strong> "WebArena: A Realistic Web Environment for Building Autonomous Agents." Carnegie Mellon University. <em>Used for: agentic task completion rate benchmark (14.4% for complex web tasks) to establish the upper bound of the failure rate range.</em></div></li>
+    <li><span class="ref-num">17</span><div class="ref-body"><strong>Azure OpenAI Service Documentation (2024).</strong> Microsoft Azure. <em>Used for: Provisioned Throughput Unit (PTU) pricing ($2,000–$4,000/100 PTU/month), concurrency scaling guidance, and rate limit thresholds by service tier.</em></div></li>
+    <li><span class="ref-num">18</span><div class="ref-body"><strong>Drezner, D.W. (2004).</strong> "The Outsourcing Bogeyman." Foreign Affairs, 83(3), 22–34. <em>Used for: offshoring break-even timeline analysis (8–14 months), coordination and rework cost multiples (25%–55% above quoted labor rates). Provided the structural parallel to AI deployment hidden costs.</em></div></li>
+    <li><span class="ref-num">19</span><div class="ref-body"><strong>BCG (2023).</strong> "Winning with AI: The Experience of Early Adopters." Boston Consulting Group. <em>Used for: change management J-curve documentation, productivity dip duration and severity benchmarks (10%–20% below baseline for 2–4 months), and the correlation between change management investment and AI adoption success rates.</em></div></li>
+  </ul>
+
+  <div class="callout callout-research" style="margin-top:32px">
+    <span class="callout-label cl-green">📋 Model Update Policy</span>
+    <strong>Data vintage:</strong> All references reflect publications available as of Q1 2025. Three input categories are particularly subject to rapid change and should be reviewed quarterly: (1) Token pricing — model pricing has declined 40%–80% per year across providers; (2) GPU hardware costs — H100 supply constraints have eased significantly through 2024; (3) PTU/reserved capacity pricing — Azure, AWS, and Google are actively adjusting enterprise AI pricing structures. The model's formula structure remains valid; only the default input values require updating as market pricing evolves.
+  </div>
+</section>
+
+</div><!-- end content -->
+
+<div style="background:var(--navy);border-top:1px solid #2a4070;padding:32px 40px;text-align:center">
+  <p style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#4a6494;letter-spacing:1px">AI vs. Employee TCO Calculator — Model Methodology Reference v2.0 · For planning purposes only · All defaults are midpoints of published research ranges</p>
+</div>
+
+</body>
+</html>

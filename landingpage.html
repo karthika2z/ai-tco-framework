@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI vs. Employee TCO Calculator | DroidWork.ai</title>
+<meta name="description" content="Calculate the true total cost of deploying AI vs. human employees. Enterprise-grade TCO analysis used by finance, operations, and technology executives.">
+<meta name="keywords" content="AI ROI calculator, AI vs employee cost, True cost of AI, enterprise TCO, AI business case, CIO CFO AI decision">
+<link rel="canonical" href="https://droidwork.ai" />
+<meta property="og:title" content="AI vs. Employee TCO — The Number Your Board Will Ask For">
+<meta property="og:description" content="Before you approve an AI budget, know the real number. Infrastructure, security, failure costs — everything vendors leave out.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --navy:       #0a1628;
+  --navy-mid:   #0f2042;
+  --navy-light: #162d5a;
+  --border:     rgba(255,255,255,0.08);
+  --brand:      #00d4a8;
+  --brand-dim:  rgba(0,212,168,0.12);
+  --gold:       #c9a84c;
+  --gold-dim:   rgba(201,168,76,0.12);
+  --text:       #f0f4f8;
+  --muted:      #8ca0b8;
+  --white:      #ffffff;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: var(--navy); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+/* ── NAV ── */
+nav {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 6%; border-bottom: 1px solid var(--border);
+  background: rgba(10,22,40,0.95); position: sticky; top: 0; z-index: 100;
+  backdrop-filter: blur(12px);
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.1rem; color: var(--white); text-decoration: none; }
+.nav-logo-mark { width: 28px; height: 28px; background: var(--brand); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+.nav-logo-mark svg { width: 16px; height: 16px; fill: var(--navy); }
+.nav-links { display: flex; align-items: center; gap: 32px; }
+.nav-links a { font-size: 0.875rem; color: var(--muted); font-weight: 500; text-decoration: none; transition: color 0.2s; }
+.nav-links a:hover { color: var(--white); }
+.nav-cta { background: var(--brand); color: var(--navy) !important; font-weight: 700 !important; padding: 10px 22px; border-radius: 6px; transition: opacity 0.2s !important; }
+.nav-cta:hover { opacity: 0.88 !important; }
+
+/* ── HERO ── */
+.hero {
+  padding: 96px 6% 80px; text-align: center; max-width: 1100px; margin: 0 auto;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--gold-dim); border: 1px solid rgba(201,168,76,0.25);
+  color: var(--gold); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; padding: 6px 16px; border-radius: 20px; margin-bottom: 32px;
+}
+.hero-eyebrow::before { content: ''; width: 6px; height: 6px; background: var(--gold); border-radius: 50%; }
+.hero h1 {
+  font-size: clamp(2.6rem, 4.5vw, 4rem); font-weight: 800; line-height: 1.08;
+  letter-spacing: -0.03em; margin-bottom: 24px; color: var(--white);
+}
+.hero h1 em { font-style: normal; color: var(--brand); }
+.hero-sub {
+  font-size: 1.2rem; color: var(--muted); max-width: 640px; margin: 0 auto 48px;
+  font-weight: 400; line-height: 1.7;
+}
+.hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 64px; }
+.btn-primary {
+  background: var(--brand); color: var(--navy); font-weight: 700; font-size: 1rem;
+  padding: 16px 36px; border-radius: 8px; border: none; cursor: pointer;
+  text-decoration: none; display: inline-block; transition: transform 0.15s, box-shadow 0.15s;
+  letter-spacing: -0.01em;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,212,168,0.3); }
+.btn-secondary {
+  background: transparent; color: var(--text); font-weight: 600; font-size: 1rem;
+  padding: 16px 36px; border-radius: 8px; border: 1px solid var(--border);
+  cursor: pointer; text-decoration: none; display: inline-block; transition: border-color 0.2s, color 0.2s;
+}
+.btn-secondary:hover { border-color: rgba(255,255,255,0.25); color: var(--white); }
+
+/* ── STAT STRIP ── */
+.stat-strip {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border);
+  border: 1px solid var(--border); border-radius: 12px;
+  overflow: hidden; max-width: 800px; margin: 0 auto;
+}
+.stat-cell { background: rgba(15,32,66,0.6); padding: 28px 32px; text-align: center; }
+.stat-num { font-size: 2.2rem; font-weight: 800; color: var(--white); letter-spacing: -0.04em; line-height: 1; margin-bottom: 6px; }
+.stat-num span { color: var(--brand); }
+.stat-label { font-size: 0.8rem; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* ── TRUST BAR ── */
+.trust-bar {
+  padding: 48px 6%; text-align: center; border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border); margin: 80px 0; background: rgba(255,255,255,0.015);
+}
+.trust-label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 28px; }
+.trust-logos { display: flex; justify-content: center; align-items: center; gap: 48px; flex-wrap: wrap; }
+.trust-logo { font-size: 0.95rem; font-weight: 700; color: rgba(255,255,255,0.3); letter-spacing: -0.02em; }
+
+/* ── SECTION HEADER ── */
+.section-header { text-align: center; margin-bottom: 56px; }
+.section-tag { display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--brand); margin-bottom: 16px; }
+.section-title { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 800; letter-spacing: -0.03em; color: var(--white); margin-bottom: 16px; line-height: 1.15; }
+.section-sub { font-size: 1.05rem; color: var(--muted); max-width: 560px; margin: 0 auto; }
+
+/* ── COSTS GRID ── */
+.costs-section { padding: 80px 6%; max-width: 1200px; margin: 0 auto; }
+.costs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--border); border-radius: 16px; overflow: hidden; }
+.cost-card {
+  background: var(--navy-mid); padding: 36px 32px;
+  transition: background 0.2s;
+}
+.cost-card:hover { background: var(--navy-light); }
+.cost-card-num { font-size: 0.75rem; font-weight: 700; color: var(--brand); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; opacity: 0.7; }
+.cost-card-title { font-size: 1.05rem; font-weight: 700; color: var(--white); margin-bottom: 10px; line-height: 1.3; }
+.cost-card-body { font-size: 0.875rem; color: var(--muted); line-height: 1.65; }
+.cost-card-stat { display: inline-block; margin-top: 16px; font-size: 0.8rem; font-weight: 700; color: var(--brand); background: var(--brand-dim); padding: 4px 10px; border-radius: 4px; }
+
+/* ── WHAT YOU GET ── */
+.output-section { padding: 80px 6%; }
+.output-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+.output-list { display: flex; flex-direction: column; gap: 24px; }
+.output-item { display: flex; gap: 16px; align-items: flex-start; }
+.output-icon { width: 40px; height: 40px; background: var(--brand-dim); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.output-icon svg { width: 20px; height: 20px; stroke: var(--brand); fill: none; stroke-width: 2; stroke-linecap: round; }
+.output-item-title { font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+.output-item-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
+.output-preview {
+  background: var(--navy-mid); border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+}
+.output-preview-header { background: var(--navy-light); padding: 16px 20px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); }
+.preview-dot { width: 10px; height: 10px; border-radius: 50%; }
+.output-preview-body { padding: 24px; }
+.preview-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.preview-row:last-child { border-bottom: none; }
+.preview-key { font-size: 0.82rem; color: var(--muted); font-weight: 500; }
+.preview-val { font-size: 0.95rem; font-weight: 700; color: var(--white); }
+.preview-val.positive { color: var(--brand); }
+.preview-val.highlight { color: var(--gold); }
+
+/* ── BOTTOM CTA ── */
+.cta-section {
+  margin: 0 6% 80px; border-radius: 20px; overflow: hidden;
+  background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy-light) 100%);
+  border: 1px solid rgba(0,212,168,0.15);
+  padding: 72px 80px; text-align: center; position: relative;
+}
+.cta-section::before {
+  content: ''; position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+  width: 500px; height: 200px;
+  background: radial-gradient(ellipse, rgba(0,212,168,0.08), transparent 70%);
+  pointer-events: none;
+}
+.cta-section h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 800; letter-spacing: -0.03em; color: var(--white); margin-bottom: 16px; }
+.cta-section p { font-size: 1.05rem; color: var(--muted); max-width: 520px; margin: 0 auto 36px; }
+.cta-note { margin-top: 20px; font-size: 0.82rem; color: var(--muted); }
+
+/* ── FOOTER ── */
+footer { padding: 40px 6%; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+.footer-logo { font-weight: 700; font-size: 0.95rem; color: var(--muted); }
+.footer-links { display: flex; gap: 28px; }
+.footer-links a { font-size: 0.85rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--white); }
+.footer-copy { font-size: 0.82rem; color: rgba(255,255,255,0.2); }
+
+@media (max-width: 900px) {
+  .costs-grid { grid-template-columns: 1fr; }
+  .output-inner { grid-template-columns: 1fr; }
+  .stat-strip { grid-template-columns: 1fr; }
+  .cta-section { padding: 48px 32px; }
+  nav .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 16 16"><path d="M2 8h5M9 4l4 4-4 4"/></svg>
+    </div>
+    DroidWork.ai
+  </a>
+  <div class="nav-links">
+    <a href="#hidden-costs">What Vendors Hide</a>
+    <a href="/calculator/methodology">Methodology</a>
+    <a href="/calculator/" class="nav-cta">Open Calculator</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Enterprise AI Cost Intelligence</div>
+  <h1>Before You Sign the AI Budget,<br>Know the <em>Real Number</em></h1>
+  <p class="hero-sub">Vendor ROI models quote token costs — roughly 20% of the picture. This calculator builds the complete AI vs. employee TCO your CFO will ask for.</p>
+  <div class="hero-actions">
+    <a href="/calculator/" class="btn-primary">Run My TCO Analysis →</a>
+    <a href="/calculator/methodology" class="btn-secondary">View the Methodology</a>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat-cell">
+      <div class="stat-num"><span>3–5×</span></div>
+      <div class="stat-label">True AI hosting cost vs. vendor quote</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">7</div>
+      <div class="stat-label">Cost dimensions modeled end-to-end</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num"><span>3-yr</span></div>
+      <div class="stat-label">NPV & payback period output</div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-label">Grounded in research from</div>
+  <div class="trust-logos">
+    <span class="trust-logo">McKinsey Global Institute</span>
+    <span class="trust-logo">Gartner</span>
+    <span class="trust-logo">WorldatWork</span>
+    <span class="trust-logo">OWASP / MITRE ATLAS</span>
+    <span class="trust-logo">BCG</span>
+  </div>
+</div>
+
+<!-- HIDDEN COSTS -->
+<section class="costs-section" id="hidden-costs">
+  <div class="section-header">
+    <div class="section-tag">The Full Picture</div>
+    <h2 class="section-title">What the Vendor Slide Deck Leaves Out</h2>
+    <p class="section-sub">Six cost categories that rarely appear in vendor ROI models — but always appear on your invoice.</p>
+  </div>
+  <div class="costs-grid">
+    <div class="cost-card">
+      <div class="cost-card-num">01</div>
+      <div class="cost-card-title">Agentic Loop Multiplier</div>
+      <div class="cost-card-body">A single task isn't one API call. Autonomous agents plan, observe, and reflect — creating context loops that multiply token spend by 4–10× per task.</div>
+      <div class="cost-card-stat">4–10× token bloat</div>
+    </div>
+    <div class="cost-card">
+      <div class="cost-card-num">02</div>
+      <div class="cost-card-title">Non-Linear Concurrency Cost</div>
+      <div class="cost-card-body">Pay-per-token economics break down above ~50 concurrent users. Provisioned throughput adds $2,000–$6,000/month in fixed overhead before a single prompt is sent.</div>
+      <div class="cost-card-stat">$2k–$6k/mo fixed</div>
+    </div>
+    <div class="cost-card">
+      <div class="cost-card-num">03</div>
+      <div class="cost-card-title">Data Pipeline Tax</div>
+      <div class="cost-card-body">Private AI and RAG deployments require continuous ETL compute and vector re-embedding as your data changes. Gartner: adds 15–30% to hosting cost.</div>
+      <div class="cost-card-stat">+15–30% hosting cost</div>
+    </div>
+    <div class="cost-card">
+      <div class="cost-card-num">04</div>
+      <div class="cost-card-title">AI Cybersecurity Posture</div>
+      <div class="cost-card-body">Autonomous agents require prompt injection defense, behavioral monitoring, secrets management, and identity access controls absent from standard IT budgets.</div>
+      <div class="cost-card-stat">$18k–$60k/yr</div>
+    </div>
+    <div class="cost-card">
+      <div class="cost-card-num">05</div>
+      <div class="cost-card-title">The Productivity J-Curve</div>
+      <div class="cost-card-body">BCG and McKinsey document a 10–20% output dip during the first 2–4 months of AI adoption. You pay for both the AI and the employee while productivity recovers.</div>
+      <div class="cost-card-stat">10–20% dip, 2–4 months</div>
+    </div>
+    <div class="cost-card">
+      <div class="cost-card-num">06</div>
+      <div class="cost-card-title">Silent Scale Failures</div>
+      <div class="cost-card-body">AI fails at machine speed. Downstream data corruption from a single hallucination event cascades before detection. We model the rework cost of silent failures.</div>
+      <div class="cost-card-stat">Cascade risk quantified</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT YOU GET -->
+<section class="output-section">
+  <div class="output-inner">
+    <div>
+      <div class="section-tag">Calculator Output</div>
+      <h2 class="section-title" style="text-align:left">A Report Your Finance Team Can Act On</h2>
+      <p class="section-sub" style="text-align:left;max-width:100%;margin:0 0 40px">The output is a board-ready executive summary — not a marketing dashboard. Every number is traceable to a published source.</p>
+      <div class="output-list">
+        <div class="output-item">
+          <div class="output-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div>
+            <div class="output-item-title">Employee True Cost (fully-loaded)</div>
+            <div class="output-item-desc">Salary + benefits burden + overhead + management tax + recruiting amortization. 12 roles × 11 levels from BLS, Radford, and Glassdoor 2025 data.</div>
+          </div>
+        </div>
+        <div class="output-item">
+          <div class="output-icon">
+            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div>
+            <div class="output-item-title">AI Full TCO — 7 Cost Dimensions</div>
+            <div class="output-item-desc">Tokens, agentic overhead, hosting, data pipeline, security, process failures, and residual human oversight — summed to a single annual figure.</div>
+          </div>
+        </div>
+        <div class="output-item">
+          <div class="output-icon">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <div>
+            <div class="output-item-title">3-Year NPV & Payback Period</div>
+            <div class="output-item-desc">Discounted cash flow analysis with configurable discount rate. Payback period in months. Exportable as a PDF executive report.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="output-preview">
+      <div class="output-preview-header">
+        <div class="preview-dot" style="background:#ff5f57"></div>
+        <div class="preview-dot" style="background:#febc2e;margin:0 4px"></div>
+        <div class="preview-dot" style="background:#28c840"></div>
+        <span style="margin-left:12px;font-size:0.75rem;color:var(--muted);font-weight:500">AI TCO Executive Summary</span>
+      </div>
+      <div class="output-preview-body">
+        <div class="preview-row">
+          <span class="preview-key">Employee True Cost / yr</span>
+          <span class="preview-val">$187,400</span>
+        </div>
+        <div class="preview-row">
+          <span class="preview-key">AI Full TCO / yr</span>
+          <span class="preview-val">$94,200</span>
+        </div>
+        <div class="preview-row">
+          <span class="preview-key">Annual Savings</span>
+          <span class="preview-val positive">$93,200</span>
+        </div>
+        <div class="preview-row">
+          <span class="preview-key">3-Year NPV</span>
+          <span class="preview-val positive">$241,500</span>
+        </div>
+        <div class="preview-row">
+          <span class="preview-key">Payback Period</span>
+          <span class="preview-val highlight">4.2 months</span>
+        </div>
+        <div class="preview-row">
+          <span class="preview-key">Token Cost Share of TCO</span>
+          <span class="preview-val">22%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="cta-section">
+  <h2>Your Board Meeting Is Coming.<br>Run the Numbers First.</h2>
+  <p>Free. No login. Takes 4 minutes. Get a PDF executive report you can share.</p>
+  <a href="/calculator/" class="btn-primary">Open the Calculator →</a>
+  <div class="cta-note">Used by technology, finance, and operations executives to build AI business cases.</div>
+</section>
+
+<footer>
+  <div class="footer-logo">DroidWork.ai</div>
+  <div class="footer-links">
+    <a href="/calculator/">Calculator</a>
+    <a href="/calculator/methodology">Methodology</a>
+  </div>
+  <div class="footer-copy">&copy; 2026 DroidWork.ai — For planning purposes only.</div>
+</footer>
+
+</body>
+</html>
