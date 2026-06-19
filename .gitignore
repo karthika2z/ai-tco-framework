@@ -19,3 +19,8 @@ worker/.wrangler/
 
 # Logs
 *.log
+
+# LoopQuant Python environment
+loopquant/.venv/
+loopquant/__pycache__/
+loopquant/*.pyc
