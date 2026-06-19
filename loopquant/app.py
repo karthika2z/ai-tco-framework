@@ -1,18 +1,21 @@
 """
-LoopQuant — Phase 0 UI Mockup
-A fully runnable Streamlit app with hardcoded mock data.
-All screens, transitions, and charts are implemented.
-No real LLM or market data yet — swap in Phase 1.
+LoopQuant — Phase 1
+Demo mode: hardcoded mock data (no API key needed).
+Live mode: real Claude LLM + yfinance + vectorized backtester.
 """
 
+import os
 import time
 from datetime import datetime
 
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
+from dotenv import load_dotenv
 
-from mock_data import AUDIT_LOG, MOCK_VARIANTS, generate_equity_curve, generate_rolling_ic, get_mock_results
+load_dotenv()  # load .env if present
+
+from mock_data import AUDIT_LOG, generate_equity_curve, generate_rolling_ic, get_mock_results
 
 # ── page config (must be first Streamlit call) ───────────────────────────────
 st.set_page_config(
@@ -30,6 +33,8 @@ _DEFAULTS = {
     "holding_period": "Swing (2–10 days)",
     "timeframe": "Last 2 Years",
     "results": None,
+    "mode": "demo",            # "demo" | "live"
+    "api_key": os.getenv("ANTHROPIC_API_KEY", ""),
 }
 for k, v in _DEFAULTS.items():
     if k not in st.session_state:
@@ -130,18 +135,47 @@ def show_input() -> None:
 
         st.markdown("&nbsp;")
 
+        # ── mode selector ─────────────────────────────────────────────────────
+        mode_col, key_col = st.columns([1, 2])
+        with mode_col:
+            mode = st.radio(
+                "Mode",
+                ["🎭 Demo (mock data)", "🚀 Live (real AI + data)"],
+                index=0 if st.session_state.mode == "demo" else 1,
+                horizontal=True,
+                help="Demo works instantly without any API key.",
+            )
+            st.session_state.mode = "demo" if "Demo" in mode else "live"
+
+        api_key = st.session_state.api_key
+        if st.session_state.mode == "live":
+            with key_col:
+                api_key = st.text_input(
+                    "Anthropic API key",
+                    value=st.session_state.api_key,
+                    type="password",
+                    placeholder="sk-ant-... (or set ANTHROPIC_API_KEY in .env)",
+                    help="Used only for this run. Never stored.",
+                )
+                st.session_state.api_key = api_key
+
+        st.markdown("&nbsp;")
+
         idea_ok = len(idea.strip()) >= 10
+        live_ok = st.session_state.mode == "demo" or bool(api_key.strip())
         run_clicked = st.button(
             "🚀  Run the Loop & Find Validated Strategies",
             type="primary",
             use_container_width=True,
-            disabled=not idea_ok,
+            disabled=not (idea_ok and live_ok),
         )
 
         if idea.strip() and not idea_ok:
             st.caption("⚠️  Please add a bit more detail (at least a few words).")
+        if st.session_state.mode == "live" and not api_key.strip():
+            st.caption("⚠️  Enter your Anthropic API key to use Live mode.")
 
-        if run_clicked and idea_ok:
+        if run_clicked and idea_ok and live_ok:
             st.session_state.update(
                 idea=idea,
                 universe=universe,
@@ -223,49 +257,39 @@ def show_input() -> None:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-#  SCREEN 2 — RUNNING (simulated progress)
+#  SCREEN 2 — RUNNING
 # ═══════════════════════════════════════════════════════════════════════════════
+
+_STEP_META = [
+    ("🧠", "Generating strategy variants"),
+    ("📊", "Fetching & preparing data"),
+    ("📈", "Backtesting all variants"),
+    ("📐", "Scoring — IC, ICIR & Half-life"),
+    ("🔍", "Diagnosing results"),
+    ("🛡️", "Out-of-Sample Gate"),
+]
+
+
+def _render_steps(placeholders: list, done_up_to: int, active_detail: str) -> None:
+    for j, (sicon, stitle) in enumerate(_STEP_META):
+        with placeholders[j].container():
+            if j < done_up_to:
+                st.success(f"{sicon}  **{stitle}**")
+            elif j == done_up_to:
+                st.info(f"⏳  **{stitle}** — {active_detail}")
+            else:
+                st.markdown(f"<span class='step-wait'>○  {stitle}</span>", unsafe_allow_html=True)
+
+
 def show_running() -> None:
     idea_short = st.session_state.idea[:80] + ("…" if len(st.session_state.idea) > 80 else "")
+    mode = st.session_state.mode
 
     st.markdown("## 🔄 Running the Loop…")
-    st.markdown(f"*Idea: **\"{idea_short}\"***")
+    st.markdown(f"*Idea: **\"{idea_short}\"***  ·  Mode: **{'🚀 Live' if mode == 'live' else '🎭 Demo'}**")
     st.divider()
 
-    STEPS = [
-        (
-            "🧠", "Generating strategy variants",
-            "Asking AI to create 4 distinct approaches to your idea…",
-            "Created 4 variants: MA Crossover, RSI Mean Reversion, Momentum Breakout, Earnings Surprise.",
-        ),
-        (
-            "📊", "Backtesting on historical data",
-            "Running each variant against 2 years of price data…",
-            "All 4 backtests complete. Returns range from +6.1 % to +34.2 % over 2 years.",
-        ),
-        (
-            "📐", "Scoring — IC, ICIR & Half-life",
-            "Calculating signal quality and decay metrics…",
-            "Best ICIR: 1.42 (MA Crossover). 2 variants fall below the 1.0 threshold.",
-        ),
-        (
-            "🔍", "Diagnosing results",
-            "AI is analysing why some variants worked and others failed…",
-            "Key finding: volatility filter is the main differentiator. Half-life < 10 days flags overfit.",
-        ),
-        (
-            "🛡️", "Out-of-Sample Gate",
-            "Testing top 2 survivors on fresh data they have never seen…",
-            "MA Crossover OOS ICIR: 1.38 ✅  RSI variant OOS ICIR: 1.09 ✅  Both passed.",
-        ),
-        (
-            "✅", "Building your report",
-            "Formatting results and preparing insights…",
-            "Done! 2 strategies survived all gates. 1 promoted as primary recommendation.",
-        ),
-    ]
-
-    placeholders = [st.empty() for _ in STEPS]
+    placeholders = [st.empty() for _ in _STEP_META]
     prog = st.progress(0)
     status_msg = st.empty()
 
@@ -273,39 +297,162 @@ def show_running() -> None:
         st.session_state.phase = "input"
         st.rerun()
 
-    for i, (icon, title, doing, done) in enumerate(STEPS):
-        # Repaint all rows on every iteration
-        for j, (sicon, stitle, sdoing, sdone) in enumerate(STEPS):
-            with placeholders[j].container():
-                if j < i:
-                    st.success(f"{sicon}  **{stitle}** — {sdone}")
-                elif j == i:
-                    st.info(f"⏳  **{stitle}** — {doing}")
-                else:
-                    st.markdown(
-                        f"<span class='step-wait'>○  {stitle}</span>",
-                        unsafe_allow_html=True,
-                    )
+    # ── DEMO MODE ─────────────────────────────────────────────────────────────
+    if mode == "demo":
+        DEMO_DONE = [
+            "Created 4 variants: MA Crossover, RSI Mean Reversion, Momentum Breakout, Earnings Surprise.",
+            "Loaded SPY data — 504 trading days.",
+            "All 4 backtests complete. Returns +6.1% to +34.2%.",
+            "Best ICIR: 1.42. 2 variants below the 1.0 threshold.",
+            "Key finding: volatility filter is the main differentiator.",
+            "MA Crossover OOS ICIR: 1.38 ✅   RSI variant OOS ICIR: 1.09 ✅",
+        ]
+        for i, (_, title) in enumerate(_STEP_META):
+            _render_steps(placeholders, i, f"Running…")
+            prog.progress((i + 0.6) / len(_STEP_META))
+            status_msg.caption(f"Step {i+1} of {len(_STEP_META)}: {title}…")
+            time.sleep(1.5)
+            # mark done
+            with placeholders[i].container():
+                icon = _STEP_META[i][0]
+                st.success(f"{icon}  **{title}** — {DEMO_DONE[i]}")
 
-        prog.progress((i + 0.6) / len(STEPS))
-        status_msg.caption(f"Step {i + 1} of {len(STEPS)}: {doing}")
-        time.sleep(1.8)
+        prog.progress(1.0)
+        status_msg.empty()
+        st.session_state.results = {"mode": "demo", **get_mock_results()}
+        st.session_state.phase = "results"
+        st.rerun()
 
-    prog.progress(1.0)
-    status_msg.empty()
+    # ── LIVE MODE ─────────────────────────────────────────────────────────────
+    else:
+        from models import RunConfig
+        from orchestrator import run_loop
 
-    st.session_state.results = get_mock_results()
-    st.session_state.phase = "results"
-    st.rerun()
+        config = RunConfig(
+            api_key=st.session_state.api_key or None,
+            data_source="yfinance",
+        )
+
+        # step_num 1-6 maps to _STEP_META indices 0-5
+        def on_step(step_num: int, title: str, detail: str) -> None:
+            idx = step_num - 1
+            _render_steps(placeholders, idx, detail)
+            prog.progress(max(0.05, (idx + 0.6) / len(_STEP_META)))
+            status_msg.caption(f"Step {step_num} of {len(_STEP_META)}: {detail}")
+
+        error_box = st.empty()
+        try:
+            loop_state = run_loop(
+                idea=st.session_state.idea,
+                universe=st.session_state.universe,
+                holding_period=st.session_state.holding_period,
+                timeframe=st.session_state.timeframe,
+                config=config,
+                on_step=on_step,
+            )
+            if loop_state.errors:
+                for e in loop_state.errors:
+                    error_box.warning(f"⚠️  {e}")
+
+            prog.progress(1.0)
+            status_msg.empty()
+            st.session_state.results = {"mode": "live", "loop_state": loop_state}
+            st.session_state.phase = "results"
+            st.rerun()
+
+        except Exception as exc:
+            prog.empty()
+            status_msg.empty()
+            st.error(f"❌ Loop failed: {exc}")
+            st.info("💡 Try switching to Demo mode, or check your API key and internet connection.")
+            if st.button("← Back to input"):
+                st.session_state.phase = "input"
+                st.rerun()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
 #  SCREEN 3 — RESULTS
 # ═══════════════════════════════════════════════════════════════════════════════
+def _live_to_display(loop_state) -> tuple[dict | None, list[dict]]:
+    """Convert LoopState → display dicts compatible with the results screen."""
+    metrics_by_name = {m.strategy_name: m for m in loop_state.metrics}
+    oos_by_name     = {r.strategy_name: r for r in loop_state.oos_results}
+    diag_by_name    = {d.strategy_name: d for d in loop_state.diagnoses}
+
+    variants_display = []
+    for spec in loop_state.variants:
+        m   = metrics_by_name.get(spec.name)
+        oos = oos_by_name.get(spec.name)
+        diag = diag_by_name.get(spec.name)
+        if not m:
+            continue
+
+        passed = spec.name in loop_state.survivors
+        is_promoted = spec.name == loop_state.promoted
+
+        if is_promoted:
+            status = "✅ Promoted"
+        elif passed:
+            status = "✅ Survived OOS"
+        elif m.passed_icir_gate and m.passed_halflife_gate:
+            status = "❌ Rejected OOS"
+        else:
+            reasons = []
+            if not m.passed_icir_gate:     reasons.append(f"Low ICIR ({m.icir:.2f})")
+            if not m.passed_halflife_gate: reasons.append(f"Short HL ({m.half_life_days:.0f}d)")
+            status = f"❌ Rejected ({', '.join(reasons)})"
+
+        v = {
+            "name": spec.name,
+            "description": spec.description,
+            "icir": m.icir,
+            "ic": m.ic,
+            "half_life": m.half_life_days,
+            "sharpe": m.sharpe,
+            "max_dd": m.max_drawdown_pct,
+            "total_return": m.total_return_pct,
+            "status": status,
+            "oos_icir": oos.oos_icir if oos else None,
+        }
+
+        if diag:
+            if passed:
+                v["why_worked"] = diag.summary
+                v["strengths"]  = diag.strengths
+            else:
+                v["why_failed"]  = diag.summary
+                v["weaknesses"]  = diag.weaknesses
+
+        variants_display.append(v)
+
+    best = None
+    if loop_state.promoted:
+        best = next((v for v in variants_display if v["name"] == loop_state.promoted), None)
+    elif variants_display:
+        best = max(variants_display, key=lambda v: v["icir"])
+
+    return best, variants_display
+
+
 def show_results() -> None:
     results = st.session_state.results
-    best = results["best"]
-    variants = results["variants"]
+    mode = results.get("mode", "demo")
+
+    if mode == "live":
+        loop_state = results["loop_state"]
+        best, variants = _live_to_display(loop_state)
+        audit_log = loop_state.audit_log
+        # equity curve from the best backtest (if available)
+        best_bt = None
+        if best and loop_state.backtest_results:
+            best_bt = next(
+                (b for b in loop_state.backtest_results if b.strategy_name == best["name"]), None
+            )
+    else:
+        best     = results["best"]
+        variants = results["variants"]
+        audit_log = AUDIT_LOG
+        best_bt  = None
 
     n_survived = sum(1 for v in variants if "❌" not in v["status"])
     n_icir_pass = sum(1 for v in variants if v["icir"] >= 1.0)
@@ -397,19 +544,26 @@ def show_results() -> None:
 
         with col_chart:
             st.subheader("Equity Curve — Best Strategy vs. Benchmark")
-            dates, strat_eq, bench_eq = generate_equity_curve()
+            if best_bt and best_bt.equity_curve:
+                import pandas as _pd
+                dates     = _pd.to_datetime(best_bt.dates)
+                strat_eq  = best_bt.equity_curve
+                bench_eq  = None   # no benchmark in live mode yet
+            else:
+                dates, strat_eq, bench_eq = generate_equity_curve()
             fig = go.Figure()
             fig.add_trace(go.Scatter(
                 x=dates, y=strat_eq,
-                name=best["name"],
+                name=best["name"] if best else "Strategy",
                 line=dict(color="#16a34a", width=2.5),
                 fill="tozeroy", fillcolor="rgba(22,163,74,0.06)",
             ))
-            fig.add_trace(go.Scatter(
-                x=dates, y=bench_eq,
-                name="Benchmark (SPY)",
-                line=dict(color="#94a3b8", width=1.5, dash="dash"),
-            ))
+            if bench_eq is not None:
+                fig.add_trace(go.Scatter(
+                    x=dates, y=bench_eq,
+                    name="Benchmark (SPY)",
+                    line=dict(color="#94a3b8", width=1.5, dash="dash"),
+                ))
             fig.update_layout(
                 height=300, margin=dict(l=0, r=0, t=8, b=0),
                 legend=dict(orientation="h", y=1.12, x=0),
@@ -559,14 +713,14 @@ def show_results() -> None:
             "Nothing is hidden."
         )
 
-        for entry in AUDIT_LOG:
+        for entry in audit_log:
             lc1, lc2 = st.columns([1, 7])
             lc1.caption(f"`{entry['time']}`")
             lc1.caption(f"*{entry['step']}*")
             lc2.markdown(entry["message"])
 
         st.divider()
-        log_md = _build_log_md()
+        log_md = _build_log_md(audit_log)
         st.download_button(
             "⬇️ Download full log as Markdown",
             log_md,
@@ -620,9 +774,9 @@ def _build_report(idea: str, results: dict) -> str:
 """
 
 
-def _build_log_md() -> str:
+def _build_log_md(audit_log: list) -> str:
     lines = ["# LoopQuant Audit Log\n"]
-    for e in AUDIT_LOG:
+    for e in audit_log:
         lines.append(f"**`{e['time']}`** · *{e['step']}* — {e['message']}\n")
     return "\n".join(lines)
 
