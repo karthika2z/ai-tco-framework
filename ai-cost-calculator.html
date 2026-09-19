@@ -9,6 +9,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script src="/dw-analytics.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 :root {
@@ -1982,12 +1983,24 @@ function calc() {
 
 
 
-  // Charts
-  updateBreakEvenChart(empTrueCostN, cloudAIAnnual, privateAIAnnual, year1SetupCost);
-  updateNPVChart(empTrueCostN, cloudAIAnnual, privateAIAnnual, year1SetupCost, disc);
-  updateJCurveChart(empTrueCostN, cloudAIAnnual, jTechnical, jWorkflow, jDipMonths, jDipPct);
-  updateConcurrencyChart(tasks, days, inTok, outTok, inP, outP, errorRate, annualTooling);
-  updateAgenticChart(baseTokenCost, agenticLoopCost, agenticEnabled, v('a_loop'), v('a_ctx_growth'));
+  // Charts — BEST EFFORT ONLY.
+  // Chart.js is loaded from a third-party CDN. Enterprise visitors (our entire
+  // audience) frequently sit behind corporate firewalls or ad-blockers that
+  // block CDN domains. Before this guard, a failed Chart.js load threw here and
+  // aborted calc() *before* window._calcState was assigned below — which
+  // silently broke the results panel, the PDF export and the lead capture.
+  // Charts are a nice-to-have; the numbers and the lead are the product.
+  try {
+    updateBreakEvenChart(empTrueCostN, cloudAIAnnual, privateAIAnnual, year1SetupCost);
+    updateNPVChart(empTrueCostN, cloudAIAnnual, privateAIAnnual, year1SetupCost, disc);
+    updateJCurveChart(empTrueCostN, cloudAIAnnual, jTechnical, jWorkflow, jDipMonths, jDipPct);
+    updateConcurrencyChart(tasks, days, inTok, outTok, inP, outP, errorRate, annualTooling);
+    updateAgenticChart(baseTokenCost, agenticLoopCost, agenticEnabled, v('a_loop'), v('a_ctx_growth'));
+  } catch (chartErr) {
+    console.warn('[calc] Chart rendering skipped:', chartErr && chartErr.message);
+    // Tracked so Clarity tells you how often this happens to real visitors.
+    if (window.dw && window.dw.track) window.dw.track('charts_unavailable');
+  }
 
   window._calcState = {
     empTrueCostN, cloudAIAnnual, privateAIAnnual,
@@ -2879,6 +2892,112 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     seg.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
   });
+})();
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DroidWork Analytics Instrumentation
+   ───────────────────────────────────────────────────────────────────────────
+   Deliberately non-invasive: this WRAPS the existing functions instead of
+   editing them, so the entire block can be deleted without touching a single
+   line of calculator logic. Requires /dw-analytics.js (loaded in <head>).
+   Also adds ?role=&level= prefill, which the /roles/* SEO pages depend on.
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  var dw = window.dw || { track: function () {}, tag: function () {}, funnel: function () {} };
+
+  // ─── 1. URL PREFILL ───────────────────────────────────────────────────────
+  // Lets a programmatic landing page deep-link into a pre-filled model:
+  //   /calculator?role=cs&level=mid&utm_source=seo
+  function applyPrefill() {
+    try {
+      var q     = new URLSearchParams(location.search);
+      var role  = q.get('role') || q.get('function');
+      var level = q.get('level');
+      var fnEl  = document.getElementById('p_function');
+      var lvEl  = document.getElementById('p_level');
+      var changed = false;
+
+      function hasOption(el, val) {
+        return !!el && [].some.call(el.options, function (o) { return o.value === val; });
+      }
+
+      if (hasOption(fnEl, role))   { fnEl.value = role;  changed = true; dw.tag('prefilled_role', role); }
+      if (hasOption(lvEl, level))  { lvEl.value = level; changed = true; dw.tag('prefilled_level', level); }
+
+      if (changed) {
+        dw.track('arrived_prefilled');
+        if (typeof updateSalaryFromProfile === 'function') updateSalaryFromProfile();
+        else if (typeof calc === 'function') calc();
+      }
+    } catch (e) {}
+  }
+
+  // ─── 2. FUNNEL WRAPPERS ───────────────────────────────────────────────────
+  var _calc = window.calc, calcFired = false;
+  if (typeof _calc === 'function') {
+    window.calc = function () {
+      var r = _calc.apply(this, arguments);
+      try {
+        if (!calcFired) { calcFired = true; dw._calculated = true; dw.funnel('calculated'); }
+        var s = window._calcState || {};
+        var fnEl = document.getElementById('p_function');
+        var lvEl = document.getElementById('p_level');
+        if (fnEl) dw.tag('role_function', fnEl.value);
+        if (lvEl) dw.tag('role_level', lvEl.value);
+        // Which way the answer landed. If most visitors see "employee cheaper",
+        // your positioning — not your math — is what needs attention.
+        if (typeof s.annualSavings === 'number' && isFinite(s.annualSavings)) {
+          dw.tag('outcome', s.annualSavings >= 0 ? 'ai_cheaper' : 'employee_cheaper');
+        }
+      } catch (e) {}
+      return r;
+    };
+  }
+
+  var _open = window.openEmailModal;
+  if (typeof _open === 'function') {
+    window.openEmailModal = function () {
+      var r = _open.apply(this, arguments);
+      try { dw.funnel('openedModal'); if (dw.remask) dw.remask(); } catch (e) {}
+      return r;
+    };
+  }
+
+  var _send = window.sendPDFReport;
+  if (typeof _send === 'function') {
+    window.sendPDFReport = async function () {
+      try { dw.funnel('submitted'); dw._submitted = true; } catch (e) {}
+      var r = await _send.apply(this, arguments);
+      try {
+        var st = document.getElementById('send-status');
+        dw.funnel(st && /success/.test(st.className) ? 'delivered' : 'submit_failed');
+      } catch (e) {}
+      return r;
+    };
+  }
+
+  var _share = window.shareOn;
+  if (typeof _share === 'function') {
+    window.shareOn = function (platform) {
+      try { dw.track('shared', { share_platform: String(platform) }); } catch (e) {}
+      return _share.apply(this, arguments);
+    };
+  }
+
+  var _export = window.exportSummary;
+  if (typeof _export === 'function') {
+    window.exportSummary = function () {
+      try { dw.track('exported_summary'); } catch (e) {}
+      return _export.apply(this, arguments);
+    };
+  }
+
+  // ─── 3. BOOT ──────────────────────────────────────────────────────────────
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', applyPrefill);
+  } else {
+    applyPrefill();
+  }
 })();
 </script>
 </body>

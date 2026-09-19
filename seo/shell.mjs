@@ -1,0 +1,133 @@
+/**
+ * Shared page shell for all generated pages (roles + insights).
+ * Single source of truth for brand tokens, layout and <head>.
+ */
+export const SITE = 'https://droidwork.ai';
+export const YEAR = new Date().getFullYear();
+
+export const usd = n => (n < 0 ? '-' : '') + '$' + Math.abs(Math.round(n)).toLocaleString('en-US');
+export const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+export const CSS = `
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#0a1628;--navy-mid:#0f2042;--navy-light:#162d5a;--border:rgba(255,255,255,.08);
+--brand:#00d4a8;--brand-dim:rgba(0,212,168,.12);--gold:#c9a84c;--gold-dim:rgba(201,168,76,.12);
+--text:#f0f4f8;--muted:#8ca0b8;--white:#fff;--danger:#f87171}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--navy);
+color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--brand);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:860px;margin:0 auto;padding:0 24px}
+header{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(10,22,40,.92);
+backdrop-filter:blur(10px);z-index:50}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:16px;color:var(--white)}
+.logo span{color:var(--brand)}
+.nav-links{display:flex;gap:20px;align-items:center;font-size:13px;flex-wrap:wrap}
+.nav-links a{color:var(--muted)}
+.btn{display:inline-block;background:var(--brand);color:#04241d;font-weight:700;font-size:14px;
+padding:12px 22px;border-radius:8px;text-align:center;transition:transform .15s,filter .15s}
+.btn:hover{filter:brightness(1.08);transform:translateY(-1px);text-decoration:none}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+.crumb{font-size:12px;color:var(--muted);margin:28px 0 14px}
+h1{font-size:clamp(28px,5vw,42px);line-height:1.15;font-weight:800;color:var(--white);letter-spacing:-.02em;margin-bottom:16px}
+h2{font-size:clamp(20px,3vw,26px);font-weight:700;color:var(--white);margin:44px 0 14px;letter-spacing:-.01em}
+h3{font-size:16px;font-weight:700;color:var(--white);margin:22px 0 8px}
+p{margin-bottom:16px;color:#cfdae7}
+.lede{font-size:18px;color:var(--muted);margin-bottom:28px}
+.pill{display:inline-block;background:var(--brand-dim);color:var(--brand);font-size:11px;font-weight:700;
+letter-spacing:.9px;text-transform:uppercase;padding:6px 13px;border-radius:20px;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px;margin:26px 0}
+.stat{background:var(--navy-mid);border:1px solid var(--border);border-radius:11px;padding:17px}
+.stat-l{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px;font-weight:600}
+.stat-v{font-size:23px;font-weight:800;color:var(--white);letter-spacing:-.02em}
+.stat-v.pos{color:var(--brand)}
+.stat-v.neg{color:var(--danger)}
+table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px;
+background:var(--navy-mid);border-radius:11px;overflow:hidden;border:1px solid var(--border)}
+th{text-align:left;padding:12px 15px;font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;
+color:var(--muted);background:rgba(255,255,255,.03);font-weight:700}
+td{padding:12px 15px;border-top:1px solid var(--border);color:#cfdae7}
+td.n{text-align:right;font-weight:700;color:var(--white);font-variant-numeric:tabular-nums}
+.callout{background:var(--navy-mid);border-left:3px solid var(--brand);border-radius:0 11px 11px 0;
+padding:18px 22px;margin:26px 0}
+.callout.warn{border-left-color:var(--gold);background:var(--gold-dim)}
+.callout-t{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--brand);margin-bottom:7px}
+.callout.warn .callout-t{color:var(--gold)}
+.callout p:last-child{margin-bottom:0}
+.cta{background:linear-gradient(135deg,var(--navy-mid),var(--navy-light));border:1px solid var(--border);
+border-radius:15px;padding:34px;text-align:center;margin:44px 0}
+.cta h2{margin-top:0}
+.cta-sub{color:var(--muted);font-size:15px;margin-bottom:22px}
+.faq{border-top:1px solid var(--border);padding:18px 0}
+.faq h3{margin-top:0}
+.faq p{margin-bottom:0;font-size:14.5px}
+.rel{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:20px 0}
+.rel a{background:var(--navy-mid);border:1px solid var(--border);border-radius:9px;padding:13px 15px;
+font-size:13.5px;color:var(--text);font-weight:600}
+.rel a:hover{border-color:var(--brand);text-decoration:none}
+.rel span{display:block;font-size:11.5px;color:var(--muted);font-weight:400;margin-top:3px}
+footer{border-top:1px solid var(--border);margin-top:60px;padding:28px 0 44px;font-size:12.5px;color:var(--muted)}
+.disc{font-size:12px;color:var(--muted);font-style:italic;margin-top:26px;padding-top:16px;border-top:1px solid var(--border)}
+@media(max-width:560px){.grid{grid-template-columns:repeat(2,1fr)}}
+
+/* article */
+.art p{font-size:16.5px;color:#cfdae7}
+.art h2{margin-top:40px}
+.art ul{margin:0 0 18px 20px;color:#cfdae7}
+.art li{margin-bottom:9px;font-size:16px}
+.art strong{color:var(--white)}
+blockquote{border-left:3px solid var(--gold);background:var(--gold-dim);margin:26px 0;
+padding:16px 22px;border-radius:0 11px 11px 0;font-size:17px;color:var(--white);font-weight:600}
+.study{background:var(--navy-mid);border:1px solid var(--border);border-radius:11px;padding:17px 20px;margin-bottom:12px}
+.study-src{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--brand);font-weight:700;margin-bottom:6px}
+.study p{margin-bottom:0;font-size:15px}
+.refs{font-size:13px;color:var(--muted);margin-top:10px}
+.refs li{margin-bottom:10px;font-size:13px;line-height:1.55}
+.byline{font-size:13px;color:var(--muted);margin-bottom:26px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.tri{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:22px 0}
+.tri-c{background:var(--navy-mid);border:1px solid var(--border);border-top:3px solid var(--brand);border-radius:11px;padding:18px}
+.tri-c h3{margin:0 0 7px}
+.tri-c p{font-size:14.5px;margin-bottom:0}
+`;
+
+export function shell({ title, desc, canonical, jsonld, body }) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>${esc(title)}</title>
+<meta name="description" content="${esc(desc)}">
+<link rel="canonical" href="${canonical}">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(desc)}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="${canonical}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="/dw-analytics.js"></script>
+<script type="application/ld+json">${JSON.stringify(jsonld)}</script>
+<style>${CSS}</style>
+</head>
+<body>
+<header><div class="wrap"><div class="nav">
+  <a class="logo" href="/">DroidWork<span>.ai</span></a>
+  <div class="nav-links">
+    <a href="/roles/">All Roles</a>
+    <a href="/calculator/methodology">Methodology</a>
+    <a href="https://github.com/karthika2z/ai-tco-framework">Open Source</a>
+    <a class="btn" href="/calculator/">Open Calculator</a>
+  </div>
+</div></div></header>
+<main class="wrap">${body}</main>
+<footer><div class="wrap">
+  <strong style="color:var(--text)">DroidWork.ai</strong> — Enterprise AI Cost Intelligence<br>
+  <a href="/calculator/">Calculator</a> · <a href="/calculator/methodology">Methodology</a> ·
+  <a href="/roles/">All Roles</a> · <a href="https://github.com/karthika2z/ai-tco-framework">GitHub</a><br><br>
+  © ${YEAR} DroidWork.ai — For planning purposes only. Figures are modelled estimates, not financial advice.
+</div></footer>
+</body></html>`;
+}
