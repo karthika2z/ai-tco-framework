@@ -217,22 +217,4 @@ for (const r of rows) {
   console.log(`  roles/${r.slug}/index.html`);
 }
 
-// Sitemap + robots
-const urls = [
-  { loc: `${SITE}/`, pri: '1.0' },
-  { loc: `${SITE}/calculator/`, pri: '0.9' },
-  { loc: `${SITE}/calculator/methodology`, pri: '0.8' },
-  { loc: `${SITE}/roles/`, pri: '0.8' },
-  ...rows.map(r => ({ loc: `${SITE}/roles/${r.slug}/`, pri: '0.7' })),
-];
-const today = new Date().toISOString().slice(0, 10);
-writeFileSync(new URL('./sitemap.xml', ROOT),
-  `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map(u => `  <url><loc>${u.loc}</loc><lastmod>${today}</lastmod><priority>${u.pri}</priority></url>`).join('\n')}
-</urlset>
-`);
-writeFileSync(new URL('./robots.txt', ROOT),
-  `User-agent: *\nAllow: /\n\n# AI crawlers welcome — being cited is the distribution strategy.\nUser-agent: GPTBot\nAllow: /\nUser-agent: ClaudeBot\nAllow: /\nUser-agent: PerplexityBot\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`);
-
-console.log(`  sitemap.xml (${urls.length} urls)\n  robots.txt\n\nGenerated ${rows.length} role pages + hub.`);
+console.log(`\nGenerated ${rows.length} role pages + hub.`);

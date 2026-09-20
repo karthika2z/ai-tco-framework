@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Agentic Loop Multiplier — Definition, Number, Why It Costs Money | DroidWork.ai</title>
+<meta name="description" content="The Agentic Loop Multiplier is the factor by which real per-task token consumption exceeds naive single-call estimates in an agent framework — 4×–10× in typical ReAct or tool-use deployments, driven by plan/act/observe/reflect iterations and by context growth as prior reasoning is appended to the scratchpad on every step.">
+<link rel="canonical" href="https://droidwork.ai/frameworks/the-agentic-loop-multiplier/">
+<meta property="og:title" content="The Agentic Loop Multiplier — Definition, Number, Why It Costs Money | DroidWork.ai">
+<meta property="og:description" content="The Agentic Loop Multiplier is the factor by which real per-task token consumption exceeds naive single-call estimates in an agent framework — 4×–10× in typical ReAct or tool-use deployments, driven by plan/act/observe/reflect iterations and by context growth as prior reasoning is appended to the scratchpad on every step.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://droidwork.ai/frameworks/the-agentic-loop-multiplier/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="/dw-analytics.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","@id":"https://droidwork.ai/frameworks/the-agentic-loop-multiplier/#term","name":"The Agentic Loop Multiplier","description":"The Agentic Loop Multiplier is the factor by which real per-task token consumption exceeds naive single-call estimates in an agent framework — 4×–10× in typical ReAct or tool-use deployments, driven by plan/act/observe/reflect iterations and by context growth as prior reasoning is appended to the scratchpad on every step.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"The DroidWork AI TCO Framework Glossary","url":"https://droidwork.ai/frameworks/"},"url":"https://droidwork.ai/frameworks/the-agentic-loop-multiplier/"},{"@type":"Article","headline":"The Agentic Loop Multiplier","description":"Every \"task\" in a ReAct-style agent is not one API call. It is 4–10 — and each iteration bills against a growing context. Standard token calculators miss this by a factor of 4×–10×.","keywords":"agentic AI cost, ReAct token consumption, agent loop tokens, agentic AI TCO, tool-use API cost, agent scratchpad cost","author":{"@type":"Person","name":"Karthik Balachandran","url":"https://www.linkedin.com/in/kbalachandran"},"publisher":{"@type":"Organization","name":"DroidWork.ai","url":"https://droidwork.ai"},"mainEntityOfPage":"https://droidwork.ai/frameworks/the-agentic-loop-multiplier/","datePublished":"2026-09-20","dateModified":"2026-09-20","about":{"@id":"https://droidwork.ai/frameworks/the-agentic-loop-multiplier/#term"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the agentic loop multiplier?","acceptedAnswer":{"@type":"Answer","text":"The factor by which per-task token consumption in a ReAct-style agent exceeds a naive single-call estimate. Typically 4× to 10×, driven by plan/act/observe/reflect iterations and by context growth as prior reasoning accumulates in the scratchpad."}},{"@type":"Question","name":"Why is token cost 4× to 10× higher in agentic deployments?","acceptedAnswer":{"@type":"Answer","text":"Because a single user task triggers several API calls — one per loop iteration — and each successive call carries a longer input context that includes the prior reasoning and tool outputs. Abandoned tasks consume roughly half their token budget before failing, which adds an additional cost layer."}},{"@type":"Question","name":"Where does the 4× to 10× range come from?","acceptedAnswer":{"@type":"Answer","text":"It is derived from combining measured iteration counts in production agents (typically 4–8 turns for complex tasks) with the empirical 12–22% abandonment rate measured in Tau-bench (2024) across state-of-the-art LLM agents."}},{"@type":"Question","name":"How do I test this on my own deployment?","acceptedAnswer":{"@type":"Answer","text":"Instrument agent traces to capture iterations per task and mean input tokens per iteration, then compare the resulting cost against a naive \"tasks × completion tokens × price\" estimate. The gap is the multiplier for your workload."}}]}]}</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#0a1628;--navy-mid:#0f2042;--navy-light:#162d5a;--border:rgba(255,255,255,.08);
+--brand:#00d4a8;--brand-dim:rgba(0,212,168,.12);--gold:#c9a84c;--gold-dim:rgba(201,168,76,.12);
+--text:#f0f4f8;--muted:#8ca0b8;--white:#fff;--danger:#f87171}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--navy);
+color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--brand);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:860px;margin:0 auto;padding:0 24px}
+header{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(10,22,40,.92);
+backdrop-filter:blur(10px);z-index:50}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:16px;color:var(--white)}
+.logo span{color:var(--brand)}
+.nav-links{display:flex;gap:20px;align-items:center;font-size:13px;flex-wrap:wrap}
+.nav-links a{color:var(--muted)}
+.btn{display:inline-block;background:var(--brand);color:#04241d;font-weight:700;font-size:14px;
+padding:12px 22px;border-radius:8px;text-align:center;transition:transform .15s,filter .15s}
+.btn:hover{filter:brightness(1.08);transform:translateY(-1px);text-decoration:none}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+.crumb{font-size:12px;color:var(--muted);margin:28px 0 14px}
+h1{font-size:clamp(28px,5vw,42px);line-height:1.15;font-weight:800;color:var(--white);letter-spacing:-.02em;margin-bottom:16px}
+h2{font-size:clamp(20px,3vw,26px);font-weight:700;color:var(--white);margin:44px 0 14px;letter-spacing:-.01em}
+h3{font-size:16px;font-weight:700;color:var(--white);margin:22px 0 8px}
+p{margin-bottom:16px;color:#cfdae7}
+.lede{font-size:18px;color:var(--muted);margin-bottom:28px}
+.pill{display:inline-block;background:var(--brand-dim);color:var(--brand);font-size:11px;font-weight:700;
+letter-spacing:.9px;text-transform:uppercase;padding:6px 13px;border-radius:20px;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px;margin:26px 0}
+.stat{background:var(--navy-mid);border:1px solid var(--border);border-radius:11px;padding:17px}
+.stat-l{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px;font-weight:600}
+.stat-v{font-size:23px;font-weight:800;color:var(--white);letter-spacing:-.02em}
+.stat-v.pos{color:var(--brand)}
+.stat-v.neg{color:var(--danger)}
+table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px;
+background:var(--navy-mid);border-radius:11px;overflow:hidden;border:1px solid var(--border)}
+th{text-align:left;padding:12px 15px;font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;
+color:var(--muted);background:rgba(255,255,255,.03);font-weight:700}
+td{padding:12px 15px;border-top:1px solid var(--border);color:#cfdae7}
+td.n{text-align:right;font-weight:700;color:var(--white);font-variant-numeric:tabular-nums}
+.callout{background:var(--navy-mid);border-left:3px solid var(--brand);border-radius:0 11px 11px 0;
+padding:18px 22px;margin:26px 0}
+.callout.warn{border-left-color:var(--gold);background:var(--gold-dim)}
+.callout-t{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--brand);margin-bottom:7px}
+.callout.warn .callout-t{color:var(--gold)}
+.callout p:last-child{margin-bottom:0}
+.cta{background:linear-gradient(135deg,var(--navy-mid),var(--navy-light));border:1px solid var(--border);
+border-radius:15px;padding:34px;text-align:center;margin:44px 0}
+.cta h2{margin-top:0}
+.cta-sub{color:var(--muted);font-size:15px;margin-bottom:22px}
+.faq{border-top:1px solid var(--border);padding:18px 0}
+.faq h3{margin-top:0}
+.faq p{margin-bottom:0;font-size:14.5px}
+.rel{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:20px 0}
+.rel a{background:var(--navy-mid);border:1px solid var(--border);border-radius:9px;padding:13px 15px;
+font-size:13.5px;color:var(--text);font-weight:600}
+.rel a:hover{border-color:var(--brand);text-decoration:none}
+.rel span{display:block;font-size:11.5px;color:var(--muted);font-weight:400;margin-top:3px}
+footer{border-top:1px solid var(--border);margin-top:60px;padding:28px 0 44px;font-size:12.5px;color:var(--muted)}
+.disc{font-size:12px;color:var(--muted);font-style:italic;margin-top:26px;padding-top:16px;border-top:1px solid var(--border)}
+@media(max-width:560px){.grid{grid-template-columns:repeat(2,1fr)}}
+
+/* article */
+.art p{font-size:16.5px;color:#cfdae7}
+.art h2{margin-top:40px}
+.art ul{margin:0 0 18px 20px;color:#cfdae7}
+.art li{margin-bottom:9px;font-size:16px}
+.art strong{color:var(--white)}
+blockquote{border-left:3px solid var(--gold);background:var(--gold-dim);margin:26px 0;
+padding:16px 22px;border-radius:0 11px 11px 0;font-size:17px;color:var(--white);font-weight:600}
+.study{background:var(--navy-mid);border:1px solid var(--border);border-radius:11px;padding:17px 20px;margin-bottom:12px}
+.study-src{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--brand);font-weight:700;margin-bottom:6px}
+.study p{margin-bottom:0;font-size:15px}
+.refs{font-size:13px;color:var(--muted);margin-top:10px}
+.refs li{margin-bottom:10px;font-size:13px;line-height:1.55}
+.byline{font-size:13px;color:var(--muted);margin-bottom:26px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.tri{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:22px 0}
+.tri-c{background:var(--navy-mid);border:1px solid var(--border);border-top:3px solid var(--brand);border-radius:11px;padding:18px}
+.tri-c h3{margin:0 0 7px}
+.tri-c p{font-size:14.5px;margin-bottom:0}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="nav">
+  <a class="logo" href="/">DroidWork<span>.ai</span></a>
+  <div class="nav-links">
+    <a href="/roles/">All Roles</a>
+    <a href="/calculator/methodology">Methodology</a>
+    <a href="https://github.com/karthika2z/ai-tco-framework">Open Source</a>
+    <a class="btn" href="/calculator/">Open Calculator</a>
+  </div>
+</div></div></header>
+<main class="wrap">
+<div class="crumb"><a href="/">Home</a> › <a href="/frameworks/">Frameworks</a> › The Agentic Loop Multiplier</div>
+<div class="pill">Framework · Cite this</div>
+<h1>The Agentic Loop Multiplier</h1>
+<p class="lede">Every &quot;task&quot; in a ReAct-style agent is not one API call. It is 4–10 — and each iteration bills against a growing context. Standard token calculators miss this by a factor of 4×–10×.</p>
+<div class="byline">By <a href="https://www.linkedin.com/in/kbalachandran">Karthik Balachandran</a> · Part of the DroidWork AI TCO Framework</div>
+
+<div class="callout">
+  <div class="callout-t">The number</div>
+  <p><strong style="font-size:24px;color:var(--white)">4×–10×</strong> — per-task token consumption in an agentic loop, vs. a naive single API call.</p>
+</div>
+
+<div class="art">
+
+<h2>The definition</h2>
+<p>A single "task" in a ReAct-style agent framework is not one API call. It is a structured loop: <strong>plan, use tool, observe, reflect, act again</strong>. Each iteration is a billable API call with its own input context — which <em>grows at every step</em> as the agent appends its prior reasoning to the scratchpad. This is the Agentic Loop Multiplier.</p>
+
+<blockquote>Standard token calculators assume a 1:1 relationship between user tasks and API calls. In agentic deployments this assumption is false by a factor of 4× to 10×.</blockquote>
+
+<h2>Why it costs money</h2>
+<p>Three compounding effects, all invisible in a naive tokens × tasks estimate:</p>
+<ul>
+  <li><strong>Iteration count.</strong> Each ReAct loop turn is a billed call. Complex tasks routinely take 4–10 turns. Multiply by hundreds of thousands of annual tasks and the API bill stops looking like the friendly demo.</li>
+  <li><strong>Context growth per turn.</strong> The input context to each turn includes the running scratchpad — prior reasoning, tool outputs, observations. Input tokens per call grow monotonically inside a single task.</li>
+  <li><strong>Abandonment tax.</strong> Tau-bench (2024) measured 12–22% task abandonment across state-of-the-art agents. Abandoned tasks still burn roughly half their token budget before failing. You pay for the failure.</li>
+</ul>
+
+<h2>The number</h2>
+<p>Applied consistently to a mid-level knowledge-worker deployment (250 daily tasks per user, GPT-4o class model, five-turn loop):</p>
+<ul>
+  <li>Naive estimate: ~$28,000/yr in tokens</li>
+  <li>Modelled with loop + abandonment: ~$110,000–$180,000/yr</li>
+  <li>Multiplier: <strong>4×–6×</strong> on the vendor slide</li>
+</ul>
+<p>Longer-horizon agents (research, code, ops) push the multiplier toward the 10× end of the range. The full derivation, including the abandonment-cost formula and its Tau-bench sourcing, is in the <a href="/calculator/methodology#s4">methodology, Module 2B</a>.</p>
+
+<h2>How to check it on your own deployment</h2>
+<ul>
+  <li>Instrument agent traces to record iterations-per-task and mean input tokens per iteration.</li>
+  <li>Compute mean iterations × mean input tokens per iteration × input price + mean output per iteration × output price.</li>
+  <li>Compare against the naive "prompt tokens × completions × price" line in the vendor deck.</li>
+  <li>The gap is the loop multiplier. If it is under 3×, you are either running short-horizon single-call tasks or your traces are undercounting.</li>
+</ul>
+
+<h2>Why this framework is worth naming</h2>
+<p>Because giving the effect a name lets a CFO push back on a slide that shows only base token cost. "What is your agentic loop multiplier?" is a specific, answerable, budget-relevant question. "Is this token estimate realistic?" is not.</p>
+</div>
+
+<div class="cta">
+  <h2>Model this on your deployment</h2>
+  <p class="cta-sub">This framework is baked into the DroidWork TCO calculator. Adjust the inputs — the numbers move accordingly.</p>
+  <a class="btn" href="/calculator/?utm_source=frameworks&utm_medium=article&utm_campaign=the-agentic-loop-multiplier">Open the Calculator →</a>
+</div>
+
+<h2>Frequently asked</h2>
+<div class="faq"><h3>What is the agentic loop multiplier?</h3><p>The factor by which per-task token consumption in a ReAct-style agent exceeds a naive single-call estimate. Typically 4× to 10×, driven by plan/act/observe/reflect iterations and by context growth as prior reasoning accumulates in the scratchpad.</p></div>
+<div class="faq"><h3>Why is token cost 4× to 10× higher in agentic deployments?</h3><p>Because a single user task triggers several API calls — one per loop iteration — and each successive call carries a longer input context that includes the prior reasoning and tool outputs. Abandoned tasks consume roughly half their token budget before failing, which adds an additional cost layer.</p></div>
+<div class="faq"><h3>Where does the 4× to 10× range come from?</h3><p>It is derived from combining measured iteration counts in production agents (typically 4–8 turns for complex tasks) with the empirical 12–22% abandonment rate measured in Tau-bench (2024) across state-of-the-art LLM agents.</p></div>
+<div class="faq"><h3>How do I test this on my own deployment?</h3><p>Instrument agent traces to capture iterations per task and mean input tokens per iteration, then compare the resulting cost against a naive &quot;tasks × completion tokens × price&quot; estimate. The gap is the multiplier for your workload.</p></div>
+
+<h2>See also</h2>
+<div class="rel">
+  <a href="/frameworks/the-concurrency-cliff/">The Concurrency Cliff<span>The other line every vendor deck omits</span></a>
+  <a href="/calculator/methodology#s4">Methodology · Module 2B<span>Full derivation and formula</span></a>
+  <a href="/frameworks/">All frameworks<span>The full glossary</span></a>
+</div>
+
+<p class="disc">This framework is documented as part of the open-source <a href="https://github.com/karthika2z/ai-tco-framework">DroidWork AI TCO Framework</a>. Cite it as: DroidWork.ai (2026). "The Agentic Loop Multiplier." https://droidwork.ai/frameworks/the-agentic-loop-multiplier/</p></main>
+<footer><div class="wrap">
+  <strong style="color:var(--text)">DroidWork.ai</strong> — Enterprise AI Cost Intelligence<br>
+  <a href="/calculator/">Calculator</a> · <a href="/calculator/methodology">Methodology</a> ·
+  <a href="/roles/">All Roles</a> · <a href="https://github.com/karthika2z/ai-tco-framework">GitHub</a><br><br>
+  © 2026 DroidWork.ai — For planning purposes only. Figures are modelled estimates, not financial advice.
+</div></footer>
+</body></html>

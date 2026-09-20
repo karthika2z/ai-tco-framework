@@ -29,7 +29,7 @@ const REFS = [
   ['Bainbridge, L. (1983). Ironies of automation. <em>Automatica</em>, 19(6), 775–779.', 'https://doi.org/10.1016/0005-1098(83)90046-8'],
 ];
 
-const ARTICLES = [{
+export const ARTICLES = [{
   slug: 'human-in-the-loop-will-not-protect-your-ai-agents',
   title: 'A Human in the Loop Will Not Protect Your AI Agents',
   dek: 'What decades of human-factors research says about HITL — and why your approval checkpoint is a signature, not a safeguard.',
@@ -117,29 +117,120 @@ constant, fast and complete. Build it so neither one has to be perfect.</p>`,
     ['What should replace human-in-the-loop for AI agents?', 'A three-layer design: constrain by default with least privilege and runtime policy checks; escalate by exception so humans see only rare, consequential and hard-to-undo decisions; and contain on failure with anomaly detection, circuit breakers and an immediate kill switch.'],
     ['Do more approval checkpoints improve AI safety?', 'No. Research on warning habituation shows the neural response to repeated warnings drops sharply after a few exposures. Ten checkpoints do not produce ten layers of review — they produce one reviewer whose attention is divided ten ways.'],
   ],
+}, {
+  slug: 'the-forward-deployed-engineer-quadrant',
+  title: 'Where Forward Deployed Engineer Demand Comes From',
+  dek: 'AI deployments do not slot into a standard product delivered by a standard SA. They drag placements out of Systems Integration and into a different quadrant — where both product and workflow have to bend at the same time.',
+  desc: 'A 2x2 for placement models: workflow integration complexity vs product customization required. AI deployments are dragging demand out of Systems Integration and into Forward Deployment.',
+  keywords: 'forward deployed engineer, FDE, deployment model, solutions architect, AI go-to-market, agentic deployment, enterprise AI delivery, Palantir FDE',
+  published: '2026-09-19',
+  refs: false,
+  body: `
+<h2>Why placement models matter for AI cost</h2>
+<p>Every enterprise AI deployment sits inside a delivery model, and delivery models come with structural cost signatures. A product that ships as off-the-shelf SaaS scales without adding people. A product delivered as bespoke services adds a person to every account. What separates the two is not the code — it is where on the deployment map the product actually lands.</p>
+
+<blockquote>AI deployments are dragging placements out of Systems Integration and into Forward Deployment. If your delivery model has not moved with them, your margin structure has not caught up.</blockquote>
+
+<h2>The Deployment Model Map</h2>
+<p>A 2×2 on two axes: <strong>workflow integration complexity</strong> (how much the customer's process has to change to absorb your product) and <strong>product customization required</strong> (how much your product has to change to fit the customer). Where you land determines what role does the deploying — and what that role costs to run.</p>
+
+<div class="tri" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px">
+  <div class="tri-c">
+    <h3>Off-the-Shelf SaaS · Low / Low</h3>
+    <p><strong>Neither bends.</strong> Standard product dropped into a standard process. Value shows up in the first session. <em>Owned by: Support · Customer Success.</em> Product-led, seats scale without adding people. Nobody needs to be in the room with the customer.</p>
+  </div>
+  <div class="tri-c">
+    <h3>Systems Integration · High / Low</h3>
+    <p><strong>Workflow bends, product does not.</strong> A standard enterprise platform pushed into legacy data models, security review, and undocumented handoffs. <em>Owned by: Solutions Architect · Implementation Consultant.</em> Fixed-scope SOW. Ends when the scope ends. <strong>Your SAs are placed here.</strong></p>
+  </div>
+  <div class="tri-c">
+    <h3>Bespoke Services · Low / High</h3>
+    <p><strong>Product bends, workflow does not.</strong> A build from scratch for one client. Deep customization, nothing carried forward. <em>Owned by: contract engineering · dev shop.</em> Headcount-bound. No core IP. Margin falls as you grow. Gets dragged upward as clients ask for more.</p>
+  </div>
+  <div class="tri-c" style="border-top-color:var(--gold)">
+    <h3>Forward Deployment · High / High</h3>
+    <p><strong>Both bend, at the same time.</strong> The product is defining a new category and the workflow is still evolving. Requirements are uncovered by working alongside operations. <em>Owned by: Forward Deployed Engineer.</em> Reusable primitives; client needs feed the core product. <strong>Where the work is moving.</strong></p>
+  </div>
+</div>
+
+<h2>Why AI deployments end up in the top-right</h2>
+<p>Three forces, all present in every enterprise agentic rollout:</p>
+<ul>
+  <li><strong>The workflow is still being invented.</strong> The customer does not know how their process changes when an agent enters it — because the agent hasn't run yet. Requirements have to be uncovered, not gathered.</li>
+  <li><strong>The product has to bend.</strong> The reference architecture for an "agentic assistant for finance" does not exist yet. The FDE brings back constraints — data-access shape, escalation policy, evaluation harness — that become primitives in the core product.</li>
+  <li><strong>Both edges compound.</strong> Systems Integration teams cannot land AI, because the product isn't finished; bespoke services teams cannot land AI, because the workflow isn't finished. The FDE role exists because that is the shape of the work.</li>
+</ul>
+
+<h2>What this means for your budget</h2>
+<p>If your AI vendor's delivery motion is priced like Systems Integration — fixed-scope SOW, SA-led, ends when the scope ends — expect one of three things: the scope will overrun, the product will not carry customer-specific learning back into the core, or the customer will build the missing 30% themselves and unbundle you.</p>
+
+<p>If your <em>own</em> deployment plan assumes SI economics — a project you can hand to a systems integrator and receive back — expect a version of the same. The TCO for agentic AI needs to price a Forward Deployment motion: fewer accounts per person, longer engagements, higher per-account revenue, product feedback loops that only close months later.</p>
+
+<h2>How to use the map</h2>
+<ul>
+  <li><strong>Board question:</strong> "Where on the Deployment Model Map is our AI go-to-market today, and where do our vendors' delivery models sit?" If the two quadrants disagree, one of you is going to overrun.</li>
+  <li><strong>Pricing question:</strong> Bespoke Services margins fall as you grow because there is no core IP. Forward Deployment margins improve as you grow because the field work feeds primitives back into the product. Which curve is your delivery model actually on?</li>
+  <li><strong>Hiring question:</strong> If your account teams are wired as SAs but your workload is a Forward Deployment workload, either move the role or lower your delivery expectations. Both work; pretending is what fails.</li>
+</ul>
+
+<div class="callout">
+  <div class="callout-t">The one-slide version</div>
+  <p><strong>Off-the-Shelf SaaS</strong> scales seats. <strong>Systems Integration</strong> scales SOWs. <strong>Bespoke Services</strong> scales headcount. <strong>Forward Deployment</strong> scales primitives. AI deployments are where the last one lives — and the cost model has to match.</p>
+</div>`,
+
+  faqs: [
+    ['What is a Forward Deployed Engineer?', 'An engineering role that works alongside customer operations while the product is still defining its category. FDEs uncover requirements by embedding with users, then turn what they find into reusable primitives that become part of the core product. The role exists when both product and workflow have to bend at the same time.'],
+    ['Why are AI deployments dragging demand toward Forward Deployment?', 'Because agentic AI defines a new category, so the reference architecture is still being invented; and because the customer\'s workflow does not yet know how it changes with an agent in the loop. Both product and workflow have to bend simultaneously — the exact quadrant an FDE is built for.'],
+    ['How is Forward Deployment different from a Solutions Architect model?', 'A Solutions Architect runs a fixed-scope Statement of Work: the product does not bend, only the workflow does. A Forward Deployed Engineer runs an open-scope engagement where both bend, and customer-specific findings feed back into the core product as reusable primitives. SA economics scale SOWs; FDE economics scale primitives.'],
+    ['How does this affect AI TCO?', 'If a deployment is priced like Systems Integration but the work is Forward Deployment, scope will overrun, customer-specific learning will not carry back into the product, or the customer will build the missing 30% themselves and unbundle the vendor. Modelling AI TCO honestly requires pricing the delivery motion the work actually needs, not the motion the vendor invoices for.'],
+  ],
+  cta: `<div class="cta">
+  <h2>Model the delivery cost as well as the token cost</h2>
+  <p class="cta-sub">The DroidWork TCO calculator prices change-management (J-curve), residual oversight, and process-failure costs alongside tokens — the categories that decide whether an SA-delivered vs. FDE-delivered AI deployment breaks even.</p>
+  <a class="btn" href="/calculator/?utm_source=insights&utm_medium=article&utm_campaign=fde-quadrant">Open the Calculator →</a>
+  <p style="margin:14px 0 0;font-size:13.5px;color:var(--muted)">Or <a href="/advisory/?utm_source=insights&utm_campaign=fde-quadrant">have us run it on your deployment</a> — two-week TCO Review, board-ready document.</p>
+</div>`,
+  related: `<h2>Related</h2>
+<div class="rel">
+  <a href="/frameworks/">Named frameworks<span>The Agentic Loop Multiplier, the Concurrency Cliff, and more</span></a>
+  <a href="/data/">Open dataset<span>132 rows, CSV/JSON, CC BY 4.0 — the citation asset</span></a>
+  <a href="/advisory/">Advisory tiers<span>Free calculator, $399 kit, or $5-15k TCO Review</span></a>
+  <a href="/insights/">More insights<span>Agentic AI governance and delivery</span></a>
+</div>`,
 }];
 
 function articlePage(a) {
   const canonical = `${SITE}/insights/${a.slug}/`;
+  const includeRefs = a.refs !== false;
+  const crumbLabel = a.crumbLabel || a.title.split(':')[0].split(' ').slice(0, 3).join(' ');
+  const pill = a.pill || (includeRefs ? 'AI Governance · Research-Backed' : 'AI Delivery · Framework');
+  const byline = includeRefs
+    ? `By <a href="${AUTHOR_URL}">${esc(AUTHOR)}</a> · Published ${new Date(a.published + 'T12:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} · ${REFS.length} peer-reviewed sources`
+    : `By <a href="${AUTHOR_URL}">${esc(AUTHOR)}</a> · Published ${new Date(a.published + 'T12:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`;
+
+  const article = {
+    '@type': 'Article',
+    headline: a.title,
+    description: a.desc,
+    keywords: a.keywords,
+    author: { '@type': 'Person', name: AUTHOR, url: AUTHOR_URL },
+    publisher: { '@type': 'Organization', name: 'DroidWork.ai', url: SITE },
+    mainEntityOfPage: canonical,
+    datePublished: a.published,
+    dateModified: a.published,
+  };
+  if (includeRefs) {
+    article.citation = REFS.map(([t, url]) => ({
+      '@type': 'CreativeWork',
+      name: t.replace(/<[^>]+>/g, ''),
+      url,
+    }));
+  }
+
   const jsonld = {
     '@context': 'https://schema.org',
     '@graph': [
-      {
-        '@type': 'Article',
-        headline: a.title,
-        description: a.desc,
-        keywords: a.keywords,
-        author: { '@type': 'Person', name: AUTHOR, url: AUTHOR_URL },
-        publisher: { '@type': 'Organization', name: 'DroidWork.ai', url: SITE },
-        mainEntityOfPage: canonical,
-        datePublished: a.published,
-        dateModified: a.published,
-        citation: REFS.map(([t, url]) => ({
-          '@type': 'CreativeWork',
-          name: t.replace(/<[^>]+>/g, ''),
-          url,
-        })),
-      },
+      article,
       {
         '@type': 'FAQPage',
         mainEntity: a.faqs.map(([q, ans]) => ({
@@ -150,40 +241,44 @@ function articlePage(a) {
     ],
   };
 
-  const body = `
-<div class="crumb"><a href="/">Home</a> › <a href="/insights/">Insights</a> › HITL</div>
-<div class="pill">AI Governance · Research-Backed</div>
-<h1>${esc(a.title)}</h1>
-<p class="lede">${esc(a.dek)}</p>
-<div class="byline">By <a href="${AUTHOR_URL}">${esc(AUTHOR)}</a> ·
-Published ${new Date(a.published + 'T12:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} ·
-7 peer-reviewed sources</div>
-
-<div class="art">${a.body}</div>
-
-<div class="cta">
+  const ctaHtml = a.cta || `<div class="cta">
   <h2>What does this cost to build properly?</h2>
   <p class="cta-sub">Constrain, escalate and contain are budget lines, not slideware — scoped credentials,
   behavioural monitoring, kill switches and audit logging. Our TCO model prices them as a first-class cost
   dimension, alongside tokens, hosting and residual oversight.</p>
-  <a class="btn" href="/calculator/?utm_source=insights&utm_medium=article&utm_campaign=hitl">Model the Security Cost →</a>
-</div>
+  <a class="btn" href="/calculator/?utm_source=insights&utm_medium=article&utm_campaign=${esc(a.slug)}">Model the Security Cost →</a>
+  <p style="margin:14px 0 0;font-size:13.5px;color:var(--muted)">Or <a href="/advisory/?utm_source=insights&utm_campaign=${esc(a.slug)}">have us run the model on your deployment</a> — two-week TCO Review, board-ready document.</p>
+</div>`;
+
+  const refsHtml = includeRefs ? `<h2>References</h2>
+<ul class="refs">
+${REFS.map(([t, url]) => `  <li>${t} <a href="${url}">${url}</a></li>`).join('\n')}
+</ul>
+` : '';
+
+  const relHtml = a.related || `<h2>Related</h2>
+<div class="rel">
+  <a href="/calculator/methodology">The TCO Methodology<span>How the 7 cost dimensions are modelled</span></a>
+  <a href="/roles/">All Role Comparisons<span>12 roles, modelled end to end</span></a>
+  <a href="/insights/">More Insights<span>Agentic AI governance and cost</span></a>
+</div>`;
+
+  const body = `
+<div class="crumb"><a href="/">Home</a> › <a href="/insights/">Insights</a> › ${esc(crumbLabel)}</div>
+<div class="pill">${esc(pill)}</div>
+<h1>${esc(a.title)}</h1>
+<p class="lede">${esc(a.dek)}</p>
+<div class="byline">${byline}</div>
+
+<div class="art">${a.body}</div>
+
+${ctaHtml}
 
 <h2>Frequently asked</h2>
 ${a.faqs.map(([q, ans]) => `<div class="faq"><h3>${esc(q)}</h3><p>${esc(ans)}</p></div>`).join('\n')}
 
-<h2>References</h2>
-<ul class="refs">
-${REFS.map(([t, url]) => `  <li>${t} <a href="${url}">${url}</a></li>`).join('\n')}
-</ul>
-
-<h2>Related</h2>
-<div class="rel">
-  <a href="/calculator/methodology">The TCO Methodology<span>How the 7 cost dimensions are modelled</span></a>
-  <a href="/roles/it-support-specialist/">AI vs. IT Support<span>Where privileged agent access changes the maths</span></a>
-  <a href="/roles/">All Role Comparisons<span>12 roles, modelled end to end</span></a>
-  <a href="/insights/">More Insights<span>Agentic AI governance and cost</span></a>
-</div>`;
+${refsHtml}
+${relHtml}`;
 
   return shell({ title: `${a.title} | DroidWork.ai`, desc: a.desc, canonical, jsonld, body });
 }
@@ -225,21 +320,4 @@ for (const a of ARTICLES) {
   console.log(`  insights/${a.slug}/index.html`);
 }
 
-// Full sitemap across both sections
-const urls = [
-  { loc: `${SITE}/`, pri: '1.0' },
-  { loc: `${SITE}/calculator/`, pri: '0.9' },
-  { loc: `${SITE}/calculator/methodology`, pri: '0.8' },
-  { loc: `${SITE}/roles/`, pri: '0.8' },
-  { loc: `${SITE}/insights/`, pri: '0.8' },
-  ...ARTICLES.map(a => ({ loc: `${SITE}/insights/${a.slug}/`, pri: '0.9' })),
-  ...roles.map(r => ({ loc: `${SITE}/roles/${r.slug}/`, pri: '0.7' })),
-];
-const today = new Date().toISOString().slice(0, 10);
-writeFileSync(new URL('./sitemap.xml', ROOT),
-  `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map(u => `  <url><loc>${u.loc}</loc><lastmod>${today}</lastmod><priority>${u.pri}</priority></url>`).join('\n')}
-</urlset>
-`);
-console.log(`  sitemap.xml (${urls.length} urls)\n\nGenerated ${ARTICLES.length} article(s) + insights hub.`);
+console.log(`\nGenerated ${ARTICLES.length} article(s) + insights hub.`);

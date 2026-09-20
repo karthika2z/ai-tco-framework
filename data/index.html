@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI vs. Employee TCO Dataset (2026) — 132 Rows, CC BY 4.0 | DroidWork.ai</title>
+<meta name="description" content="Open dataset: fully-loaded employee cost vs. AI TCO across 12 job functions and 11 seniority levels. 132 rows, CSV + JSON downloads, CC BY 4.0.">
+<link rel="canonical" href="https://droidwork.ai/data/">
+<meta property="og:title" content="AI vs. Employee TCO Dataset (2026) — 132 Rows, CC BY 4.0 | DroidWork.ai">
+<meta property="og:description" content="Open dataset: fully-loaded employee cost vs. AI TCO across 12 job functions and 11 seniority levels. 132 rows, CSV + JSON downloads, CC BY 4.0.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://droidwork.ai/data/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="/dw-analytics.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","name":"AI vs. Employee TCO Dataset (2026)","description":"132 rows: total cost of ownership for AI replacement of 12 job functions across 11 seniority levels, modelled across 7 cost dimensions.","url":"https://droidwork.ai/data/","identifier":"droidwork-tco-2026.1","version":"2026.1","license":"https://creativecommons.org/licenses/by/4.0/","isAccessibleForFree":true,"creator":{"@type":"Organization","name":"DroidWork.ai","url":"https://droidwork.ai"},"publisher":{"@type":"Organization","name":"DroidWork.ai","url":"https://droidwork.ai"},"datePublished":"2026-09-20","keywords":"AI TCO, total cost of ownership, AI vs employee cost, AI ROI, agentic AI cost, enterprise AI economics","variableMeasured":["Employee fully-loaded annual cost (USD)","AI annual TCO across 7 dimensions (USD)","Annual savings from AI replacement (USD)","5-year NPV (USD)","Payback period (months)","Token compute cost (USD/yr)","Hosting cost (USD/yr)","Security and compliance cost (USD/yr)","Process failure and rework cost (USD/yr)","Residual human oversight cost (USD/yr)"],"distribution":[{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://droidwork.ai/data/ai-tco-dataset.csv"},{"@type":"DataDownload","encodingFormat":"application/json","contentUrl":"https://droidwork.ai/data/ai-tco-dataset.json"}],"citation":"DroidWork.ai (2026). AI vs. Employee TCO Dataset, v2026.1. https://droidwork.ai/data/"}</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#0a1628;--navy-mid:#0f2042;--navy-light:#162d5a;--border:rgba(255,255,255,.08);
+--brand:#00d4a8;--brand-dim:rgba(0,212,168,.12);--gold:#c9a84c;--gold-dim:rgba(201,168,76,.12);
+--text:#f0f4f8;--muted:#8ca0b8;--white:#fff;--danger:#f87171}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--navy);
+color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--brand);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:860px;margin:0 auto;padding:0 24px}
+header{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(10,22,40,.92);
+backdrop-filter:blur(10px);z-index:50}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:16px;color:var(--white)}
+.logo span{color:var(--brand)}
+.nav-links{display:flex;gap:20px;align-items:center;font-size:13px;flex-wrap:wrap}
+.nav-links a{color:var(--muted)}
+.btn{display:inline-block;background:var(--brand);color:#04241d;font-weight:700;font-size:14px;
+padding:12px 22px;border-radius:8px;text-align:center;transition:transform .15s,filter .15s}
+.btn:hover{filter:brightness(1.08);transform:translateY(-1px);text-decoration:none}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+.crumb{font-size:12px;color:var(--muted);margin:28px 0 14px}
+h1{font-size:clamp(28px,5vw,42px);line-height:1.15;font-weight:800;color:var(--white);letter-spacing:-.02em;margin-bottom:16px}
+h2{font-size:clamp(20px,3vw,26px);font-weight:700;color:var(--white);margin:44px 0 14px;letter-spacing:-.01em}
+h3{font-size:16px;font-weight:700;color:var(--white);margin:22px 0 8px}
+p{margin-bottom:16px;color:#cfdae7}
+.lede{font-size:18px;color:var(--muted);margin-bottom:28px}
+.pill{display:inline-block;background:var(--brand-dim);color:var(--brand);font-size:11px;font-weight:700;
+letter-spacing:.9px;text-transform:uppercase;padding:6px 13px;border-radius:20px;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px;margin:26px 0}
+.stat{background:var(--navy-mid);border:1px solid var(--border);border-radius:11px;padding:17px}
+.stat-l{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px;font-weight:600}
+.stat-v{font-size:23px;font-weight:800;color:var(--white);letter-spacing:-.02em}
+.stat-v.pos{color:var(--brand)}
+.stat-v.neg{color:var(--danger)}
+table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px;
+background:var(--navy-mid);border-radius:11px;overflow:hidden;border:1px solid var(--border)}
+th{text-align:left;padding:12px 15px;font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;
+color:var(--muted);background:rgba(255,255,255,.03);font-weight:700}
+td{padding:12px 15px;border-top:1px solid var(--border);color:#cfdae7}
+td.n{text-align:right;font-weight:700;color:var(--white);font-variant-numeric:tabular-nums}
+.callout{background:var(--navy-mid);border-left:3px solid var(--brand);border-radius:0 11px 11px 0;
+padding:18px 22px;margin:26px 0}
+.callout.warn{border-left-color:var(--gold);background:var(--gold-dim)}
+.callout-t{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--brand);margin-bottom:7px}
+.callout.warn .callout-t{color:var(--gold)}
+.callout p:last-child{margin-bottom:0}
+.cta{background:linear-gradient(135deg,var(--navy-mid),var(--navy-light));border:1px solid var(--border);
+border-radius:15px;padding:34px;text-align:center;margin:44px 0}
+.cta h2{margin-top:0}
+.cta-sub{color:var(--muted);font-size:15px;margin-bottom:22px}
+.faq{border-top:1px solid var(--border);padding:18px 0}
+.faq h3{margin-top:0}
+.faq p{margin-bottom:0;font-size:14.5px}
+.rel{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:20px 0}
+.rel a{background:var(--navy-mid);border:1px solid var(--border);border-radius:9px;padding:13px 15px;
+font-size:13.5px;color:var(--text);font-weight:600}
+.rel a:hover{border-color:var(--brand);text-decoration:none}
+.rel span{display:block;font-size:11.5px;color:var(--muted);font-weight:400;margin-top:3px}
+footer{border-top:1px solid var(--border);margin-top:60px;padding:28px 0 44px;font-size:12.5px;color:var(--muted)}
+.disc{font-size:12px;color:var(--muted);font-style:italic;margin-top:26px;padding-top:16px;border-top:1px solid var(--border)}
+@media(max-width:560px){.grid{grid-template-columns:repeat(2,1fr)}}
+
+/* article */
+.art p{font-size:16.5px;color:#cfdae7}
+.art h2{margin-top:40px}
+.art ul{margin:0 0 18px 20px;color:#cfdae7}
+.art li{margin-bottom:9px;font-size:16px}
+.art strong{color:var(--white)}
+blockquote{border-left:3px solid var(--gold);background:var(--gold-dim);margin:26px 0;
+padding:16px 22px;border-radius:0 11px 11px 0;font-size:17px;color:var(--white);font-weight:600}
+.study{background:var(--navy-mid);border:1px solid var(--border);border-radius:11px;padding:17px 20px;margin-bottom:12px}
+.study-src{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--brand);font-weight:700;margin-bottom:6px}
+.study p{margin-bottom:0;font-size:15px}
+.refs{font-size:13px;color:var(--muted);margin-top:10px}
+.refs li{margin-bottom:10px;font-size:13px;line-height:1.55}
+.byline{font-size:13px;color:var(--muted);margin-bottom:26px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.tri{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:22px 0}
+.tri-c{background:var(--navy-mid);border:1px solid var(--border);border-top:3px solid var(--brand);border-radius:11px;padding:18px}
+.tri-c h3{margin:0 0 7px}
+.tri-c p{font-size:14.5px;margin-bottom:0}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="nav">
+  <a class="logo" href="/">DroidWork<span>.ai</span></a>
+  <div class="nav-links">
+    <a href="/roles/">All Roles</a>
+    <a href="/calculator/methodology">Methodology</a>
+    <a href="https://github.com/karthika2z/ai-tco-framework">Open Source</a>
+    <a class="btn" href="/calculator/">Open Calculator</a>
+  </div>
+</div></div></header>
+<main class="wrap">
+<div class="crumb"><a href="/">Home</a> › Dataset</div>
+<div class="pill">Open Dataset · v2026.1 · 2026-09-20</div>
+<h1>The AI vs. Employee TCO Dataset</h1>
+<p class="lede">132 rows — every combination of 12 job functions and 11 seniority levels, modelled through the DroidWork TCO calculator. The one thing missing from every vendor ROI deck: a table you can check.</p>
+
+<div class="grid">
+  <div class="stat"><div class="stat-l">Rows</div><div class="stat-v">132</div></div>
+  <div class="stat"><div class="stat-l">Cost dimensions</div><div class="stat-v">7</div></div>
+  <div class="stat"><div class="stat-l">Negative-savings rows</div><div class="stat-v neg">23</div></div>
+  <div class="stat"><div class="stat-l">License</div><div class="stat-v" style="font-size:16px">CC BY 4.0</div></div>
+</div>
+
+<div class="callout">
+  <div class="callout-t">Downloads</div>
+  <p><a href="/data/ai-tco-dataset.csv" download><strong>ai-tco-dataset.csv</strong></a> · <a href="/data/ai-tco-dataset.json" download><strong>ai-tco-dataset.json</strong></a> · Every column is documented in the <a href="/calculator/methodology">methodology reference</a>.</p>
+</div>
+
+<h2>How to cite</h2>
+<pre style="background:var(--navy-mid);border:1px solid var(--border);border-radius:11px;padding:16px 20px;font-size:13.5px;color:#cfdae7;overflow-x:auto;white-space:pre-wrap;line-height:1.55;font-family:'JetBrains Mono',ui-monospace,monospace">DroidWork.ai (2026). AI vs. Employee TCO Dataset, v2026.1. https://droidwork.ai/data/ (accessed 2026-09-20). Licensed under CC BY 4.0.</pre>
+<p style="font-size:14px;color:var(--muted)">This dataset is licensed under a <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>. Reuse freely, including commercially, with attribution.</p>
+
+<h2>Browse all 132 rows</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:16px 0">
+  <input id="q" placeholder="Search…" style="background:var(--navy-mid);border:1px solid var(--border);border-radius:9px;padding:10px 12px;color:var(--text);font-size:13.5px">
+  <select id="fn" style="background:var(--navy-mid);border:1px solid var(--border);border-radius:9px;padding:10px 12px;color:var(--text);font-size:13.5px">
+    <option value="">All functions</option>
+    <option value="swe">Software Engineer</option><option value="ds">Data Scientist</option><option value="pm">Product Manager</option><option value="finance">Financial Analyst</option><option value="hr">HR Generalist</option><option value="ops">Operations Analyst</option><option value="marketing">Marketing Manager</option><option value="sales">Sales Representative</option><option value="legal">Legal Counsel</option><option value="cs">Customer Support Agent</option><option value="it">IT Support Specialist</option><option value="strategy">Strategy Consultant</option>
+  </select>
+  <select id="lv" style="background:var(--navy-mid);border:1px solid var(--border);border-radius:9px;padding:10px 12px;color:var(--text);font-size:13.5px">
+    <option value="">All levels</option>
+    <option value="intern">Intern</option><option value="entry">Entry</option><option value="mid">Mid</option><option value="senior">Senior</option><option value="manager">Manager</option><option value="sr_manager">Senior Manager</option><option value="director">Director</option><option value="vp">VP</option><option value="svp">SVP</option><option value="evp">EVP</option><option value="csuite">C-Suite</option>
+  </select>
+  <select id="sign" style="background:var(--navy-mid);border:1px solid var(--border);border-radius:9px;padding:10px 12px;color:var(--text);font-size:13.5px">
+    <option value="">Any outcome</option>
+    <option value="pos">AI cheaper</option>
+    <option value="neg">Employee cheaper</option>
+  </select>
+</div>
+<p style="font-size:13px;color:var(--muted);margin-bottom:6px">Click any column header to sort. Showing <span id="count">132 of 132</span>.</p>
+
+<div style="overflow-x:auto">
+<table style="min-width:640px">
+  <thead><tr>
+    <th data-sort-key="role" style="cursor:pointer">Role</th>
+    <th data-sort-key="level" style="cursor:pointer">Level</th>
+    <th data-sort-key="salary" style="text-align:right;cursor:pointer">Base salary</th>
+    <th data-sort-key="emp" style="text-align:right;cursor:pointer">Employee TCO</th>
+    <th data-sort-key="ai" style="text-align:right;cursor:pointer">AI TCO</th>
+    <th data-sort-key="save" style="text-align:right;cursor:pointer">Annual savings</th>
+    <th data-sort-key="pay" style="text-align:right;cursor:pointer">Payback</th>
+  </tr></thead>
+  <tbody id="rows">
+<tr
+  data-fn="swe"
+  data-lv="intern"
+  data-signed="neg">
+  <td>Software Engineer</td>
+  <td>Intern</td>
+  <td class="n" data-sort="72000">$72,000</td>
+  <td class="n" data-sort="131820">$131,820</td>
+  <td class="n" data-sort="174292">$174,292</td>
+  <td class="n" data-sort="-42472" style="color:var(--danger)">-$42,472</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="ds"
+  data-lv="intern"
+  data-signed="neg">
+  <td>Data Scientist</td>
+  <td>Intern</td>
+  <td class="n" data-sort="70000">$70,000</td>
+  <td class="n" data-sort="128200">$128,200</td>
+  <td class="n" data-sort="200714">$200,714</td>
+  <td class="n" data-sort="-72514" style="color:var(--danger)">-$72,514</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="pm"
+  data-lv="intern"
+  data-signed="neg">
+  <td>Product Manager</td>
+  <td>Intern</td>
+  <td class="n" data-sort="62000">$62,000</td>
+  <td class="n" data-sort="113720">$113,720</td>
+  <td class="n" data-sort="149395">$149,395</td>
+  <td class="n" data-sort="-35675" style="color:var(--danger)">-$35,675</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="finance"
+  data-lv="intern"
+  data-signed="neg">
+  <td>Financial Analyst</td>
+  <td>Intern</td>
+  <td class="n" data-sort="50000">$50,000</td>
+  <td class="n" data-sort="92000">$92,000</td>
+  <td class="n" data-sort="155904">$155,904</td>
+  <td class="n" data-sort="-63904" style="color:var(--danger)">-$63,904</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="hr"
+  data-lv="intern"
+  data-signed="neg">
+  <td>HR Generalist</td>
+  <td>Intern</td>
+  <td class="n" data-sort="42000">$42,000</td>
+  <td class="n" data-sort="77520">$77,520</td>
+  <td class="n" data-sort="131549">$131,549</td>
+  <td class="n" data-sort="-54029" style="color:var(--danger)">-$54,029</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="ops"
+  data-lv="intern"
+  data-signed="neg">
+  <td>Operations Analyst</td>
+  <td>Intern</td>
+  <td class="n" data-sort="44000">$44,000</td>
+  <td class="n" data-sort="81140">$81,140</td>
+  <td class="n" data-sort="147055">$147,055</td>
+  <td class="n" data-sort="-65915" style="color:var(--danger)">-$65,915</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="marketing"
+  data-lv="intern"
+  data-signed="neg">
+  <td>Marketing Manager</td>
+  <td>Intern</td>
+  <td class="n" data-sort="44000">$44,000</td>
+  <td class="n" data-sort="81140">$81,140</td>
+  <td class="n" data-sort="135831">$135,831</td>
+  <td class="n" data-sort="-54691" style="color:var(--danger)">-$54,691</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="sales"
+  data-lv="intern"
+  data-signed="neg">
+  <td>Sales Representative</td>
+  <td>Intern</td>
+  <td class="n" data-sort="45000">$45,000</td>
+  <td class="n" data-sort="82950">$82,950</td>
+  <td class="n" data-sort="134761">$134,761</td>
+  <td class="n" data-sort="-51811" style="color:var(--danger)">-$51,811</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="legal"
+  data-lv="intern"
+  data-signed="neg">
+  <td>Legal Counsel</td>
+  <td>Intern</td>
+  <td class="n" data-sort="65000">$65,000</td>
+  <td class="n" data-sort="119150">$119,150</td>
+  <td class="n" data-sort="181239">$181,239</td>
+  <td class="n" data-sort="-62089" style="color:var(--danger)">-$62,089</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="cs"
+  data-lv="intern"
+  data-signed="neg">
+  <td>Customer Support Agent</td>
+  <td>Intern</td>
+  <td class="n" data-sort="42000">$42,000</td>
+  <td class="n" data-sort="77520">$77,520</td>
+  <td class="n" data-sort="131377">$131,377</td>
+  <td class="n" data-sort="-53857" style="color:var(--danger)">-$53,857</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="it"
+  data-lv="intern"
+  data-signed="neg">
+  <td>IT Support Specialist</td>
+  <td>Intern</td>
+  <td class="n" data-sort="45000">$45,000</td>
+  <td class="n" data-sort="82950">$82,950</td>
+  <td class="n" data-sort="147322">$147,322</td>
+  <td class="n" data-sort="-64372" style="color:var(--danger)">-$64,372</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="strategy"
+  data-lv="intern"
+  data-signed="neg">
+  <td>Strategy Consultant</td>
+  <td>Intern</td>
+  <td class="n" data-sort="58000">$58,000</td>
+  <td class="n" data-sort="106480">$106,480</td>
+  <td class="n" data-sort="160078">$160,078</td>
+  <td class="n" data-sort="-53598" style="color:var(--danger)">-$53,598</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="swe"
+  data-lv="entry"
+  data-signed="pos">
+  <td>Software Engineer</td>
+  <td>Entry</td>
+  <td class="n" data-sort="110000">$110,000</td>
+  <td class="n" data-sort="200600">$200,600</td>
+  <td class="n" data-sort="188735">$188,735</td>
+  <td class="n" data-sort="11865" style="color:var(--brand)">$11,865</td>
+  <td class="n" data-sort="26.644102403812894">26.6 mo</td>
+</tr>
+<tr
+  data-fn="ds"
+  data-lv="entry"
+  data-signed="neg">
+  <td>Data Scientist</td>
+  <td>Entry</td>
+  <td class="n" data-sort="115000">$115,000</td>
+  <td class="n" data-sort="209650">$209,650</td>
+  <td class="n" data-sort="217819">$217,819</td>
+  <td class="n" data-sort="-8169" style="color:var(--danger)">-$8,169</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="pm"
+  data-lv="entry"
+  data-signed="pos">
+  <td>Product Manager</td>
+  <td>Entry</td>
+  <td class="n" data-sort="114000">$114,000</td>
+  <td class="n" data-sort="207840">$207,840</td>
+  <td class="n" data-sort="169160">$169,160</td>
+  <td class="n" data-sort="38680" style="color:var(--brand)">$38,680</td>
+  <td class="n" data-sort="8.210136194162112">8.2 mo</td>
+</tr>
+<tr
+  data-fn="finance"
+  data-lv="entry"
+  data-signed="neg">
+  <td>Financial Analyst</td>
+  <td>Entry</td>
+  <td class="n" data-sort="90000">$90,000</td>
+  <td class="n" data-sort="164400">$164,400</td>
+  <td class="n" data-sort="171108">$171,108</td>
+  <td class="n" data-sort="-6708" style="color:var(--danger)">-$6,708</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="hr"
+  data-lv="entry"
+  data-signed="neg">
+  <td>HR Generalist</td>
+  <td>Entry</td>
+  <td class="n" data-sort="63000">$63,000</td>
+  <td class="n" data-sort="115530">$115,530</td>
+  <td class="n" data-sort="139531">$139,531</td>
+  <td class="n" data-sort="-24001" style="color:var(--danger)">-$24,001</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="ops"
+  data-lv="entry"
+  data-signed="neg">
+  <td>Operations Analyst</td>
+  <td>Entry</td>
+  <td class="n" data-sort="72000">$72,000</td>
+  <td class="n" data-sort="131820">$131,820</td>
+  <td class="n" data-sort="157698">$157,698</td>
+  <td class="n" data-sort="-25878" style="color:var(--danger)">-$25,878</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="marketing"
+  data-lv="entry"
+  data-signed="neg">
+  <td>Marketing Manager</td>
+  <td>Entry</td>
+  <td class="n" data-sort="64000">$64,000</td>
+  <td class="n" data-sort="117340">$117,340</td>
+  <td class="n" data-sort="143433">$143,433</td>
+  <td class="n" data-sort="-26093" style="color:var(--danger)">-$26,093</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="sales"
+  data-lv="entry"
+  data-signed="neg">
+  <td>Sales Representative</td>
+  <td>Entry</td>
+  <td class="n" data-sort="75000">$75,000</td>
+  <td class="n" data-sort="137250">$137,250</td>
+  <td class="n" data-sort="146164">$146,164</td>
+  <td class="n" data-sort="-8914" style="color:var(--danger)">-$8,914</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="legal"
+  data-lv="entry"
+  data-signed="neg">
+  <td>Legal Counsel</td>
+  <td>Entry</td>
+  <td class="n" data-sort="100000">$100,000</td>
+  <td class="n" data-sort="182500">$182,500</td>
+  <td class="n" data-sort="194542">$194,542</td>
+  <td class="n" data-sort="-12042" style="color:var(--danger)">-$12,042</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="cs"
+  data-lv="entry"
+  data-signed="neg">
+  <td>Customer Support Agent</td>
+  <td>Entry</td>
+  <td class="n" data-sort="62000">$62,000</td>
+  <td class="n" data-sort="113720">$113,720</td>
+  <td class="n" data-sort="138979">$138,979</td>
+  <td class="n" data-sort="-25259" style="color:var(--danger)">-$25,259</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="it"
+  data-lv="entry"
+  data-signed="neg">
+  <td>IT Support Specialist</td>
+  <td>Entry</td>
+  <td class="n" data-sort="82000">$82,000</td>
+  <td class="n" data-sort="149920">$149,920</td>
+  <td class="n" data-sort="161385">$161,385</td>
+  <td class="n" data-sort="-11465" style="color:var(--danger)">-$11,465</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="strategy"
+  data-lv="entry"
+  data-signed="pos">
+  <td>Strategy Consultant</td>
+  <td>Entry</td>
+  <td class="n" data-sort="98000">$98,000</td>
+  <td class="n" data-sort="178880">$178,880</td>
+  <td class="n" data-sort="175282">$175,282</td>
+  <td class="n" data-sort="3598" style="color:var(--brand)">$3,598</td>
+  <td class="n" data-sort="86.64236693224966">86.6 mo</td>
+</tr>
+<tr
+  data-fn="swe"
+  data-lv="mid"
+  data-signed="pos">
+  <td>Software Engineer</td>
+  <td>Mid</td>
+  <td class="n" data-sort="136000">$136,000</td>
+  <td class="n" data-sort="247660">$247,660</td>
+  <td class="n" data-sort="198618">$198,618</td>
+  <td class="n" data-sort="49042" style="color:var(--brand)">$49,042</td>
+  <td class="n" data-sort="6.6378288596907735">6.6 mo</td>
+</tr>
+<tr
+  data-fn="ds"
+  data-lv="mid"
+  data-signed="pos">
+  <td>Data Scientist</td>
+  <td>Mid</td>
+  <td class="n" data-sort="140000">$140,000</td>
+  <td class="n" data-sort="254900">$254,900</td>
+  <td class="n" data-sort="227321">$227,321</td>
+  <td class="n" data-sort="27579" style="color:var(--brand)">$27,579</td>
+  <td class="n" data-sort="11.856244497196545">11.9 mo</td>
+</tr>
+<tr
+  data-fn="pm"
+  data-lv="mid"
+  data-signed="pos">
+  <td>Product Manager</td>
+  <td>Mid</td>
+  <td class="n" data-sort="136000">$136,000</td>
+  <td class="n" data-sort="247660">$247,660</td>
+  <td class="n" data-sort="177522">$177,522</td>
+  <td class="n" data-sort="70138" style="color:var(--brand)">$70,138</td>
+  <td class="n" data-sort="4.641320920187673">4.6 mo</td>
+</tr>
+<tr
+  data-fn="finance"
+  data-lv="mid"
+  data-signed="pos">
+  <td>Financial Analyst</td>
+  <td>Mid</td>
+  <td class="n" data-sort="110000">$110,000</td>
+  <td class="n" data-sort="200600">$200,600</td>
+  <td class="n" data-sort="178710">$178,710</td>
+  <td class="n" data-sort="21890" style="color:var(--brand)">$21,890</td>
+  <td class="n" data-sort="14.441384706578702">14.4 mo</td>
+</tr>
+<tr
+  data-fn="hr"
+  data-lv="mid"
+  data-signed="neg">
+  <td>HR Generalist</td>
+  <td>Mid</td>
+  <td class="n" data-sort="78000">$78,000</td>
+  <td class="n" data-sort="142680">$142,680</td>
+  <td class="n" data-sort="145232">$145,232</td>
+  <td class="n" data-sort="-2552" style="color:var(--danger)">-$2,552</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="ops"
+  data-lv="mid"
+  data-signed="neg">
+  <td>Operations Analyst</td>
+  <td>Mid</td>
+  <td class="n" data-sort="90000">$90,000</td>
+  <td class="n" data-sort="164400">$164,400</td>
+  <td class="n" data-sort="164540">$164,540</td>
+  <td class="n" data-sort="-140" style="color:var(--danger)">-$140</td>
+  <td class="n" data-sort="null">—</td>
+</tr>
+<tr
+  data-fn="marketing"
+  data-lv="mid"
+  data-signed="pos">
+  <td>Marketing Manager</td>
+  <td>Mid</td>
+  <td class="n" data-sort="88000">$88,000</td>
+  <td class="n" data-sort="160780">$160,780</td>
+  <td class="n" data-sort="152556">$152,556</td>
+  <td class="n" data-sort="8224" style="color:var(--brand)">$8,224</td>
+  <td class="n" data-sort="37.46824318262232">37.5 mo</td>
+</tr>
+<tr
+  data-fn="sales"
+  data-lv="mid"
+  data-signed="pos">
+  <td>Sales Representative</td>
+  <td>Mid</td>
+  <td class="n" data-sort="98000">$98,000</td>
+  <td class="n" data-sort="178880">$178,880</td>
+  <td class="n" data-sort="154906">$154,906</td>
+  <td class="n" data-sort="23974" style="color:var(--brand)">$23,974</td>
+  <td class="n" data-sort="13.004937384089114">13.0 mo</td>
+</tr>
+<tr
+  data-fn="legal"
+  data-lv="mid"
+  data-signed="pos">
+  <td>Legal Counsel</td>
+  <td>Mid</td>
+  <td class="n" data-sort="132000">$132,000</td>
+  <td class="n" data-sort="240420">$240,420</td>
+  <td class="n" data-sort="206705">$206,705</td>
+  <td class="n" data-sort="33715" style="color:var(--brand)">$33,715</td>
+  <td class="n" data-sort="9.612520332648163">9.6 mo</td>
+</tr>
+<tr
+  data-fn="cs"
+  data-lv="mid"
+  data-signed="pos">
+  <td>Customer Support Agent</td>
+  <td>Mid</td>
+  <td class="n" data-sort="82000">$82,000</td>
+  <td class="n" data-sort="149920">$149,920</td>
+  <td class="n" data-sort="146581">$146,581</td>
+  <td class="n" data-sort="3339" style="color:var(--brand)">$3,339</td>
+  <td class="n" data-sort="91.63799359015303">91.6 mo</td>
+</tr>
+<tr
+  data-fn="it"
+  data-lv="mid"
+  data-signed="pos">
+  <td>IT Support Specialist</td>
+  <td>Mid</td>
+  <td class="n" data-sort="105000">$105,000</td>
+  <td class="n" data-sort="191550">$191,550</td>
+  <td class="n" data-sort="170128">$170,128</td>
+  <td class="n" data-sort="21422" style="color:var(--brand)">$21,422</td>
+  <td class="n" data-sort="14.672130204127303">14.7 mo</td>
+</tr>
+<tr
+  data-fn="strategy"
+  data-lv="mid"
+  data-signed="pos">
+  <td>Strategy Consultant</td>
+  <td>Mid</td>
+  <td class="n" data-sort="122000">$122,000</td>
+  <td class="n" data-sort="222320">$222,320</td>
+  <td class="n" data-sort="184404">$184,404</td>
+  <td class="n" data-sort="37916" style="color:var(--brand)">$37,916</td>
+  <td class="n" data-sort="8.451940987424024">8.5 mo</td>
+</tr>
+<tr
+  data-fn="swe"
+  data-lv="senior"
+  data-signed="pos">
+  <td>Software Engineer</td>
+  <td>Senior</td>
+  <td class="n" data-sort="166000">$166,000</td>
+  <td class="n" data-sort="301960">$301,960</td>
+  <td class="n" data-sort="210021">$210,021</td>
+  <td class="n" data-sort="91939" style="color:var(--brand)">$91,939</td>
+  <td class="n" data-sort="3.658863182158051">3.7 mo</td>
+</tr>
+<tr
+  data-fn="ds"
+  data-lv="senior"
+  data-signed="pos">
+  <td>Data Scientist</td>
+  <td>Senior</td>
+  <td class="n" data-sort="176000">$176,000</td>
+  <td class="n" data-sort="320060">$320,060</td>
+  <td class="n" data-sort="241005">$241,005</td>
+  <td class="n" data-sort="79055" style="color:var(--brand)">$79,055</td>
+  <td class="n" data-sort="4.300948719533822">4.3 mo</td>
+</tr>
+<tr
+  data-fn="pm"
+  data-lv="senior"
+  data-signed="pos">
+  <td>Product Manager</td>
+  <td>Senior</td>
+  <td class="n" data-sort="165000">$165,000</td>
+  <td class="n" data-sort="300150">$300,150</td>
+  <td class="n" data-sort="188545">$188,545</td>
+  <td class="n" data-sort="111605" style="color:var(--brand)">$111,605</td>
+  <td class="n" data-sort="3.010889530244004">3.0 mo</td>
+</tr>
+<tr
+  data-fn="finance"
+  data-lv="senior"
+  data-signed="pos">
+  <td>Financial Analyst</td>
+  <td>Senior</td>
+  <td class="n" data-sort="135000">$135,000</td>
+  <td class="n" data-sort="245850">$245,850</td>
+  <td class="n" data-sort="188213">$188,213</td>
+  <td class="n" data-sort="57637" style="color:var(--brand)">$57,637</td>
+  <td class="n" data-sort="5.641652511601818">5.6 mo</td>
+</tr>
+<tr
+  data-fn="hr"
+  data-lv="senior"
+  data-signed="pos">
+  <td>HR Generalist</td>
+  <td>Senior</td>
+  <td class="n" data-sort="112000">$112,000</td>
+  <td class="n" data-sort="204220">$204,220</td>
+  <td class="n" data-sort="158156">$158,156</td>
+  <td class="n" data-sort="46064" style="color:var(--brand)">$46,064</td>
+  <td class="n" data-sort="6.878323547165073">6.9 mo</td>
+</tr>
+<tr
+  data-fn="ops"
+  data-lv="senior"
+  data-signed="pos">
+  <td>Operations Analyst</td>
+  <td>Senior</td>
+  <td class="n" data-sort="115000">$115,000</td>
+  <td class="n" data-sort="209650">$209,650</td>
+  <td class="n" data-sort="174042">$174,042</td>
+  <td class="n" data-sort="35608" style="color:var(--brand)">$35,608</td>
+  <td class="n" data-sort="8.928660835764317">8.9 mo</td>
+</tr>
+<tr
+  data-fn="marketing"
+  data-lv="senior"
+  data-signed="pos">
+  <td>Marketing Manager</td>
+  <td>Senior</td>
+  <td class="n" data-sort="118000">$118,000</td>
+  <td class="n" data-sort="215080">$215,080</td>
+  <td class="n" data-sort="163959">$163,959</td>
+  <td class="n" data-sort="51121" style="color:var(--brand)">$51,121</td>
+  <td class="n" data-sort="6.240354074651552">6.2 mo</td>
+</tr>
+<tr
+  data-fn="sales"
+  data-lv="senior"
+  data-signed="pos">
+  <td>Sales Representative</td>
+  <td>Senior</td>
+  <td class="n" data-sort="125000">$125,000</td>
+  <td class="n" data-sort="227750">$227,750</td>
+  <td class="n" data-sort="165169">$165,169</td>
+  <td class="n" data-sort="62581" style="color:var(--brand)">$62,581</td>
+  <td class="n" data-sort="5.138143919912548">5.1 mo</td>
+</tr>
+<tr
+  data-fn="legal"
+  data-lv="senior"
+  data-signed="pos">
+  <td>Legal Counsel</td>
+  <td>Senior</td>
+  <td class="n" data-sort="162000">$162,000</td>
+  <td class="n" data-sort="294720">$294,720</td>
+  <td class="n" data-sort="218108">$218,108</td>
+  <td class="n" data-sort="76612" style="color:var(--brand)">$76,612</td>
+  <td class="n" data-sort="4.371964778225453">4.4 mo</td>
+</tr>
+<tr
+  data-fn="cs"
+  data-lv="senior"
+  data-signed="pos">
+  <td>Customer Support Agent</td>
+  <td>Senior</td>
+  <td class="n" data-sort="110000">$110,000</td>
+  <td class="n" data-sort="200600">$200,600</td>
+  <td class="n" data-sort="157224">$157,224</td>
+  <td class="n" data-sort="43376" style="color:var(--brand)">$43,376</td>
+  <td class="n" data-sort="7.287858850730357">7.3 mo</td>
+</tr>
+<tr
+  data-fn="it"
+  data-lv="senior"
+  data-signed="pos">
+  <td>IT Support Specialist</td>
+  <td>Senior</td>
+  <td class="n" data-sort="130000">$130,000</td>
+  <td class="n" data-sort="236800">$236,800</td>
+  <td class="n" data-sort="179630">$179,630</td>
+  <td class="n" data-sort="57170" style="color:var(--brand)">$57,170</td>
+  <td class="n" data-sort="5.656138358273197">5.7 mo</td>
+</tr>
+<tr
+  data-fn="strategy"
+  data-lv="senior"
+  data-signed="pos">
+  <td>Strategy Consultant</td>
+  <td>Senior</td>
+  <td class="n" data-sort="155000">$155,000</td>
+  <td class="n" data-sort="282050">$282,050</td>
+  <td class="n" data-sort="196947">$196,947</td>
+  <td class="n" data-sort="85103" style="color:var(--brand)">$85,103</td>
+  <td class="n" data-sort="3.9059854155094005">3.9 mo</td>
+</tr>
+<tr
+  data-fn="swe"
+  data-lv="manager"
+  data-signed="pos">
+  <td>Software Engineer</td>
+  <td>Manager</td>
+  <td class="n" data-sort="190000">$190,000</td>
+  <td class="n" data-sort="345400">$345,400</td>
+  <td class="n" data-sort="219143">$219,143</td>
+  <td class="n" data-sort="126257" style="color:var(--brand)">$126,257</td>
+  <td class="n" data-sort="2.733165362536918">2.7 mo</td>
+</tr>
+<tr
+  data-fn="ds"
+  data-lv="manager"
+  data-signed="pos">
+  <td>Data Scientist</td>
+  <td>Manager</td>
+  <td class="n" data-sort="200000">$200,000</td>
+  <td class="n" data-sort="363500">$363,500</td>
+  <td class="n" data-sort="250127">$250,127</td>
+  <td class="n" data-sort="113373" style="color:var(--brand)">$113,373</td>
+  <td class="n" data-sort="3.0756959192187145">3.1 mo</td>
+</tr>
+<tr
+  data-fn="pm"
+  data-lv="manager"
+  data-signed="pos">
+  <td>Product Manager</td>
+  <td>Manager</td>
+  <td class="n" data-sort="185000">$185,000</td>
+  <td class="n" data-sort="336350">$336,350</td>
+  <td class="n" data-sort="196147">$196,147</td>
+  <td class="n" data-sort="140203" style="color:var(--brand)">$140,203</td>
+  <td class="n" data-sort="2.448380313642938">2.4 mo</td>
+</tr>
+<tr
+  data-fn="finance"
+  data-lv="manager"
+  data-signed="pos">
+  <td>Financial Analyst</td>
+  <td>Manager</td>
+  <td class="n" data-sort="165000">$165,000</td>
+  <td class="n" data-sort="300150">$300,150</td>
+  <td class="n" data-sort="199616">$199,616</td>
+  <td class="n" data-sort="100534" style="color:var(--brand)">$100,534</td>
+  <td class="n" data-sort="3.342439086591399">3.3 mo</td>
+</tr>
+<tr
+  data-fn="hr"
+  data-lv="manager"
+  data-signed="pos">
+  <td>HR Generalist</td>
+  <td>Manager</td>
+  <td class="n" data-sort="122000">$122,000</td>
+  <td class="n" data-sort="222320">$222,320</td>
+  <td class="n" data-sort="161957">$161,957</td>
+  <td class="n" data-sort="60363" style="color:var(--brand)">$60,363</td>
+  <td class="n" data-sort="5.308935973448171">5.3 mo</td>
+</tr>
+<tr
+  data-fn="ops"
+  data-lv="manager"
+  data-signed="pos">
+  <td>Operations Analyst</td>
+  <td>Manager</td>
+  <td class="n" data-sort="138000">$138,000</td>
+  <td class="n" data-sort="251280">$251,280</td>
+  <td class="n" data-sort="182784">$182,784</td>
+  <td class="n" data-sort="68496" style="color:var(--brand)">$68,496</td>
+  <td class="n" data-sort="4.763173984080553">4.8 mo</td>
+</tr>
+<tr
+  data-fn="marketing"
+  data-lv="manager"
+  data-signed="pos">
+  <td>Marketing Manager</td>
+  <td>Manager</td>
+  <td class="n" data-sort="138000">$138,000</td>
+  <td class="n" data-sort="251280">$251,280</td>
+  <td class="n" data-sort="171561">$171,561</td>
+  <td class="n" data-sort="79719" style="color:var(--brand)">$79,719</td>
+  <td class="n" data-sort="4.09255164741211">4.1 mo</td>
+</tr>
+<tr
+  data-fn="sales"
+  data-lv="manager"
+  data-signed="pos">
+  <td>Sales Representative</td>
+  <td>Manager</td>
+  <td class="n" data-sort="152000">$152,000</td>
+  <td class="n" data-sort="276620">$276,620</td>
+  <td class="n" data-sort="175432">$175,432</td>
+  <td class="n" data-sort="101188" style="color:var(--brand)">$101,188</td>
+  <td class="n" data-sort="3.2743322861567643">3.3 mo</td>
+</tr>
+<tr
+  data-fn="legal"
+  data-lv="manager"
+  data-signed="pos">
+  <td>Legal Counsel</td>
+  <td>Manager</td>
+  <td class="n" data-sort="188000">$188,000</td>
+  <td class="n" data-sort="341780">$341,780</td>
+  <td class="n" data-sort="227991">$227,991</td>
+  <td class="n" data-sort="113789" style="color:var(--brand)">$113,789</td>
+  <td class="n" data-sort="3.026263152618683">3.0 mo</td>
+</tr>
+<tr
+  data-fn="cs"
+  data-lv="manager"
+  data-signed="pos">
+  <td>Customer Support Agent</td>
+  <td>Manager</td>
+  <td class="n" data-sort="128000">$128,000</td>
+  <td class="n" data-sort="233180">$233,180</td>
+  <td class="n" data-sort="164066">$164,066</td>
+  <td class="n" data-sort="69114" style="color:var(--brand)">$69,114</td>
+  <td class="n" data-sort="4.668140916648153">4.7 mo</td>
+</tr>
+<tr
+  data-fn="it"
+  data-lv="manager"
+  data-signed="pos">
+  <td>IT Support Specialist</td>
+  <td>Manager</td>
+  <td class="n" data-sort="158000">$158,000</td>
+  <td class="n" data-sort="287480">$287,480</td>
+  <td class="n" data-sort="190273">$190,273</td>
+  <td class="n" data-sort="97207" style="color:var(--brand)">$97,207</td>
+  <td class="n" data-sort="3.4307835977682553">3.4 mo</td>
+</tr>
+<tr
+  data-fn="strategy"
+  data-lv="manager"
+  data-signed="pos">
+  <td>Strategy Consultant</td>
+  <td>Manager</td>
+  <td class="n" data-sort="182000">$182,000</td>
+  <td class="n" data-sort="330920">$330,920</td>
+  <td class="n" data-sort="207210">$207,210</td>
+  <td class="n" data-sort="123710" style="color:var(--brand)">$123,710</td>
+  <td class="n" data-sort="2.7660167548331818">2.8 mo</td>
+</tr>
+<tr
+  data-fn="swe"
+  data-lv="sr_manager"
+  data-signed="pos">
+  <td>Software Engineer</td>
+  <td>Senior Manager</td>
+  <td class="n" data-sort="218000">$218,000</td>
+  <td class="n" data-sort="396080">$396,080</td>
+  <td class="n" data-sort="229786">$229,786</td>
+  <td class="n" data-sort="166294" style="color:var(--brand)">$166,294</td>
+  <td class="n" data-sort="2.136075606345303">2.1 mo</td>
+</tr>
+<tr
+  data-fn="ds"
+  data-lv="sr_manager"
+  data-signed="pos">
+  <td>Data Scientist</td>
+  <td>Senior Manager</td>
+  <td class="n" data-sort="235000">$235,000</td>
+  <td class="n" data-sort="426850">$426,850</td>
+  <td class="n" data-sort="263431">$263,431</td>
+  <td class="n" data-sort="163419" style="color:var(--brand)">$163,419</td>
+  <td class="n" data-sort="2.2113066554269136">2.2 mo</td>
+</tr>
+<tr
+  data-fn="pm"
+  data-lv="sr_manager"
+  data-signed="pos">
+  <td>Product Manager</td>
+  <td>Senior Manager</td>
+  <td class="n" data-sort="218000">$218,000</td>
+  <td class="n" data-sort="396080">$396,080</td>
+  <td class="n" data-sort="208690">$208,690</td>
+  <td class="n" data-sort="187390" style="color:var(--brand)">$187,390</td>
+  <td class="n" data-sort="1.895601547246754">1.9 mo</td>
+</tr>
+<tr
+  data-fn="finance"
+  data-lv="sr_manager"
+  data-signed="pos">
+  <td>Financial Analyst</td>
+  <td>Senior Manager</td>
+  <td class="n" data-sort="195000">$195,000</td>
+  <td class="n" data-sort="354450">$354,450</td>
+  <td class="n" data-sort="211019">$211,019</td>
+  <td class="n" data-sort="143431" style="color:var(--brand)">$143,431</td>
+  <td class="n" data-sort="2.41850862658831">2.4 mo</td>
+</tr>
+<tr
+  data-fn="hr"
+  data-lv="sr_manager"
+  data-signed="pos">
+  <td>HR Generalist</td>
+  <td>Senior Manager</td>
+  <td class="n" data-sort="150000">$150,000</td>
+  <td class="n" data-sort="273000">$273,000</td>
+  <td class="n" data-sort="172600">$172,600</td>
+  <td class="n" data-sort="100400" style="color:var(--brand)">$100,400</td>
+  <td class="n" data-sort="3.292817814850302">3.3 mo</td>
+</tr>
+<tr
+  data-fn="ops"
+  data-lv="sr_manager"
+  data-signed="pos">
+  <td>Operations Analyst</td>
+  <td>Senior Manager</td>
+  <td class="n" data-sort="168000">$168,000</td>
+  <td class="n" data-sort="305580">$305,580</td>
+  <td class="n" data-sort="194187">$194,187</td>
+  <td class="n" data-sort="111393" style="color:var(--brand)">$111,393</td>
+  <td class="n" data-sort="3.0263796000342946">3.0 mo</td>
+</tr>
+<tr
+  data-fn="marketing"
+  data-lv="sr_manager"
+  data-signed="pos">
+  <td>Marketing Manager</td>
+  <td>Senior Manager</td>
+  <td class="n" data-sort="165000">$165,000</td>
+  <td class="n" data-sort="300150">$300,150</td>
+  <td class="n" data-sort="181823">$181,823</td>
+  <td class="n" data-sort="118327" style="color:var(--brand)">$118,327</td>
+  <td class="n" data-sort="2.8398479355206865">2.8 mo</td>
+</tr>
+<tr
+  data-fn="sales"
+  data-lv="sr_manager"
+  data-signed="pos">
+  <td>Sales Representative</td>
+  <td>Senior Manager</td>
+  <td class="n" data-sort="182000">$182,000</td>
+  <td class="n" data-sort="330920">$330,920</td>
+  <td class="n" data-sort="186835">$186,835</td>
+  <td class="n" data-sort="144085" style="color:var(--brand)">$144,085</td>
+  <td class="n" data-sort="2.3748715888917724">2.4 mo</td>
+</tr>
+<tr
+  data-fn="legal"
+  data-lv="sr_manager"
+  data-signed="pos">
+  <td>Legal Counsel</td>
+  <td>Senior Manager</td>
+  <td class="n" data-sort="228000">$228,000</td>
+  <td class="n" data-sort="414180">$414,180</td>
+  <td class="n" data-sort="243195">$243,195</td>
+  <td class="n" data-sort="170985" style="color:var(--brand)">$170,985</td>
+  <td class="n" data-sort="2.0986380328606082">2.1 mo</td>
+</tr>
+<tr
+  data-fn="cs"
+  data-lv="sr_manager"
+  data-signed="pos">
+  <td>Customer Support Agent</td>
+  <td>Senior Manager</td>
+  <td class="n" data-sort="155000">$155,000</td>
+  <td class="n" data-sort="282050">$282,050</td>
+  <td class="n" data-sort="174328">$174,328</td>
+  <td class="n" data-sort="107722" style="color:var(--brand)">$107,722</td>
+  <td class="n" data-sort="3.085820595156">3.1 mo</td>
+</tr>
+<tr
+  data-fn="it"
+  data-lv="sr_manager"
+  data-signed="pos">
+  <td>IT Support Specialist</td>
+  <td>Senior Manager</td>
+  <td class="n" data-sort="188000">$188,000</td>
+  <td class="n" data-sort="341780">$341,780</td>
+  <td class="n" data-sort="201676">$201,676</td>
+  <td class="n" data-sort="140104" style="color:var(--brand)">$140,104</td>
+  <td class="n" data-sort="2.4578608020168846">2.5 mo</td>
+</tr>
+<tr
+  data-fn="strategy"
+  data-lv="sr_manager"
+  data-signed="pos">
+  <td>Strategy Consultant</td>
+  <td>Senior Manager</td>
+  <td class="n" data-sort="215000">$215,000</td>
+  <td class="n" data-sort="390650">$390,650</td>
+  <td class="n" data-sort="219753">$219,753</td>
+  <td class="n" data-sort="170897" style="color:var(--brand)">$170,897</td>
+  <td class="n" data-sort="2.072187172788327">2.1 mo</td>
+</tr>
+<tr
+  data-fn="swe"
+  data-lv="director"
+  data-signed="pos">
+  <td>Software Engineer</td>
+  <td>Director</td>
+  <td class="n" data-sort="260000">$260,000</td>
+  <td class="n" data-sort="472100">$472,100</td>
+  <td class="n" data-sort="245750">$245,750</td>
+  <td class="n" data-sort="226350" style="color:var(--brand)">$226,350</td>
+  <td class="n" data-sort="1.6364954890151793">1.6 mo</td>
+</tr>
+<tr
+  data-fn="ds"
+  data-lv="director"
+  data-signed="pos">
+  <td>Data Scientist</td>
+  <td>Director</td>
+  <td class="n" data-sort="275000">$275,000</td>
+  <td class="n" data-sort="499250">$499,250</td>
+  <td class="n" data-sort="278635">$278,635</td>
+  <td class="n" data-sort="220615" style="color:var(--brand)">$220,615</td>
+  <td class="n" data-sort="1.7036449560821796">1.7 mo</td>
+</tr>
+<tr
+  data-fn="pm"
+  data-lv="director"
+  data-signed="pos">
+  <td>Product Manager</td>
+  <td>Director</td>
+  <td class="n" data-sort="258000">$258,000</td>
+  <td class="n" data-sort="468480">$468,480</td>
+  <td class="n" data-sort="223894">$223,894</td>
+  <td class="n" data-sort="244586" style="color:var(--brand)">$244,586</td>
+  <td class="n" data-sort="1.5115199444173106">1.5 mo</td>
+</tr>
+<tr
+  data-fn="finance"
+  data-lv="director"
+  data-signed="pos">
+  <td>Financial Analyst</td>
+  <td>Director</td>
+  <td class="n" data-sort="240000">$240,000</td>
+  <td class="n" data-sort="435900">$435,900</td>
+  <td class="n" data-sort="228123">$228,123</td>
+  <td class="n" data-sort="207777" style="color:var(--brand)">$207,777</td>
+  <td class="n" data-sort="1.7479327900969803">1.7 mo</td>
+</tr>
+<tr
+  data-fn="hr"
+  data-lv="director"
+  data-signed="pos">
+  <td>HR Generalist</td>
+  <td>Director</td>
+  <td class="n" data-sort="188000">$188,000</td>
+  <td class="n" data-sort="341780">$341,780</td>
+  <td class="n" data-sort="187043">$187,043</td>
+  <td class="n" data-sort="154737" style="color:var(--brand)">$154,737</td>
+  <td class="n" data-sort="2.225434399902543">2.2 mo</td>
+</tr>
+<tr
+  data-fn="ops"
+  data-lv="director"
+  data-signed="pos">
+  <td>Operations Analyst</td>
+  <td>Director</td>
+  <td class="n" data-sort="205000">$205,000</td>
+  <td class="n" data-sort="372550">$372,550</td>
+  <td class="n" data-sort="208251">$208,251</td>
+  <td class="n" data-sort="164299" style="color:var(--brand)">$164,299</td>
+  <td class="n" data-sort="2.133369158305134">2.1 mo</td>
+</tr>
+<tr
+  data-fn="marketing"
+  data-lv="director"
+  data-signed="pos">
+  <td>Marketing Manager</td>
+  <td>Director</td>
+  <td class="n" data-sort="208000">$208,000</td>
+  <td class="n" data-sort="377980">$377,980</td>
+  <td class="n" data-sort="198168">$198,168</td>
+  <td class="n" data-sort="179812" style="color:var(--brand)">$179,812</td>
+  <td class="n" data-sort="1.9553483863883327">2.0 mo</td>
+</tr>
+<tr
+  data-fn="sales"
+  data-lv="director"
+  data-signed="pos">
+  <td>Sales Representative</td>
+  <td>Director</td>
+  <td class="n" data-sort="222000">$222,000</td>
+  <td class="n" data-sort="403320">$403,320</td>
+  <td class="n" data-sort="202039">$202,039</td>
+  <td class="n" data-sort="201281" style="color:var(--brand)">$201,281</td>
+  <td class="n" data-sort="1.771968204100964">1.8 mo</td>
+</tr>
+<tr
+  data-fn="legal"
+  data-lv="director"
+  data-signed="pos">
+  <td>Legal Counsel</td>
+  <td>Director</td>
+  <td class="n" data-sort="268000">$268,000</td>
+  <td class="n" data-sort="486580">$486,580</td>
+  <td class="n" data-sort="258399">$258,399</td>
+  <td class="n" data-sort="228181" style="color:var(--brand)">$228,181</td>
+  <td class="n" data-sort="1.6360507970288396">1.6 mo</td>
+</tr>
+<tr
+  data-fn="cs"
+  data-lv="director"
+  data-signed="pos">
+  <td>Customer Support Agent</td>
+  <td>Director</td>
+  <td class="n" data-sort="190000">$190,000</td>
+  <td class="n" data-sort="345400">$345,400</td>
+  <td class="n" data-sort="187632">$187,632</td>
+  <td class="n" data-sort="157768" style="color:var(--brand)">$157,768</td>
+  <td class="n" data-sort="2.1872588194433855">2.2 mo</td>
+</tr>
+<tr
+  data-fn="it"
+  data-lv="director"
+  data-signed="pos">
+  <td>IT Support Specialist</td>
+  <td>Director</td>
+  <td class="n" data-sort="232000">$232,000</td>
+  <td class="n" data-sort="421420">$421,420</td>
+  <td class="n" data-sort="218400">$218,400</td>
+  <td class="n" data-sort="203020" style="color:var(--brand)">$203,020</td>
+  <td class="n" data-sort="1.774627147932989">1.8 mo</td>
+</tr>
+<tr
+  data-fn="strategy"
+  data-lv="director"
+  data-signed="pos">
+  <td>Strategy Consultant</td>
+  <td>Director</td>
+  <td class="n" data-sort="258000">$258,000</td>
+  <td class="n" data-sort="468480">$468,480</td>
+  <td class="n" data-sort="236098">$236,098</td>
+  <td class="n" data-sort="232382" style="color:var(--brand)">$232,382</td>
+  <td class="n" data-sort="1.590894841068664">1.6 mo</td>
+</tr>
+<tr
+  data-fn="swe"
+  data-lv="vp"
+  data-signed="pos">
+  <td>Software Engineer</td>
+  <td>VP</td>
+  <td class="n" data-sort="322000">$322,000</td>
+  <td class="n" data-sort="584320">$584,320</td>
+  <td class="n" data-sort="269317">$269,317</td>
+  <td class="n" data-sort="315003" style="color:var(--brand)">$315,003</td>
+  <td class="n" data-sort="1.2471740803666376">1.2 mo</td>
+</tr>
+<tr
+  data-fn="ds"
+  data-lv="vp"
+  data-signed="pos">
+  <td>Data Scientist</td>
+  <td>VP</td>
+  <td class="n" data-sort="338000">$338,000</td>
+  <td class="n" data-sort="613280">$613,280</td>
+  <td class="n" data-sort="302581">$302,581</td>
+  <td class="n" data-sort="310699" style="color:var(--brand)">$310,699</td>
+  <td class="n" data-sort="1.2830942737500621">1.3 mo</td>
+</tr>
+<tr
+  data-fn="pm"
+  data-lv="vp"
+  data-signed="pos">
+  <td>Product Manager</td>
+  <td>VP</td>
+  <td class="n" data-sort="322000">$322,000</td>
+  <td class="n" data-sort="584320">$584,320</td>
+  <td class="n" data-sort="248221">$248,221</td>
+  <td class="n" data-sort="336099" style="color:var(--brand)">$336,099</td>
+  <td class="n" data-sort="1.1688930222978673">1.2 mo</td>
+</tr>
+<tr
+  data-fn="finance"
+  data-lv="vp"
+  data-signed="pos">
+  <td>Financial Analyst</td>
+  <td>VP</td>
+  <td class="n" data-sort="300000">$300,000</td>
+  <td class="n" data-sort="544500">$544,500</td>
+  <td class="n" data-sort="250929">$250,929</td>
+  <td class="n" data-sort="293571" style="color:var(--brand)">$293,571</td>
+  <td class="n" data-sort="1.311097395572267">1.3 mo</td>
+</tr>
+<tr
+  data-fn="hr"
+  data-lv="vp"
+  data-signed="pos">
+  <td>HR Generalist</td>
+  <td>VP</td>
+  <td class="n" data-sort="248000">$248,000</td>
+  <td class="n" data-sort="450380">$450,380</td>
+  <td class="n" data-sort="209849">$209,849</td>
+  <td class="n" data-sort="240531" style="color:var(--brand)">$240,531</td>
+  <td class="n" data-sort="1.5219523184865693">1.5 mo</td>
+</tr>
+<tr
+  data-fn="ops"
+  data-lv="vp"
+  data-signed="pos">
+  <td>Operations Analyst</td>
+  <td>VP</td>
+  <td class="n" data-sort="272000">$272,000</td>
+  <td class="n" data-sort="493820">$493,820</td>
+  <td class="n" data-sort="233718">$233,718</td>
+  <td class="n" data-sort="260102" style="color:var(--brand)">$260,102</td>
+  <td class="n" data-sort="1.4408341764527566">1.4 mo</td>
+</tr>
+<tr
+  data-fn="marketing"
+  data-lv="vp"
+  data-signed="pos">
+  <td>Marketing Manager</td>
+  <td>VP</td>
+  <td class="n" data-sort="272000">$272,000</td>
+  <td class="n" data-sort="493820">$493,820</td>
+  <td class="n" data-sort="222494">$222,494</td>
+  <td class="n" data-sort="271326" style="color:var(--brand)">$271,326</td>
+  <td class="n" data-sort="1.38123113748049">1.4 mo</td>
+</tr>
+<tr
+  data-fn="sales"
+  data-lv="vp"
+  data-signed="pos">
+  <td>Sales Representative</td>
+  <td>VP</td>
+  <td class="n" data-sort="292000">$292,000</td>
+  <td class="n" data-sort="530020">$530,020</td>
+  <td class="n" data-sort="228646">$228,646</td>
+  <td class="n" data-sort="301374" style="color:var(--brand)">$301,374</td>
+  <td class="n" data-sort="1.2675402167743783">1.3 mo</td>
+</tr>
+<tr
+  data-fn="legal"
+  data-lv="vp"
+  data-signed="pos">
+  <td>Legal Counsel</td>
+  <td>VP</td>
+  <td class="n" data-sort="328000">$328,000</td>
+  <td class="n" data-sort="595180">$595,180</td>
+  <td class="n" data-sort="281205">$281,205</td>
+  <td class="n" data-sort="313975" style="color:var(--brand)">$313,975</td>
+  <td class="n" data-sort="1.258175888556684">1.3 mo</td>
+</tr>
+<tr
+  data-fn="cs"
+  data-lv="vp"
+  data-signed="pos">
+  <td>Customer Support Agent</td>
+  <td>VP</td>
+  <td class="n" data-sort="248000">$248,000</td>
+  <td class="n" data-sort="450380">$450,380</td>
+  <td class="n" data-sort="209678">$209,678</td>
+  <td class="n" data-sort="240702" style="color:var(--brand)">$240,702</td>
+  <td class="n" data-sort="1.520865273228473">1.5 mo</td>
+</tr>
+<tr
+  data-fn="it"
+  data-lv="vp"
+  data-signed="pos">
+  <td>IT Support Specialist</td>
+  <td>VP</td>
+  <td class="n" data-sort="295000">$295,000</td>
+  <td class="n" data-sort="535450">$535,450</td>
+  <td class="n" data-sort="242347">$242,347</td>
+  <td class="n" data-sort="293103" style="color:var(--brand)">$293,103</td>
+  <td class="n" data-sort="1.307013837874457">1.3 mo</td>
+</tr>
+<tr
+  data-fn="strategy"
+  data-lv="vp"
+  data-signed="pos">
+  <td>Strategy Consultant</td>
+  <td>VP</td>
+  <td class="n" data-sort="325000">$325,000</td>
+  <td class="n" data-sort="589750">$589,750</td>
+  <td class="n" data-sort="261564">$261,564</td>
+  <td class="n" data-sort="328186" style="color:var(--brand)">$328,186</td>
+  <td class="n" data-sort="1.200387374620201">1.2 mo</td>
+</tr>
+<tr
+  data-fn="swe"
+  data-lv="svp"
+  data-signed="pos">
+  <td>Software Engineer</td>
+  <td>SVP</td>
+  <td class="n" data-sort="398000">$398,000</td>
+  <td class="n" data-sort="721880">$721,880</td>
+  <td class="n" data-sort="298204">$298,204</td>
+  <td class="n" data-sort="423676" style="color:var(--brand)">$423,676</td>
+  <td class="n" data-sort="0.9922116397262887">1.0 mo</td>
+</tr>
+<tr
+  data-fn="ds"
+  data-lv="svp"
+  data-signed="pos">
+  <td>Data Scientist</td>
+  <td>SVP</td>
+  <td class="n" data-sort="418000">$418,000</td>
+  <td class="n" data-sort="758080">$758,080</td>
+  <td class="n" data-sort="332989">$332,989</td>
+  <td class="n" data-sort="425091" style="color:var(--brand)">$425,091</td>
+  <td class="n" data-sort="1.00594010337375">1.0 mo</td>
+</tr>
+<tr
+  data-fn="pm"
+  data-lv="svp"
+  data-signed="pos">
+  <td>Product Manager</td>
+  <td>SVP</td>
+  <td class="n" data-sort="398000">$398,000</td>
+  <td class="n" data-sort="721880">$721,880</td>
+  <td class="n" data-sort="277108">$277,108</td>
+  <td class="n" data-sort="444772" style="color:var(--brand)">$444,772</td>
+  <td class="n" data-sort="0.9451502924805132">0.9 mo</td>
+</tr>
+<tr
+  data-fn="finance"
+  data-lv="svp"
+  data-signed="pos">
+  <td>Financial Analyst</td>
+  <td>SVP</td>
+  <td class="n" data-sort="368000">$368,000</td>
+  <td class="n" data-sort="667580">$667,580</td>
+  <td class="n" data-sort="276776">$276,776</td>
+  <td class="n" data-sort="390804" style="color:var(--brand)">$390,804</td>
+  <td class="n" data-sort="1.0478805977019894">1.0 mo</td>
+</tr>
+<tr
+  data-fn="hr"
+  data-lv="svp"
+  data-signed="pos">
+  <td>HR Generalist</td>
+  <td>SVP</td>
+  <td class="n" data-sort="308000">$308,000</td>
+  <td class="n" data-sort="558980">$558,980</td>
+  <td class="n" data-sort="232655">$232,655</td>
+  <td class="n" data-sort="326325" style="color:var(--brand)">$326,325</td>
+  <td class="n" data-sort="1.1883752603042939">1.2 mo</td>
+</tr>
+<tr
+  data-fn="ops"
+  data-lv="svp"
+  data-signed="pos">
+  <td>Operations Analyst</td>
+  <td>SVP</td>
+  <td class="n" data-sort="332000">$332,000</td>
+  <td class="n" data-sort="602420">$602,420</td>
+  <td class="n" data-sort="256524">$256,524</td>
+  <td class="n" data-sort="345896" style="color:var(--brand)">$345,896</td>
+  <td class="n" data-sort="1.1462517098624696">1.1 mo</td>
+</tr>
+<tr
+  data-fn="marketing"
+  data-lv="svp"
+  data-signed="pos">
+  <td>Marketing Manager</td>
+  <td>SVP</td>
+  <td class="n" data-sort="338000">$338,000</td>
+  <td class="n" data-sort="613280">$613,280</td>
+  <td class="n" data-sort="247581">$247,581</td>
+  <td class="n" data-sort="365699" style="color:var(--brand)">$365,699</td>
+  <td class="n" data-sort="1.090119197766406">1.1 mo</td>
+</tr>
+<tr
+  data-fn="sales"
+  data-lv="svp"
+  data-signed="pos">
+  <td>Sales Representative</td>
+  <td>SVP</td>
+  <td class="n" data-sort="365000">$365,000</td>
+  <td class="n" data-sort="662150">$662,150</td>
+  <td class="n" data-sort="256393">$256,393</td>
+  <td class="n" data-sort="405757" style="color:var(--brand)">$405,757</td>
+  <td class="n" data-sort="1.0065877758713915">1.0 mo</td>
+</tr>
+<tr
+  data-fn="legal"
+  data-lv="svp"
+  data-signed="pos">
+  <td>Legal Counsel</td>
+  <td>SVP</td>
+  <td class="n" data-sort="408000">$408,000</td>
+  <td class="n" data-sort="739980">$739,980</td>
+  <td class="n" data-sort="311613">$311,613</td>
+  <td class="n" data-sort="428367" style="color:var(--brand)">$428,367</td>
+  <td class="n" data-sort="0.9897957188284258">1.0 mo</td>
+</tr>
+<tr
+  data-fn="cs"
+  data-lv="svp"
+  data-signed="pos">
+  <td>Customer Support Agent</td>
+  <td>SVP</td>
+  <td class="n" data-sort="312000">$312,000</td>
+  <td class="n" data-sort="566220">$566,220</td>
+  <td class="n" data-sort="234004">$234,004</td>
+  <td class="n" data-sort="332216" style="color:var(--brand)">$332,216</td>
+  <td class="n" data-sort="1.171659219914904">1.2 mo</td>
+</tr>
+<tr
+  data-fn="it"
+  data-lv="svp"
+  data-signed="pos">
+  <td>IT Support Specialist</td>
+  <td>SVP</td>
+  <td class="n" data-sort="370000">$370,000</td>
+  <td class="n" data-sort="671200">$671,200</td>
+  <td class="n" data-sort="270854">$270,854</td>
+  <td class="n" data-sort="400346" style="color:var(--brand)">$400,346</td>
+  <td class="n" data-sort="1.0247142698080567">1.0 mo</td>
+</tr>
+<tr
+  data-fn="strategy"
+  data-lv="svp"
+  data-signed="pos">
+  <td>Strategy Consultant</td>
+  <td>SVP</td>
+  <td class="n" data-sort="408000">$408,000</td>
+  <td class="n" data-sort="739980">$739,980</td>
+  <td class="n" data-sort="293113">$293,113</td>
+  <td class="n" data-sort="446867" style="color:var(--brand)">$446,867</td>
+  <td class="n" data-sort="0.9488183226794978">0.9 mo</td>
+</tr>
+<tr
+  data-fn="swe"
+  data-lv="evp"
+  data-signed="pos">
+  <td>Software Engineer</td>
+  <td>EVP</td>
+  <td class="n" data-sort="480000">$480,000</td>
+  <td class="n" data-sort="870300">$870,300</td>
+  <td class="n" data-sort="329372">$329,372</td>
+  <td class="n" data-sort="540928" style="color:var(--brand)">$540,928</td>
+  <td class="n" data-sort="0.8320153205455406">0.8 mo</td>
+</tr>
+<tr
+  data-fn="ds"
+  data-lv="evp"
+  data-signed="pos">
+  <td>Data Scientist</td>
+  <td>EVP</td>
+  <td class="n" data-sort="512000">$512,000</td>
+  <td class="n" data-sort="928220">$928,220</td>
+  <td class="n" data-sort="368718">$368,718</td>
+  <td class="n" data-sort="559502" style="color:var(--brand)">$559,502</td>
+  <td class="n" data-sort="0.8250987473412097">0.8 mo</td>
+</tr>
+<tr
+  data-fn="pm"
+  data-lv="evp"
+  data-signed="pos">
+  <td>Product Manager</td>
+  <td>EVP</td>
+  <td class="n" data-sort="492000">$492,000</td>
+  <td class="n" data-sort="892020">$892,020</td>
+  <td class="n" data-sort="312838">$312,838</td>
+  <td class="n" data-sort="579182" style="color:var(--brand)">$579,182</td>
+  <td class="n" data-sort="0.7845614152112224">0.8 mo</td>
+</tr>
+<tr
+  data-fn="finance"
+  data-lv="evp"
+  data-signed="pos">
+  <td>Financial Analyst</td>
+  <td>EVP</td>
+  <td class="n" data-sort="455000">$455,000</td>
+  <td class="n" data-sort="825050">$825,050</td>
+  <td class="n" data-sort="309845">$309,845</td>
+  <td class="n" data-sort="515205" style="color:var(--brand)">$515,205</td>
+  <td class="n" data-sort="0.855988752613785">0.9 mo</td>
+</tr>
+<tr
+  data-fn="hr"
+  data-lv="evp"
+  data-signed="pos">
+  <td>HR Generalist</td>
+  <td>EVP</td>
+  <td class="n" data-sort="385000">$385,000</td>
+  <td class="n" data-sort="698350">$698,350</td>
+  <td class="n" data-sort="261923">$261,923</td>
+  <td class="n" data-sort="436427" style="color:var(--brand)">$436,427</td>
+  <td class="n" data-sort="0.9524391491316604">1.0 mo</td>
+</tr>
+<tr
+  data-fn="ops"
+  data-lv="evp"
+  data-signed="pos">
+  <td>Operations Analyst</td>
+  <td>EVP</td>
+  <td class="n" data-sort="415000">$415,000</td>
+  <td class="n" data-sort="752650">$752,650</td>
+  <td class="n" data-sort="288072">$288,072</td>
+  <td class="n" data-sort="464578" style="color:var(--brand)">$464,578</td>
+  <td class="n" data-sort="0.9181024079153653">0.9 mo</td>
+</tr>
+<tr
+  data-fn="marketing"
+  data-lv="evp"
+  data-signed="pos">
+  <td>Marketing Manager</td>
+  <td>EVP</td>
+  <td class="n" data-sort="422000">$422,000</td>
+  <td class="n" data-sort="765320">$765,320</td>
+  <td class="n" data-sort="279509">$279,509</td>
+  <td class="n" data-sort="485811" style="color:var(--brand)">$485,811</td>
+  <td class="n" data-sort="0.8831910940582209">0.9 mo</td>
+</tr>
+<tr
+  data-fn="sales"
+  data-lv="evp"
+  data-signed="pos">
+  <td>Sales Representative</td>
+  <td>EVP</td>
+  <td class="n" data-sort="460000">$460,000</td>
+  <td class="n" data-sort="834100">$834,100</td>
+  <td class="n" data-sort="292503">$292,503</td>
+  <td class="n" data-sort="541597" style="color:var(--brand)">$541,597</td>
+  <td class="n" data-sort="0.817618303967721">0.8 mo</td>
+</tr>
+<tr
+  data-fn="legal"
+  data-lv="evp"
+  data-signed="pos">
+  <td>Legal Counsel</td>
+  <td>EVP</td>
+  <td class="n" data-sort="512000">$512,000</td>
+  <td class="n" data-sort="928220">$928,220</td>
+  <td class="n" data-sort="351143">$351,143</td>
+  <td class="n" data-sort="577077" style="color:var(--brand)">$577,077</td>
+  <td class="n" data-sort="0.799969807635431">0.8 mo</td>
+</tr>
+<tr
+  data-fn="cs"
+  data-lv="evp"
+  data-signed="pos">
+  <td>Customer Support Agent</td>
+  <td>EVP</td>
+  <td class="n" data-sort="392000">$392,000</td>
+  <td class="n" data-sort="711020">$711,020</td>
+  <td class="n" data-sort="264412">$264,412</td>
+  <td class="n" data-sort="446608" style="color:var(--brand)">$446,608</td>
+  <td class="n" data-sort="0.9364004934316827">0.9 mo</td>
+</tr>
+<tr
+  data-fn="it"
+  data-lv="evp"
+  data-signed="pos">
+  <td>IT Support Specialist</td>
+  <td>EVP</td>
+  <td class="n" data-sort="472000">$472,000</td>
+  <td class="n" data-sort="855820">$855,820</td>
+  <td class="n" data-sort="309624">$309,624</td>
+  <td class="n" data-sort="546196" style="color:var(--brand)">$546,196</td>
+  <td class="n" data-sort="0.8186884757712899">0.8 mo</td>
+</tr>
+<tr
+  data-fn="strategy"
+  data-lv="evp"
+  data-signed="pos">
+  <td>Strategy Consultant</td>
+  <td>EVP</td>
+  <td class="n" data-sort="518000">$518,000</td>
+  <td class="n" data-sort="939080">$939,080</td>
+  <td class="n" data-sort="334924">$334,924</td>
+  <td class="n" data-sort="604156" style="color:var(--brand)">$604,156</td>
+  <td class="n" data-sort="0.7677084631265829">0.8 mo</td>
+</tr>
+<tr
+  data-fn="swe"
+  data-lv="csuite"
+  data-signed="pos">
+  <td>Software Engineer</td>
+  <td>C-Suite</td>
+  <td class="n" data-sort="510000">$510,000</td>
+  <td class="n" data-sort="924600">$924,600</td>
+  <td class="n" data-sort="340775">$340,775</td>
+  <td class="n" data-sort="583825" style="color:var(--brand)">$583,825</td>
+  <td class="n" data-sort="0.7894837729073632">0.8 mo</td>
+</tr>
+<tr
+  data-fn="ds"
+  data-lv="csuite"
+  data-signed="pos">
+  <td>Data Scientist</td>
+  <td>C-Suite</td>
+  <td class="n" data-sort="525000">$525,000</td>
+  <td class="n" data-sort="951750">$951,750</td>
+  <td class="n" data-sort="373660">$373,660</td>
+  <td class="n" data-sort="578090" style="color:var(--brand)">$578,090</td>
+  <td class="n" data-sort="0.8067079965722775">0.8 mo</td>
+</tr>
+<tr
+  data-fn="pm"
+  data-lv="csuite"
+  data-signed="pos">
+  <td>Product Manager</td>
+  <td>C-Suite</td>
+  <td class="n" data-sort="525000">$525,000</td>
+  <td class="n" data-sort="951750">$951,750</td>
+  <td class="n" data-sort="325381">$325,381</td>
+  <td class="n" data-sort="626369" style="color:var(--brand)">$626,369</td>
+  <td class="n" data-sort="0.7445293119847322">0.7 mo</td>
+</tr>
+<tr
+  data-fn="finance"
+  data-lv="csuite"
+  data-signed="pos">
+  <td>Financial Analyst</td>
+  <td>C-Suite</td>
+  <td class="n" data-sort="490000">$490,000</td>
+  <td class="n" data-sort="888400">$888,400</td>
+  <td class="n" data-sort="323148">$323,148</td>
+  <td class="n" data-sort="565252" style="color:var(--brand)">$565,252</td>
+  <td class="n" data-sort="0.8026156585402016">0.8 mo</td>
+</tr>
+<tr
+  data-fn="hr"
+  data-lv="csuite"
+  data-signed="pos">
+  <td>HR Generalist</td>
+  <td>C-Suite</td>
+  <td class="n" data-sort="455000">$455,000</td>
+  <td class="n" data-sort="825050">$825,050</td>
+  <td class="n" data-sort="288530">$288,530</td>
+  <td class="n" data-sort="536520" style="color:var(--brand)">$536,520</td>
+  <td class="n" data-sort="0.8219826633658222">0.8 mo</td>
+</tr>
+<tr
+  data-fn="ops"
+  data-lv="csuite"
+  data-signed="pos">
+  <td>Operations Analyst</td>
+  <td>C-Suite</td>
+  <td class="n" data-sort="580000">$580,000</td>
+  <td class="n" data-sort="1051300">$1,051,300</td>
+  <td class="n" data-sort="350789">$350,789</td>
+  <td class="n" data-sort="700511" style="color:var(--brand)">$700,511</td>
+  <td class="n" data-sort="0.694150112373432">0.7 mo</td>
+</tr>
+<tr
+  data-fn="marketing"
+  data-lv="csuite"
+  data-signed="pos">
+  <td>Marketing Manager</td>
+  <td>C-Suite</td>
+  <td class="n" data-sort="470000">$470,000</td>
+  <td class="n" data-sort="852200">$852,200</td>
+  <td class="n" data-sort="297754">$297,754</td>
+  <td class="n" data-sort="554446" style="color:var(--brand)">$554,446</td>
+  <td class="n" data-sort="0.805199770752973">0.8 mo</td>
+</tr>
+<tr
+  data-fn="sales"
+  data-lv="csuite"
+  data-signed="pos">
+  <td>Sales Representative</td>
+  <td>C-Suite</td>
+  <td class="n" data-sort="490000">$490,000</td>
+  <td class="n" data-sort="888400">$888,400</td>
+  <td class="n" data-sort="303906">$303,906</td>
+  <td class="n" data-sort="584494" style="color:var(--brand)">$584,494</td>
+  <td class="n" data-sort="0.7761921248093941">0.8 mo</td>
+</tr>
+<tr
+  data-fn="legal"
+  data-lv="csuite"
+  data-signed="pos">
+  <td>Legal Counsel</td>
+  <td>C-Suite</td>
+  <td class="n" data-sort="548000">$548,000</td>
+  <td class="n" data-sort="993380">$993,380</td>
+  <td class="n" data-sort="364827">$364,827</td>
+  <td class="n" data-sort="628553" style="color:var(--brand)">$628,553</td>
+  <td class="n" data-sort="0.7551882891579513">0.8 mo</td>
+</tr>
+<tr
+  data-fn="cs"
+  data-lv="csuite"
+  data-signed="pos">
+  <td>Customer Support Agent</td>
+  <td>C-Suite</td>
+  <td class="n" data-sort="458000">$458,000</td>
+  <td class="n" data-sort="830480">$830,480</td>
+  <td class="n" data-sort="289499">$289,499</td>
+  <td class="n" data-sort="540981" style="color:var(--brand)">$540,981</td>
+  <td class="n" data-sort="0.8172110126796743">0.8 mo</td>
+</tr>
+<tr
+  data-fn="it"
+  data-lv="csuite"
+  data-signed="pos">
+  <td>IT Support Specialist</td>
+  <td>C-Suite</td>
+  <td class="n" data-sort="518000">$518,000</td>
+  <td class="n" data-sort="939080">$939,080</td>
+  <td class="n" data-sort="327109">$327,109</td>
+  <td class="n" data-sort="611971" style="color:var(--brand)">$611,971</td>
+  <td class="n" data-sort="0.7579052602604888">0.8 mo</td>
+</tr>
+<tr
+  data-fn="strategy"
+  data-lv="csuite"
+  data-signed="pos">
+  <td>Strategy Consultant</td>
+  <td>C-Suite</td>
+  <td class="n" data-sort="538000">$538,000</td>
+  <td class="n" data-sort="975280">$975,280</td>
+  <td class="n" data-sort="342526">$342,526</td>
+  <td class="n" data-sort="632754" style="color:var(--brand)">$632,754</td>
+  <td class="n" data-sort="0.7444531115035717">0.7 mo</td>
+</tr>
+  </tbody>
+</table>
+</div>
+
+<h2>What is modelled — and what is not</h2>
+<p><strong>Modelled:</strong> tokens/compute, hosting, security &amp; compliance, process failure &amp; rework, residual human oversight, hosting infrastructure, and change-management overhead. All figures are per-role, per-year, in 2026 USD.</p>
+<p><strong>Not modelled:</strong> revenue upside, hiring premia, one-time migration costs, or company-specific regulatory obligations. Add those to your own copy of the calculator — the source is <a href="https://github.com/karthika2z/ai-tco-framework">open</a>.</p>
+
+<h2>Provenance</h2>
+<p>Every row is produced by driving the actual <a href="/calculator/">DroidWork TCO calculator</a> with each function/level combination and capturing the resulting state. The extractor is <code>seo/extract-role-data.mjs</code>. Reproduce with:</p>
+<pre style="background:var(--navy-mid);border:1px solid var(--border);border-radius:11px;padding:14px 18px;font-size:13px;color:#cfdae7;overflow-x:auto;font-family:'JetBrains Mono',ui-monospace,monospace">git clone https://github.com/karthika2z/ai-tco-framework
+cd ai-tco-framework
+npm install
+node seo/extract-role-data.mjs</pre>
+
+<div class="cta">
+  <h2>Run the model on your own inputs</h2>
+  <p class="cta-sub">The dataset is one path through the calculator. Adjust salary, task volume, security posture and risk tolerance to match your organisation.</p>
+  <a class="btn" href="/calculator/?utm_source=dataset&utm_medium=cta">Open the Calculator →</a>
+</div>
+
+<p class="disc">Modelled estimates for planning purposes only. Not financial, legal or employment advice. Salary baselines from BLS OES, Radford/Aon and Glassdoor 2025–2026 data. Full assumptions in the <a href="/calculator/methodology">methodology</a>.</p>
+
+<script>
+(function() {
+  var tbody = document.getElementById('rows');
+  var q = document.getElementById('q');
+  var fn = document.getElementById('fn');
+  var lv = document.getElementById('lv');
+  var sign = document.getElementById('sign');
+  var count = document.getElementById('count');
+  var ths = document.querySelectorAll('th[data-sort-key]');
+  var rows = [].slice.call(tbody.querySelectorAll('tr'));
+  var currentSort = { key: null, dir: 1 };
+
+  function apply() {
+    var qv = (q.value || '').toLowerCase().trim();
+    var fnv = fn.value, lvv = lv.value, sv = sign.value;
+    var shown = 0;
+    rows.forEach(function(r) {
+      var ok = true;
+      if (fnv && r.dataset.fn !== fnv) ok = false;
+      if (ok && lvv && r.dataset.lv !== lvv) ok = false;
+      if (ok && sv && r.dataset.signed !== sv) ok = false;
+      if (ok && qv) ok = r.textContent.toLowerCase().indexOf(qv) !== -1;
+      r.style.display = ok ? '' : 'none';
+      if (ok) shown++;
+    });
+    count.textContent = shown + ' of 132';
+  }
+
+  function sortBy(key) {
+    var dir = (currentSort.key === key) ? -currentSort.dir : 1;
+    currentSort = { key: key, dir: dir };
+    var idx = ({ role: 0, level: 1, salary: 2, emp: 3, ai: 4, save: 5, pay: 6 })[key];
+    var isNum = idx >= 2;
+    rows.sort(function(a, b) {
+      var av = a.children[idx].getAttribute('data-sort') || a.children[idx].textContent;
+      var bv = b.children[idx].getAttribute('data-sort') || b.children[idx].textContent;
+      if (isNum) { av = parseFloat(av) || 0; bv = parseFloat(bv) || 0; return (av - bv) * dir; }
+      return String(av).localeCompare(String(bv)) * dir;
+    });
+    rows.forEach(function(r) { tbody.appendChild(r); });
+    ths.forEach(function(t) { t.classList.remove('asc','desc'); });
+    var head = document.querySelector('th[data-sort-key="' + key + '"]');
+    if (head) head.classList.add(dir > 0 ? 'asc' : 'desc');
+  }
+
+  ['input','change'].forEach(function(ev) {
+    [q, fn, lv, sign].forEach(function(el) { el.addEventListener(ev, apply); });
+  });
+  ths.forEach(function(t) {
+    t.addEventListener('click', function() { sortBy(t.getAttribute('data-sort-key')); });
+  });
+  apply();
+})();
+</script></main>
+<footer><div class="wrap">
+  <strong style="color:var(--text)">DroidWork.ai</strong> — Enterprise AI Cost Intelligence<br>
+  <a href="/calculator/">Calculator</a> · <a href="/calculator/methodology">Methodology</a> ·
+  <a href="/roles/">All Roles</a> · <a href="https://github.com/karthika2z/ai-tco-framework">GitHub</a><br><br>
+  © 2026 DroidWork.ai — For planning purposes only. Figures are modelled estimates, not financial advice.
+</div></footer>
+</body></html>

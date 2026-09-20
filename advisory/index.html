@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI TCO Advisory — Calculator, Kit, and Board-Ready Review | DroidWork.ai</title>
+<meta name="description" content="Three tiers of independent AI TCO analysis: free calculator, $399 self-serve kit, $5-15k board-ready review. Model that publishes negative results.">
+<link rel="canonical" href="https://droidwork.ai/advisory/">
+<meta property="og:title" content="AI TCO Advisory — Calculator, Kit, and Board-Ready Review | DroidWork.ai">
+<meta property="og:description" content="Three tiers of independent AI TCO analysis: free calculator, $399 self-serve kit, $5-15k board-ready review. Model that publishes negative results.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://droidwork.ai/advisory/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="/dw-analytics.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Service","serviceType":"AI Total Cost of Ownership Advisory","provider":{"@type":"Organization","name":"DroidWork.ai","url":"https://droidwork.ai"},"areaServed":"Global","description":"Independent AI TCO analysis for enterprise buyers. Three tiers: a free calculator, a self-serve business-case kit, and a bespoke TCO review delivered as a board-ready document.","hasOfferCatalog":{"@type":"OfferCatalog","name":"AI TCO Advisory Tiers","itemListElement":[{"@type":"Offer","name":"Free Calculator","price":"0","priceCurrency":"USD","description":"Full DroidWork TCO model, no login, PDF export.","url":"https://droidwork.ai/calculator/"},{"@type":"Offer","name":"AI Business Case Kit","price":"399","priceCurrency":"USD","description":"Self-serve toolkit with model spreadsheet, board-deck template and worked examples across 12 roles."},{"@type":"Offer","name":"TCO Review","priceSpecification":{"@type":"PriceSpecification","price":"5000-15000","minPrice":"5000","maxPrice":"15000","priceCurrency":"USD"},"description":"We run the model on your actual deployment and deliver a board-ready TCO document. Two-week engagement."}]}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why should I trust this analysis?","acceptedAnswer":{"@type":"Answer","text":"Because the model publishes results that say \"do not buy\". Of the 12 roles we've modelled at mid level, 2 come back with AI costing more than the employee — HR Generalist and Operations Analyst. Vendor calculators cannot show this because their incentives point one way. Ours can, so it does."}},{"@type":"Question","name":"What does a TCO Review actually deliver?","acceptedAnswer":{"@type":"Answer","text":"A 15-25 page document sized for a CFO or a board committee: fully-loaded employee cost for every affected role, AI TCO across all seven cost dimensions, sensitivity to your top three assumptions, and a plain-English recommendation for each role. Everything is derived from a copy of the model configured to your inputs, so anyone can rerun it."}},{"@type":"Question","name":"How long does a TCO Review take?","acceptedAnswer":{"@type":"Answer","text":"Two weeks end-to-end. Week one: intake call, data collection, and model configuration. Week two: analysis, draft review, and final document. Rush timelines available at the top of the range."}},{"@type":"Question","name":"Do you take equity or referral fees from AI vendors?","acceptedAnswer":{"@type":"Answer","text":"No. The value of the review depends on it being independent, so we do not accept vendor referral, revenue-share or equity arrangements."}},{"@type":"Question","name":"What is the difference between the $399 kit and the review?","acceptedAnswer":{"@type":"Answer","text":"The kit is DIY: model spreadsheet, board-deck template, worked examples. You do the modelling. The review is done-for-you: we do the modelling on your deployment and deliver the document. Most buyers who care about accuracy pick the review; teams who want to learn the method pick the kit."}}]}]}</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#0a1628;--navy-mid:#0f2042;--navy-light:#162d5a;--border:rgba(255,255,255,.08);
+--brand:#00d4a8;--brand-dim:rgba(0,212,168,.12);--gold:#c9a84c;--gold-dim:rgba(201,168,76,.12);
+--text:#f0f4f8;--muted:#8ca0b8;--white:#fff;--danger:#f87171}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--navy);
+color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--brand);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:860px;margin:0 auto;padding:0 24px}
+header{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(10,22,40,.92);
+backdrop-filter:blur(10px);z-index:50}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:16px;color:var(--white)}
+.logo span{color:var(--brand)}
+.nav-links{display:flex;gap:20px;align-items:center;font-size:13px;flex-wrap:wrap}
+.nav-links a{color:var(--muted)}
+.btn{display:inline-block;background:var(--brand);color:#04241d;font-weight:700;font-size:14px;
+padding:12px 22px;border-radius:8px;text-align:center;transition:transform .15s,filter .15s}
+.btn:hover{filter:brightness(1.08);transform:translateY(-1px);text-decoration:none}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+.crumb{font-size:12px;color:var(--muted);margin:28px 0 14px}
+h1{font-size:clamp(28px,5vw,42px);line-height:1.15;font-weight:800;color:var(--white);letter-spacing:-.02em;margin-bottom:16px}
+h2{font-size:clamp(20px,3vw,26px);font-weight:700;color:var(--white);margin:44px 0 14px;letter-spacing:-.01em}
+h3{font-size:16px;font-weight:700;color:var(--white);margin:22px 0 8px}
+p{margin-bottom:16px;color:#cfdae7}
+.lede{font-size:18px;color:var(--muted);margin-bottom:28px}
+.pill{display:inline-block;background:var(--brand-dim);color:var(--brand);font-size:11px;font-weight:700;
+letter-spacing:.9px;text-transform:uppercase;padding:6px 13px;border-radius:20px;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px;margin:26px 0}
+.stat{background:var(--navy-mid);border:1px solid var(--border);border-radius:11px;padding:17px}
+.stat-l{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px;font-weight:600}
+.stat-v{font-size:23px;font-weight:800;color:var(--white);letter-spacing:-.02em}
+.stat-v.pos{color:var(--brand)}
+.stat-v.neg{color:var(--danger)}
+table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px;
+background:var(--navy-mid);border-radius:11px;overflow:hidden;border:1px solid var(--border)}
+th{text-align:left;padding:12px 15px;font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;
+color:var(--muted);background:rgba(255,255,255,.03);font-weight:700}
+td{padding:12px 15px;border-top:1px solid var(--border);color:#cfdae7}
+td.n{text-align:right;font-weight:700;color:var(--white);font-variant-numeric:tabular-nums}
+.callout{background:var(--navy-mid);border-left:3px solid var(--brand);border-radius:0 11px 11px 0;
+padding:18px 22px;margin:26px 0}
+.callout.warn{border-left-color:var(--gold);background:var(--gold-dim)}
+.callout-t{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--brand);margin-bottom:7px}
+.callout.warn .callout-t{color:var(--gold)}
+.callout p:last-child{margin-bottom:0}
+.cta{background:linear-gradient(135deg,var(--navy-mid),var(--navy-light));border:1px solid var(--border);
+border-radius:15px;padding:34px;text-align:center;margin:44px 0}
+.cta h2{margin-top:0}
+.cta-sub{color:var(--muted);font-size:15px;margin-bottom:22px}
+.faq{border-top:1px solid var(--border);padding:18px 0}
+.faq h3{margin-top:0}
+.faq p{margin-bottom:0;font-size:14.5px}
+.rel{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:20px 0}
+.rel a{background:var(--navy-mid);border:1px solid var(--border);border-radius:9px;padding:13px 15px;
+font-size:13.5px;color:var(--text);font-weight:600}
+.rel a:hover{border-color:var(--brand);text-decoration:none}
+.rel span{display:block;font-size:11.5px;color:var(--muted);font-weight:400;margin-top:3px}
+footer{border-top:1px solid var(--border);margin-top:60px;padding:28px 0 44px;font-size:12.5px;color:var(--muted)}
+.disc{font-size:12px;color:var(--muted);font-style:italic;margin-top:26px;padding-top:16px;border-top:1px solid var(--border)}
+@media(max-width:560px){.grid{grid-template-columns:repeat(2,1fr)}}
+
+/* article */
+.art p{font-size:16.5px;color:#cfdae7}
+.art h2{margin-top:40px}
+.art ul{margin:0 0 18px 20px;color:#cfdae7}
+.art li{margin-bottom:9px;font-size:16px}
+.art strong{color:var(--white)}
+blockquote{border-left:3px solid var(--gold);background:var(--gold-dim);margin:26px 0;
+padding:16px 22px;border-radius:0 11px 11px 0;font-size:17px;color:var(--white);font-weight:600}
+.study{background:var(--navy-mid);border:1px solid var(--border);border-radius:11px;padding:17px 20px;margin-bottom:12px}
+.study-src{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--brand);font-weight:700;margin-bottom:6px}
+.study p{margin-bottom:0;font-size:15px}
+.refs{font-size:13px;color:var(--muted);margin-top:10px}
+.refs li{margin-bottom:10px;font-size:13px;line-height:1.55}
+.byline{font-size:13px;color:var(--muted);margin-bottom:26px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.tri{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:22px 0}
+.tri-c{background:var(--navy-mid);border:1px solid var(--border);border-top:3px solid var(--brand);border-radius:11px;padding:18px}
+.tri-c h3{margin:0 0 7px}
+.tri-c p{font-size:14.5px;margin-bottom:0}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="nav">
+  <a class="logo" href="/">DroidWork<span>.ai</span></a>
+  <div class="nav-links">
+    <a href="/roles/">All Roles</a>
+    <a href="/calculator/methodology">Methodology</a>
+    <a href="https://github.com/karthika2z/ai-tco-framework">Open Source</a>
+    <a class="btn" href="/calculator/">Open Calculator</a>
+  </div>
+</div></div></header>
+<main class="wrap">
+<div class="crumb"><a href="/">Home</a> › Advisory</div>
+<div class="pill">Independent AI TCO Advisory · 2026</div>
+<h1>Three ways to get an honest number.</h1>
+<p class="lede">Free tool, self-serve kit, or a board-ready TCO Review. Pick the shape that fits how the decision needs to be defended.</p>
+
+<div class="callout warn">
+  <div class="callout-t">Why "independent" matters here</div>
+  <p>Every AI ROI calculator you have used was built by someone who benefits when the answer is yes. Ours is built by someone who benefits when the answer is <em>right</em>. Our public model says AI costs more than the person for 2 of the 12 roles we publish (HR Generalist and Operations Analyst) — if that gap does not exist in your deployment, we will say so. If it does, you save a budget cycle.</p>
+</div>
+
+<h2>The three tiers</h2>
+
+<div class="rel" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:22px 0">
+  <div style="background:var(--navy-mid);border:1px solid var(--border);border-radius:13px;padding:22px">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Tier 1</div>
+    <h3 style="margin:0 0 4px;font-size:19px">Calculator</h3>
+    <div style="font-size:26px;font-weight:800;color:var(--white);margin-bottom:10px">Free</div>
+    <p style="font-size:14.5px;color:#cfdae7">The complete model, no login, PDF executive summary at the end. About four minutes.</p>
+    <ul style="margin:12px 0 18px 18px;font-size:14px;color:#cfdae7">
+      <li>All 7 cost dimensions</li>
+      <li>Role and level pre-fills</li>
+      <li>Board-ready PDF export</li>
+      <li>Open-source model</li>
+    </ul>
+    <a class="btn btn-ghost" href="/calculator/?utm_source=advisory&utm_medium=tier1" style="display:block;text-align:center">Open Calculator</a>
+  </div>
+
+  <div style="background:var(--navy-mid);border:2px solid var(--brand);border-radius:13px;padding:22px;position:relative">
+    <div style="position:absolute;top:-11px;right:16px;background:var(--brand);color:#04241d;font-size:10.5px;font-weight:800;padding:4px 10px;border-radius:20px;letter-spacing:.5px">MOST POPULAR</div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--brand);margin-bottom:6px">Tier 2</div>
+    <h3 style="margin:0 0 4px;font-size:19px">AI Business Case Kit</h3>
+    <div style="font-size:26px;font-weight:800;color:var(--white);margin-bottom:10px">$399<span style="font-size:14px;font-weight:600;color:var(--muted)"> · one-time</span></div>
+    <p style="font-size:14.5px;color:#cfdae7">Self-serve toolkit for teams building their own case. You model it, we hand you the tooling to do it defensibly.</p>
+    <ul style="margin:12px 0 18px 18px;font-size:14px;color:#cfdae7">
+      <li>Full model spreadsheet (all 7 dimensions)</li>
+      <li>Board-deck template (12 slides)</li>
+      <li>Worked examples across 12 roles</li>
+      <li>Sensitivity-analysis playbook</li>
+      <li>90 days of email support</li>
+    </ul>
+    <a class="btn" href="mailto:karthik@droidwork.ai?subject=DroidWork%20TCO%20Advisory%20-%20Business%20Case%20Kit" style="display:block;text-align:center">Request Kit</a>
+  </div>
+
+  <div style="background:var(--navy-mid);border:1px solid var(--border);border-radius:13px;padding:22px">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--gold);margin-bottom:6px">Tier 3</div>
+    <h3 style="margin:0 0 4px;font-size:19px">TCO Review</h3>
+    <div style="font-size:26px;font-weight:800;color:var(--white);margin-bottom:10px">$5k–$15k</div>
+    <p style="font-size:14.5px;color:#cfdae7">We run the model on your actual deployment and deliver a board-ready document. Two weeks, one number, defensible.</p>
+    <ul style="margin:12px 0 18px 18px;font-size:14px;color:#cfdae7">
+      <li>Intake call and deployment discovery</li>
+      <li>Model configured to your inputs</li>
+      <li>15–25 page TCO document (PDF)</li>
+      <li>Sensitivity on your top 3 assumptions</li>
+      <li>Reviewer call to walk the numbers</li>
+    </ul>
+    <a class="btn" href="mailto:karthik@droidwork.ai?subject=DroidWork%20TCO%20Advisory%20-%20TCO%20Review" style="display:block;text-align:center">Book a Review</a>
+  </div>
+</div>
+
+<h2>How the TCO Review actually runs</h2>
+<div class="tri">
+  <div class="tri-c"><h3>Week 1 · Intake</h3><p>A 60-minute discovery call, then we collect the workload data, security posture and roles in scope. If the answers are already clear, we say so and refund the difference.</p></div>
+  <div class="tri-c"><h3>Week 2 · Model</h3><p>Model configured to your inputs, run across every role in scope. Sensitivity analysis on the three assumptions that move the answer the most.</p></div>
+  <div class="tri-c"><h3>Delivery</h3><p>15–25 page PDF, a copy of the configured model, and a 45-minute walkthrough for your finance or board sponsor. All figures are reproducible.</p></div>
+</div>
+
+<h2>Who this is for</h2>
+<p>Anyone whose next AI budget request has to survive a CFO or an audit committee. The people who benefit most from a review are:</p>
+<ul style="margin:0 0 18px 20px;color:#cfdae7;font-size:15.5px">
+  <li>CIOs approving a vendor deck that promises 80% savings and want to know what number they can actually defend</li>
+  <li>Heads of ops evaluating replacement vs augmentation across a specific function</li>
+  <li>Boards or investment committees who want an independent view before a large agentic deployment</li>
+  <li>Founders raising on an "AI replaces the team" pitch and needing a defensible per-role figure</li>
+</ul>
+
+<h2>Frequently asked</h2>
+<div class="faq"><h3>What does the review actually deliver?</h3><p>A 15–25 page document sized for a CFO or a board committee: fully-loaded employee cost per role, AI TCO across all seven cost dimensions, sensitivity to your top three assumptions, and a plain-English recommendation for each role. Plus the configured model — so anyone on your team can rerun it later.</p></div>
+<div class="faq"><h3>Do you take vendor referral fees or equity?</h3><p>No. The whole reason the review is worth doing is that it is not tied to a vendor. We do not accept referral, revenue-share or equity arrangements with any AI infrastructure or model provider.</p></div>
+<div class="faq"><h3>How is this different from what a consultancy would produce?</h3><p>A tier-1 consultancy delivers a slide deck built from interviews. We deliver a model, a document, and the configured spreadsheet. The number in the document is defensible because you can reproduce it, not because a partner signed off on it.</p></div>
+<div class="faq"><h3>What if the review says "don't buy AI"?</h3><p>Then that is the review. Two of the twelve roles in our public dataset come back that way at mid level (HR Generalist and Operations Analyst); more at junior levels. If yours land there, you have saved a budget cycle and a hiring reshuffle — which is worth a lot more than $5–15k.</p></div>
+<div class="faq"><h3>Is the model open?</h3><p>Yes. The methodology and code are on <a href="https://github.com/karthika2z/ai-tco-framework">GitHub</a>. You can audit every assumption before hiring us.</p></div>
+
+<div class="cta">
+  <h2>Talk to us before your next AI budget review.</h2>
+  <p class="cta-sub">30-minute intake call. If a $0 or $399 tier is the right fit, we will say so.</p>
+  <a class="btn" href="mailto:karthik@droidwork.ai?subject=DroidWork%20TCO%20Advisory">Email karthik@droidwork.ai →</a>
+</div>
+
+<p class="disc">Independent advisory only. No vendor referral or equity relationships. See our <a href="/calculator/methodology">methodology</a> and the <a href="https://github.com/karthika2z/ai-tco-framework">open-source model</a> before you engage.</p></main>
+<footer><div class="wrap">
+  <strong style="color:var(--text)">DroidWork.ai</strong> — Enterprise AI Cost Intelligence<br>
+  <a href="/calculator/">Calculator</a> · <a href="/calculator/methodology">Methodology</a> ·
+  <a href="/roles/">All Roles</a> · <a href="https://github.com/karthika2z/ai-tco-framework">GitHub</a><br><br>
+  © 2026 DroidWork.ai — For planning purposes only. Figures are modelled estimates, not financial advice.
+</div></footer>
+</body></html>

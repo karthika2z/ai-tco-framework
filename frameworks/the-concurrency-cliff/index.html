@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Concurrency Cliff — Definition, Number, Why It Costs Money | DroidWork.ai</title>
+<meta name="description" content="The Concurrency Cliff is the point in a cloud AI deployment — approximately 50 concurrent users for GPT-4o class models — at which pay-per-token pricing is no longer feasible and Provisioned Throughput Units, dedicated inference endpoints or reserved capacity are required. Cost structure shifts from fully variable to semi-fixed, adding $2,000–$6,000 per month before any tokens are consumed.">
+<link rel="canonical" href="https://droidwork.ai/frameworks/the-concurrency-cliff/">
+<meta property="og:title" content="The Concurrency Cliff — Definition, Number, Why It Costs Money | DroidWork.ai">
+<meta property="og:description" content="The Concurrency Cliff is the point in a cloud AI deployment — approximately 50 concurrent users for GPT-4o class models — at which pay-per-token pricing is no longer feasible and Provisioned Throughput Units, dedicated inference endpoints or reserved capacity are required. Cost structure shifts from fully variable to semi-fixed, adding $2,000–$6,000 per month before any tokens are consumed.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://droidwork.ai/frameworks/the-concurrency-cliff/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="/dw-analytics.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","@id":"https://droidwork.ai/frameworks/the-concurrency-cliff/#term","name":"The Concurrency Cliff","description":"The Concurrency Cliff is the point in a cloud AI deployment — approximately 50 concurrent users for GPT-4o class models — at which pay-per-token pricing is no longer feasible and Provisioned Throughput Units, dedicated inference endpoints or reserved capacity are required. Cost structure shifts from fully variable to semi-fixed, adding $2,000–$6,000 per month before any tokens are consumed.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"The DroidWork AI TCO Framework Glossary","url":"https://droidwork.ai/frameworks/"},"url":"https://droidwork.ai/frameworks/the-concurrency-cliff/"},{"@type":"Article","headline":"The Concurrency Cliff","description":"At ~50 concurrent users, agentic AI cost transitions from variable (pay-per-token) to semi-fixed (provisioned throughput). $2–6k/month appears before any per-token cost.","keywords":"AI concurrency, Provisioned Throughput Units, PTU pricing, agentic AI infrastructure, Azure OpenAI PTU, dedicated inference, AI rate limits","author":{"@type":"Person","name":"Karthik Balachandran","url":"https://www.linkedin.com/in/kbalachandran"},"publisher":{"@type":"Organization","name":"DroidWork.ai","url":"https://droidwork.ai"},"mainEntityOfPage":"https://droidwork.ai/frameworks/the-concurrency-cliff/","datePublished":"2026-09-20","dateModified":"2026-09-20","about":{"@id":"https://droidwork.ai/frameworks/the-concurrency-cliff/#term"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the concurrency cliff in AI deployments?","acceptedAnswer":{"@type":"Answer","text":"The point — around 50 concurrent users for GPT-4o class models — at which pay-per-token API pricing becomes infeasible and Provisioned Throughput Units or dedicated inference endpoints are required. It shifts the cost structure from fully variable to semi-fixed and typically adds $2,000-$6,000 per month in committed capacity."}},{"@type":"Question","name":"Why does concurrency add cost separately from token volume?","acceptedAnswer":{"@type":"Answer","text":"Because concurrency and token volume scale independently. A system with high concurrency but modest total volume still exceeds standard API rate limits and requires reserved capacity, which is priced by throughput unit rather than by token."}},{"@type":"Question","name":"How much do Azure OpenAI PTUs cost for 50 concurrent users?","acceptedAnswer":{"@type":"Answer","text":"Roughly 200 PTUs at $2,000-$4,000 per 100 PTUs per month per Azure OpenAI documentation (2024), which is $4,000-$8,000 per month or $48,000-$96,000 per year. Actual pricing depends on model class and reservation term."}},{"@type":"Question","name":"At what user count do I need provisioned throughput?","acceptedAnswer":{"@type":"Answer","text":"Approximately 50 concurrent users for GPT-4o class deployments, though the exact threshold depends on the API tier, request latency requirements, and average tokens per request. Peak concurrency matters, not average."}}]}]}</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#0a1628;--navy-mid:#0f2042;--navy-light:#162d5a;--border:rgba(255,255,255,.08);
+--brand:#00d4a8;--brand-dim:rgba(0,212,168,.12);--gold:#c9a84c;--gold-dim:rgba(201,168,76,.12);
+--text:#f0f4f8;--muted:#8ca0b8;--white:#fff;--danger:#f87171}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--navy);
+color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--brand);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:860px;margin:0 auto;padding:0 24px}
+header{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(10,22,40,.92);
+backdrop-filter:blur(10px);z-index:50}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:16px;color:var(--white)}
+.logo span{color:var(--brand)}
+.nav-links{display:flex;gap:20px;align-items:center;font-size:13px;flex-wrap:wrap}
+.nav-links a{color:var(--muted)}
+.btn{display:inline-block;background:var(--brand);color:#04241d;font-weight:700;font-size:14px;
+padding:12px 22px;border-radius:8px;text-align:center;transition:transform .15s,filter .15s}
+.btn:hover{filter:brightness(1.08);transform:translateY(-1px);text-decoration:none}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+.crumb{font-size:12px;color:var(--muted);margin:28px 0 14px}
+h1{font-size:clamp(28px,5vw,42px);line-height:1.15;font-weight:800;color:var(--white);letter-spacing:-.02em;margin-bottom:16px}
+h2{font-size:clamp(20px,3vw,26px);font-weight:700;color:var(--white);margin:44px 0 14px;letter-spacing:-.01em}
+h3{font-size:16px;font-weight:700;color:var(--white);margin:22px 0 8px}
+p{margin-bottom:16px;color:#cfdae7}
+.lede{font-size:18px;color:var(--muted);margin-bottom:28px}
+.pill{display:inline-block;background:var(--brand-dim);color:var(--brand);font-size:11px;font-weight:700;
+letter-spacing:.9px;text-transform:uppercase;padding:6px 13px;border-radius:20px;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px;margin:26px 0}
+.stat{background:var(--navy-mid);border:1px solid var(--border);border-radius:11px;padding:17px}
+.stat-l{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px;font-weight:600}
+.stat-v{font-size:23px;font-weight:800;color:var(--white);letter-spacing:-.02em}
+.stat-v.pos{color:var(--brand)}
+.stat-v.neg{color:var(--danger)}
+table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px;
+background:var(--navy-mid);border-radius:11px;overflow:hidden;border:1px solid var(--border)}
+th{text-align:left;padding:12px 15px;font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;
+color:var(--muted);background:rgba(255,255,255,.03);font-weight:700}
+td{padding:12px 15px;border-top:1px solid var(--border);color:#cfdae7}
+td.n{text-align:right;font-weight:700;color:var(--white);font-variant-numeric:tabular-nums}
+.callout{background:var(--navy-mid);border-left:3px solid var(--brand);border-radius:0 11px 11px 0;
+padding:18px 22px;margin:26px 0}
+.callout.warn{border-left-color:var(--gold);background:var(--gold-dim)}
+.callout-t{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--brand);margin-bottom:7px}
+.callout.warn .callout-t{color:var(--gold)}
+.callout p:last-child{margin-bottom:0}
+.cta{background:linear-gradient(135deg,var(--navy-mid),var(--navy-light));border:1px solid var(--border);
+border-radius:15px;padding:34px;text-align:center;margin:44px 0}
+.cta h2{margin-top:0}
+.cta-sub{color:var(--muted);font-size:15px;margin-bottom:22px}
+.faq{border-top:1px solid var(--border);padding:18px 0}
+.faq h3{margin-top:0}
+.faq p{margin-bottom:0;font-size:14.5px}
+.rel{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:20px 0}
+.rel a{background:var(--navy-mid);border:1px solid var(--border);border-radius:9px;padding:13px 15px;
+font-size:13.5px;color:var(--text);font-weight:600}
+.rel a:hover{border-color:var(--brand);text-decoration:none}
+.rel span{display:block;font-size:11.5px;color:var(--muted);font-weight:400;margin-top:3px}
+footer{border-top:1px solid var(--border);margin-top:60px;padding:28px 0 44px;font-size:12.5px;color:var(--muted)}
+.disc{font-size:12px;color:var(--muted);font-style:italic;margin-top:26px;padding-top:16px;border-top:1px solid var(--border)}
+@media(max-width:560px){.grid{grid-template-columns:repeat(2,1fr)}}
+
+/* article */
+.art p{font-size:16.5px;color:#cfdae7}
+.art h2{margin-top:40px}
+.art ul{margin:0 0 18px 20px;color:#cfdae7}
+.art li{margin-bottom:9px;font-size:16px}
+.art strong{color:var(--white)}
+blockquote{border-left:3px solid var(--gold);background:var(--gold-dim);margin:26px 0;
+padding:16px 22px;border-radius:0 11px 11px 0;font-size:17px;color:var(--white);font-weight:600}
+.study{background:var(--navy-mid);border:1px solid var(--border);border-radius:11px;padding:17px 20px;margin-bottom:12px}
+.study-src{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--brand);font-weight:700;margin-bottom:6px}
+.study p{margin-bottom:0;font-size:15px}
+.refs{font-size:13px;color:var(--muted);margin-top:10px}
+.refs li{margin-bottom:10px;font-size:13px;line-height:1.55}
+.byline{font-size:13px;color:var(--muted);margin-bottom:26px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.tri{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:22px 0}
+.tri-c{background:var(--navy-mid);border:1px solid var(--border);border-top:3px solid var(--brand);border-radius:11px;padding:18px}
+.tri-c h3{margin:0 0 7px}
+.tri-c p{font-size:14.5px;margin-bottom:0}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="nav">
+  <a class="logo" href="/">DroidWork<span>.ai</span></a>
+  <div class="nav-links">
+    <a href="/roles/">All Roles</a>
+    <a href="/calculator/methodology">Methodology</a>
+    <a href="https://github.com/karthika2z/ai-tco-framework">Open Source</a>
+    <a class="btn" href="/calculator/">Open Calculator</a>
+  </div>
+</div></div></header>
+<main class="wrap">
+<div class="crumb"><a href="/">Home</a> › <a href="/frameworks/">Frameworks</a> › The Concurrency Cliff</div>
+<div class="pill">Framework · Cite this</div>
+<h1>The Concurrency Cliff</h1>
+<p class="lede">At ~50 concurrent users, agentic AI cost transitions from variable (pay-per-token) to semi-fixed (provisioned throughput). $2–6k/month appears before any per-token cost.</p>
+<div class="byline">By <a href="https://www.linkedin.com/in/kbalachandran">Karthik Balachandran</a> · Part of the DroidWork AI TCO Framework</div>
+
+<div class="callout">
+  <div class="callout-t">The number</div>
+  <p><strong style="font-size:24px;color:var(--white)">~50</strong> — concurrent users. Above this threshold, provisioned throughput adds $2–6k/month in fixed cost.</p>
+</div>
+
+<div class="art">
+
+<h2>The definition</h2>
+<p>Concurrent users are not the same as total volume. A system with 5 concurrent users processing 200 tasks a day is a fundamentally different beast from a system with 50 concurrent users processing 200 tasks a day — even though total token volume is similar. The Concurrency Cliff is the transition point.</p>
+
+<blockquote>Below ~50 concurrent users you rent capacity by the token. Above it, you rent capacity by the month. This shifts the cost structure from variable to semi-fixed.</blockquote>
+
+<h2>The three regimes</h2>
+<div class="tri">
+  <div class="tri-c"><h3>Regime 1 · &lt; 10 concurrent</h3><p>Standard API pricing. Pay-per-token, spiky, no reserved capacity. Latency is fine, rate limits are not felt. This is where most pilots live.</p></div>
+  <div class="tri-c"><h3>Regime 2 · 10–49 concurrent</h3><p>Rate-limit engineering. Request queuing, exponential backoff, higher API tiers. This model adds a ~15% premium on token cost to reflect the tier upgrade. Latency SLAs start to bite.</p></div>
+  <div class="tri-c"><h3>Regime 3 · 50+ concurrent</h3><p>Provisioned throughput required. Azure PTUs, AWS Bedrock Reserved Capacity, or dedicated inference endpoints. Semi-fixed cost. Standard API tiers no longer feasible for the load.</p></div>
+</div>
+
+<h2>Why it costs money</h2>
+<p>Azure OpenAI Provisioned Throughput Unit pricing (2024) requires roughly <strong>200 PTUs for 50 concurrent GPT-4o users</strong>. At $3,000 per 100 PTUs per month, that is <strong>$6,000/month or $72,000/year</strong> in committed capacity — before you consume a single token, and independent of daily task volume.</p>
+
+<p>For smaller GPT-4o-mini or Sonnet-class deployments the number is closer to $2,000–$3,000 per month for the same concurrency. Either way, it is a fixed line item that does not appear on the vendor's per-token slide.</p>
+
+<h2>The trap for planners</h2>
+<p>Concurrency scales with adoption, not with volume. A tool used lightly by 200 people can easily hit 50 concurrent during the morning hour. Deployment plans that scale token cost linearly with headcount miss this — because the cliff is discrete, not gradual.</p>
+
+<p>This is the second-largest source of understatement in vendor calculators, after the Agentic Loop Multiplier. Two named effects, two silent orders of magnitude.</p>
+
+<h2>How to check it on your own deployment</h2>
+<ul>
+  <li>Estimate <strong>peak-hour</strong> concurrent users, not average. Adoption is bursty.</li>
+  <li>If peak exceeds ~50, price provisioned throughput separately from token cost.</li>
+  <li>Do not spread the PTU cost per user — model it as fixed until the next capacity increment.</li>
+  <li>Full formulas: <a href="/calculator/methodology#s5">methodology, Module 2C</a>.</li>
+</ul>
+</div>
+
+<div class="cta">
+  <h2>Model this on your deployment</h2>
+  <p class="cta-sub">This framework is baked into the DroidWork TCO calculator. Adjust the inputs — the numbers move accordingly.</p>
+  <a class="btn" href="/calculator/?utm_source=frameworks&utm_medium=article&utm_campaign=the-concurrency-cliff">Open the Calculator →</a>
+</div>
+
+<h2>Frequently asked</h2>
+<div class="faq"><h3>What is the concurrency cliff in AI deployments?</h3><p>The point — around 50 concurrent users for GPT-4o class models — at which pay-per-token API pricing becomes infeasible and Provisioned Throughput Units or dedicated inference endpoints are required. It shifts the cost structure from fully variable to semi-fixed and typically adds $2,000-$6,000 per month in committed capacity.</p></div>
+<div class="faq"><h3>Why does concurrency add cost separately from token volume?</h3><p>Because concurrency and token volume scale independently. A system with high concurrency but modest total volume still exceeds standard API rate limits and requires reserved capacity, which is priced by throughput unit rather than by token.</p></div>
+<div class="faq"><h3>How much do Azure OpenAI PTUs cost for 50 concurrent users?</h3><p>Roughly 200 PTUs at $2,000-$4,000 per 100 PTUs per month per Azure OpenAI documentation (2024), which is $4,000-$8,000 per month or $48,000-$96,000 per year. Actual pricing depends on model class and reservation term.</p></div>
+<div class="faq"><h3>At what user count do I need provisioned throughput?</h3><p>Approximately 50 concurrent users for GPT-4o class deployments, though the exact threshold depends on the API tier, request latency requirements, and average tokens per request. Peak concurrency matters, not average.</p></div>
+
+<h2>See also</h2>
+<div class="rel">
+  <a href="/frameworks/the-agentic-loop-multiplier/">The Agentic Loop Multiplier<span>The other invisible 5×</span></a>
+  <a href="/calculator/methodology#s5">Methodology · Module 2C<span>Full derivation with PTU tables</span></a>
+  <a href="/frameworks/">All frameworks<span>The full glossary</span></a>
+</div>
+
+<p class="disc">This framework is documented as part of the open-source <a href="https://github.com/karthika2z/ai-tco-framework">DroidWork AI TCO Framework</a>. Cite it as: DroidWork.ai (2026). "The Concurrency Cliff." https://droidwork.ai/frameworks/the-concurrency-cliff/</p></main>
+<footer><div class="wrap">
+  <strong style="color:var(--text)">DroidWork.ai</strong> — Enterprise AI Cost Intelligence<br>
+  <a href="/calculator/">Calculator</a> · <a href="/calculator/methodology">Methodology</a> ·
+  <a href="/roles/">All Roles</a> · <a href="https://github.com/karthika2z/ai-tco-framework">GitHub</a><br><br>
+  © 2026 DroidWork.ai — For planning purposes only. Figures are modelled estimates, not financial advice.
+</div></footer>
+</body></html>

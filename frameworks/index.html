@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AI vs. Financial Analyst: True Cost Comparison (2026) | DroidWork.ai</title>
-<meta name="description" content="What it really costs to replace a Financial Analyst with AI. Fully-loaded employee cost $200,600 vs. AI TCO $178,710 across 7 cost dimensions — including the 97% vendors leave out.">
-<link rel="canonical" href="https://droidwork.ai/roles/financial-analyst/">
-<meta property="og:title" content="AI vs. Financial Analyst: True Cost Comparison (2026) | DroidWork.ai">
-<meta property="og:description" content="What it really costs to replace a Financial Analyst with AI. Fully-loaded employee cost $200,600 vs. AI TCO $178,710 across 7 cost dimensions — including the 97% vendors leave out.">
+<title>AI TCO Framework Glossary — Named, Citable Concepts | DroidWork.ai</title>
+<meta name="description" content="Named concepts from the DroidWork AI TCO model: the Agentic Loop Multiplier, the Concurrency Cliff, and Constrain-Escalate-Contain. Each with definition, number, sources.">
+<link rel="canonical" href="https://droidwork.ai/frameworks/">
+<meta property="og:title" content="AI TCO Framework Glossary — Named, Citable Concepts | DroidWork.ai">
+<meta property="og:description" content="Named concepts from the DroidWork AI TCO model: the Agentic Loop Multiplier, the Concurrency Cliff, and Constrain-Escalate-Contain. Each with definition, number, sources.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://droidwork.ai/roles/financial-analyst/">
+<meta property="og:url" content="https://droidwork.ai/frameworks/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="/dw-analytics.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"AI vs. a Financial Analyst: True Cost Comparison (2026)","description":"What it really costs to replace a Financial Analyst with AI. Fully-loaded employee cost $200,600 vs. AI TCO $178,710 across 7 cost dimensions — including the 97% vendors leave out.","author":{"@type":"Organization","name":"DroidWork.ai","url":"https://droidwork.ai"},"publisher":{"@type":"Organization","name":"DroidWork.ai","url":"https://droidwork.ai"},"mainEntityOfPage":"https://droidwork.ai/roles/financial-analyst/","datePublished":"2026-09-20"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can AI replace financial analysts?","acceptedAnswer":{"@type":"Answer","text":"It can replace much of the preparation work, not the accountability. Controls frameworks require a named human who can defend a number to an auditor. Model AI here as analyst capacity, not analyst headcount."}},{"@type":"Question","name":"What compliance costs should I include?","acceptedAnswer":{"@type":"Answer","text":"Audit logging, access controls, data loss prevention, and retention of the reasoning behind AI-generated figures. These are budget lines most vendor ROI models omit entirely."}},{"@type":"Question","name":"Does this apply to regulated industries?","acceptedAnswer":{"@type":"Answer","text":"The costs rise sharply. In financial services and healthcare, add model governance and explainability requirements on top of standard controls."}}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTermSet","name":"The DroidWork AI TCO Framework Glossary","url":"https://droidwork.ai/frameworks/","hasDefinedTerm":[{"@type":"DefinedTerm","name":"The Agentic Loop Multiplier","description":"The Agentic Loop Multiplier is the factor by which real per-task token consumption exceeds naive single-call estimates in an agent framework — 4×–10× in typical ReAct or tool-use deployments, driven by plan/act/observe/reflect iterations and by context growth as prior reasoning is appended to the scratchpad on every step.","url":"https://droidwork.ai/frameworks/the-agentic-loop-multiplier/"},{"@type":"DefinedTerm","name":"The Concurrency Cliff","description":"The Concurrency Cliff is the point in a cloud AI deployment — approximately 50 concurrent users for GPT-4o class models — at which pay-per-token pricing is no longer feasible and Provisioned Throughput Units, dedicated inference endpoints or reserved capacity are required. Cost structure shifts from fully variable to semi-fixed, adding $2,000–$6,000 per month before any tokens are consumed.","url":"https://droidwork.ai/frameworks/the-concurrency-cliff/"},{"@type":"DefinedTerm","name":"Constrain, Escalate, Contain","description":"Constrain, Escalate, Contain is a three-layer safety pattern for AI agents that replaces reliance on human-in-the-loop approval with (1) least-privilege runtime controls that constrain what an agent can do by default, (2) exception-based escalation that routes only rare, consequential, hard-to-undo decisions to humans, and (3) containment mechanisms — detection, circuit breakers, kill switches — that limit blast radius when the other two layers fail.","url":"https://droidwork.ai/frameworks/constrain-escalate-contain/"}]}</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--navy:#0a1628;--navy-mid:#0f2042;--navy-light:#162d5a;--border:rgba(255,255,255,.08);
@@ -110,82 +110,22 @@ padding:16px 22px;border-radius:0 11px 11px 0;font-size:17px;color:var(--white);
   </div>
 </div></div></header>
 <main class="wrap">
-<div class="crumb"><a href="/">Home</a> › <a href="/roles/">Roles</a> › Financial Analyst</div>
-<div class="pill">Role-Level TCO Analysis · 2026</div>
-<h1>AI vs. Financial Analyst: What Replacement Actually Costs</h1>
-<p class="lede">High automation potential collides directly with the highest accuracy and auditability requirements in the business.</p>
+<div class="crumb"><a href="/">Home</a> › Frameworks</div>
+<div class="pill">Named Concepts · Cite This</div>
+<h1>The AI TCO Framework Glossary</h1>
+<p class="lede">Named, defensible concepts from the DroidWork TCO model. Each entry: definition, why it costs money, the number, sources — and a live calculator you can rerun.</p>
 
-<div class="grid">
-  <div class="stat"><div class="stat-l">Employee True Cost</div><div class="stat-v">$200,600</div></div>
-  <div class="stat"><div class="stat-l">AI Full TCO</div><div class="stat-v">$178,710</div></div>
-  <div class="stat"><div class="stat-l">Annual Difference</div>
-    <div class="stat-v pos">$21,890</div></div>
-  <div class="stat"><div class="stat-l">Payback Period</div><div class="stat-v">14.4 months</div></div>
+<div class="rel" style="grid-template-columns:1fr;gap:12px">
+  <a href="/frameworks/the-agentic-loop-multiplier/">The Agentic Loop Multiplier<span>Every &quot;task&quot; in a ReAct-style agent is not one API call. It is 4–10 — and each iteration bills against a growing context. Standard token calculators miss this by a factor of 4×–10×.</span></a>
+  <a href="/frameworks/the-concurrency-cliff/">The Concurrency Cliff<span>At ~50 concurrent users, agentic AI cost transitions from variable (pay-per-token) to semi-fixed (provisioned throughput). $2–6k/month appears before any per-token cost.</span></a>
+  <a href="/frameworks/constrain-escalate-contain/">Constrain, Escalate, Contain<span>The alternative to &quot;human in the loop&quot;. Three layers that assume the fallible component fails — because after two decades of research, we know that &quot;the fallible component&quot; is the human.</span></a>
 </div>
-
-<p>These figures come from the DroidWork TCO model for a Financial Analyst at mid level, on a base salary of
-$110,000. The employee figure is fully loaded — benefits, payroll tax, overhead, management time and
-recruiting amortisation — not base salary. The AI figure sums all seven cost dimensions, not tokens alone.</p>
-
-
-
-<h2>Where the money actually goes</h2>
-<p>Token cost is <strong>2.6%</strong> of total AI cost for this role. The remaining
-<strong>97.4%</strong> is what standard vendor ROI models omit.</p>
-
-<table>
-  <thead><tr><th>Cost dimension</th><th style="text-align:right">Annual</th></tr></thead>
-  <tbody>
-    <tr><td>Tokens / compute</td><td class="n">$4,563</td></tr>
-    <tr><td>Hosting &amp; infrastructure</td><td class="n">$39,800</td></tr>
-    <tr><td>Security &amp; compliance</td><td class="n">$53,500</td></tr>
-    <tr><td>Process failure &amp; rework</td><td class="n">$32,217</td></tr>
-    <tr><td>Residual human oversight</td><td class="n">$40,120</td></tr>
-    <tr><td><strong>Total AI TCO</strong></td><td class="n">$178,710</td></tr>
-  </tbody>
-</table>
-
-<div class="callout">
-  <div class="callout-t">Dominant cost driver for this role</div>
-  <p>Security, compliance, and process failure costs. Finance data is the most sensitive in the company, and an error carries regulatory weight, not just rework.</p>
-</div>
-
-<h2>What AI does well here</h2>
-<p>Variance analysis, report generation, reconciliation first passes, and narrative commentary on results.</p>
-
-<h2>What stays human</h2>
-<p>Anything requiring a signature. Controls, auditability, and regulatory defensibility demand traceable human judgement.</p>
-
-<h2>The honest verdict</h2>
-<p>Strong augmentation case, weak replacement case. The compliance overhead of autonomous finance agents consumes much of the modelled saving.</p>
 
 <div class="cta">
-  <h2>Run this for your own numbers</h2>
-  <p class="cta-sub">Pre-filled for a Financial Analyst. Adjust salary, volume and risk to match your business —
-  then export a board-ready PDF. Free, no login, about four minutes.</p>
-  <a class="btn" href="/calculator/?role=finance&level=mid&utm_source=seo&utm_medium=role_page&utm_campaign=financial-analyst">Open the Calculator for This Role →</a>
-</div>
-
-<h2>Frequently asked</h2>
-<div class="faq"><h3>Can AI replace financial analysts?</h3><p>It can replace much of the preparation work, not the accountability. Controls frameworks require a named human who can defend a number to an auditor. Model AI here as analyst capacity, not analyst headcount.</p></div>
-<div class="faq"><h3>What compliance costs should I include?</h3><p>Audit logging, access controls, data loss prevention, and retention of the reasoning behind AI-generated figures. These are budget lines most vendor ROI models omit entirely.</p></div>
-<div class="faq"><h3>Does this apply to regulated industries?</h3><p>The costs rise sharply. In financial services and healthcare, add model governance and explainability requirements on top of standard controls.</p></div>
-
-<h2>Compare other roles</h2>
-<div class="rel"><a href="/roles/software-engineer/">AI vs. Software Engineer
-      <span>$49,042 modelled saving</span></a>
-<a href="/roles/data-scientist/">AI vs. Data Scientist
-      <span>$27,579 modelled saving</span></a>
-<a href="/roles/product-manager/">AI vs. Product Manager
-      <span>$70,138 modelled saving</span></a>
-<a href="/roles/hr-generalist/">AI vs. HR Generalist
-      <span>AI costs more</span></a></div>
-
-<p class="disc">Modelled estimate for planning purposes only; not financial, legal or employment advice.
-Salary baselines from BLS OES, Radford/Aon and Glassdoor 2025–2026 data. Full assumptions and sources are
-documented in the <a href="/calculator/methodology">methodology</a>, and the model is
-<a href="https://github.com/karthika2z/ai-tco-framework">open source</a>. Your results will differ —
-that is the point; run your own inputs.</p></main>
+  <h2>These frameworks are baked into the model</h2>
+  <p class="cta-sub">Every calculation on this site applies the multipliers described above. Open the model and change the inputs to see what they do to your case.</p>
+  <a class="btn" href="/calculator/?utm_source=frameworks&utm_medium=hub">Open the Calculator →</a>
+</div></main>
 <footer><div class="wrap">
   <strong style="color:var(--text)">DroidWork.ai</strong> — Enterprise AI Cost Intelligence<br>
   <a href="/calculator/">Calculator</a> · <a href="/calculator/methodology">Methodology</a> ·

@@ -1,18 +1,20 @@
 /**
- * Extracts REAL TCO numbers from the live calculator, one row per role.
+ * Extracts REAL TCO numbers from the live calculator.
  *
- * Why drive the actual calculator instead of hardcoding numbers: the role pages
- * must agree with the model exactly. If the methodology changes, re-run this and
- * the pages stay truthful. Invented numbers on an SEO page would undermine the
- * one thing this site sells — credibility with a CFO.
+ * Two output files:
+ *   - seo/role-data.json       (12 roles at mid level, used by /roles/ pages)
+ *   - seo/role-data-full.json  (11 levels x 12 functions = 132 rows, used by /data/)
+ *
+ * Why drive the actual calculator instead of hardcoding numbers: the pages
+ * must agree with the model exactly. If the methodology changes, re-run this
+ * and every downstream page stays truthful. Invented numbers on an SEO page
+ * would undermine the one thing this site sells — credibility with a CFO.
  */
 import { chromium } from 'playwright';
 import { writeFileSync } from 'fs';
+import { startServer } from './serve.mjs';
 
-const BASE = 'http://127.0.0.1:8099';
-const LEVEL = 'mid';
-
-const ROLES = [
+export const FUNCTIONS = [
   { key: 'swe',       label: 'Software Engineer',        slug: 'software-engineer' },
   { key: 'ds',        label: 'Data Scientist',           slug: 'data-scientist' },
   { key: 'pm',        label: 'Product Manager',          slug: 'product-manager' },
@@ -27,23 +29,31 @@ const ROLES = [
   { key: 'strategy',  label: 'Strategy Consultant',      slug: 'strategy-consultant' },
 ];
 
-const browser = await chromium.launch({
-  executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
-  args: ['--no-sandbox'],
-});
-const page = await browser.newPage();
-await page.goto(`${BASE}/calculator/`, { waitUntil: 'networkidle' });
-await page.waitForTimeout(500);
+export const LEVELS = [
+  { key: 'intern',     label: 'Intern' },
+  { key: 'entry',      label: 'Entry' },
+  { key: 'mid',        label: 'Mid' },
+  { key: 'senior',     label: 'Senior' },
+  { key: 'manager',    label: 'Manager' },
+  { key: 'sr_manager', label: 'Senior Manager' },
+  { key: 'director',   label: 'Director' },
+  { key: 'vp',         label: 'VP' },
+  { key: 'svp',        label: 'SVP' },
+  { key: 'evp',        label: 'EVP' },
+  { key: 'csuite',     label: 'C-Suite' },
+];
 
-const rows = [];
-for (const role of ROLES) {
-  const data = await page.evaluate(({ key, level }) => {
-    const fn = document.getElementById('p_function');
-    const lv = document.getElementById('p_level');
-    fn.value = key;
-    lv.value = level;
+const PRIMARY_LEVEL = 'mid';
+
+async function extractRow(page, fn, lv) {
+  return page.evaluate(({ key, level }) => {
+    const fnSel = document.getElementById('p_function');
+    const lvSel = document.getElementById('p_level');
+    fnSel.value = key;
+    // Some levels are hidden — assigning .value still works.
+    lvSel.value = level;
     if (typeof updateSalaryFromProfile === 'function') updateSalaryFromProfile();
-    else calc();
+    else if (typeof calc === 'function') calc();
     const s = window._calcState || {};
     return {
       salary:        s.salary,
@@ -61,21 +71,75 @@ for (const role of ROLES) {
       processFail:   s.annualProcessFail,
       residualHuman: s.residualHuman,
     };
-  }, { key: role.key, level: LEVEL });
+  }, { key: fn, level: lv });
+}
 
+const { url: BASE, close: closeServer } = await startServer(8099);
+console.log(`Local server: ${BASE}`);
+
+const browser = await chromium.launch();
+const page = await browser.newPage();
+await page.goto(`${BASE}/calculator/`, { waitUntil: 'networkidle' });
+await page.waitForTimeout(400);
+
+// ─── PRIMARY ROWS (role-data.json) ────────────────────────────────────────────
+const primary = [];
+for (const fn of FUNCTIONS) {
+  const data = await extractRow(page, fn.key, PRIMARY_LEVEL);
   if (!data || typeof data.empTrueCost !== 'number') {
-    console.error(`  !! ${role.key}: no state extracted`);
+    console.error(`  !! ${fn.key} @ ${PRIMARY_LEVEL}: no state extracted`);
     continue;
   }
-  rows.push({ ...role, level: LEVEL, ...data });
+  primary.push({ ...fn, level: PRIMARY_LEVEL, ...data });
   console.log(
-    `  ${role.label.padEnd(26)} emp $${Math.round(data.empTrueCost).toLocaleString()}` +
+    `  ${fn.label.padEnd(26)} emp $${Math.round(data.empTrueCost).toLocaleString()}` +
     `  ai $${Math.round(data.aiTCO).toLocaleString()}` +
     `  save $${Math.round(data.annualSavings).toLocaleString()}` +
     `  token ${data.aiTCO ? Math.round((data.tokenCost / data.aiTCO) * 100) : '?'}%`
   );
 }
+writeFileSync(new URL('./role-data.json', import.meta.url), JSON.stringify(primary, null, 2));
+console.log(`\nExtracted ${primary.length}/${FUNCTIONS.length} primary roles -> seo/role-data.json`);
+
+// ─── FULL MATRIX (role-data-full.json) ────────────────────────────────────────
+console.log('\nBuilding full 11-level x 12-function matrix ...');
+const full = [];
+for (const lv of LEVELS) {
+  for (const fn of FUNCTIONS) {
+    const data = await extractRow(page, fn.key, lv.key);
+    if (!data || typeof data.empTrueCost !== 'number') {
+      console.error(`  !! ${fn.key} @ ${lv.key}: no state extracted`);
+      continue;
+    }
+    full.push({
+      function_key: fn.key,
+      function_label: fn.label,
+      function_slug: fn.slug,
+      level_key: lv.key,
+      level_label: lv.label,
+      salary: Math.round(data.salary),
+      employee_true_cost: Math.round(data.empTrueCost),
+      ai_tco: Math.round(data.aiTCO),
+      annual_savings: Math.round(data.annualSavings),
+      savings_pct: data.savingsPct,
+      npv_5yr: Math.round(data.npv),
+      payback_months: data.payback,
+      token_cost: Math.round(data.tokenCost),
+      hosting: Math.round(data.hosting),
+      security: Math.round(data.security),
+      process_failure: Math.round(data.processFail),
+      residual_human_oversight: Math.round(data.residualHuman),
+      hidden_cost_total: Math.round(data.hiddenTotal),
+      hidden_cost_pct: data.hiddenPct,
+    });
+  }
+  const inLevel = full.filter(r => r.level_key === lv.key).length;
+  const neg = full.filter(r => r.level_key === lv.key && r.annual_savings < 0).length;
+  console.log(`  ${lv.label.padEnd(15)} ${inLevel}/12 rows  · ${neg} negative-savings`);
+}
+
+writeFileSync(new URL('./role-data-full.json', import.meta.url), JSON.stringify(full, null, 2));
+console.log(`\nExtracted ${full.length}/${LEVELS.length * FUNCTIONS.length} full rows -> seo/role-data-full.json`);
 
 await browser.close();
-writeFileSync(new URL('./role-data.json', import.meta.url), JSON.stringify(rows, null, 2));
-console.log(`\nExtracted ${rows.length}/${ROLES.length} roles -> seo/role-data.json`);
+await closeServer();

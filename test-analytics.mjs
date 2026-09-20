@@ -3,24 +3,30 @@
  * Loads the real pages in headless Chromium and asserts the funnel wiring works.
  */
 import { chromium } from 'playwright';
+import { startServer } from './seo/serve.mjs';
 
-const BASE = 'http://127.0.0.1:8099';
+const server = await startServer(8099);
+const BASE = server.url;
 const results = [];
 function check(name, pass, detail = '') {
   results.push({ name, pass, detail });
   console.log(`${pass ? '  PASS' : '  FAIL'}  ${name}${detail ? '  — ' + detail : ''}`);
 }
 
-// Use the preinstalled Chromium (the pinned playwright build differs).
-const browser = await chromium.launch({
-  executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
-  args: ['--no-sandbox'],
-});
+const browser = await chromium.launch();
+
+async function blockChartCDN(pageOrCtx) {
+  // Simulate the corporate-firewall scenario: Chart.js's CDN is unreachable.
+  // This is the exact failure the try/catch wrapper in calc() was added to survive.
+  await pageOrCtx.route(/(cdnjs\.cloudflare\.com|cdn\.jsdelivr\.net).*chart(\.js|@)/i,
+    r => r.abort());
+}
 const ctx = await browser.newContext();
 
 // ─── TEST 1: Calculator with prefill params ─────────────────────────────────
 console.log('\n[1] Calculator + prefill + funnel');
 const page = await ctx.newPage();
+await blockChartCDN(page);
 const logs = [], errors = [];
 page.on('console', m => logs.push(m.text()));
 page.on('pageerror', e => errors.push(String(e)));
@@ -57,9 +63,9 @@ await page.evaluate(() => window.openEmailModal());
 await page.waitForTimeout(250);
 check('funnel: PDF modal open fired', logs.some(l => l.includes('04_opened_pdf_modal')));
 
-// Inert until configured
-check('Clarity NOT loaded while ID is placeholder', clarityRequests.length === 0,
-  clarityRequests.length ? clarityRequests[0] : 'no requests (correct)');
+// Clarity is now configured — it must actually load.
+check('Clarity script loaded (ID configured)', clarityRequests.length > 0,
+  clarityRequests.length ? clarityRequests[0] : 'no clarity.ms requests fired');
 
 // Calculator still actually computes
 const computed = await page.evaluate(() => {
@@ -121,6 +127,7 @@ for (const [label, url] of [['landing', '/'], ['methodology', '/calculator/metho
 }
 
 await browser.close();
+await server.close();
 
 const failed = results.filter(r => !r.pass);
 console.log(`\n${'='.repeat(58)}`);

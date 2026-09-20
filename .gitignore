@@ -7,6 +7,9 @@ Thumbs.db
 *.xls
 .~lock.*
 
+# Node
+node_modules/
+
 # Cloudflare Worker
 worker/node_modules/
 worker/.wrangler/

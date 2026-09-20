@@ -1,7 +1,9 @@
 import { chromium } from 'playwright';
-const BASE='http://127.0.0.1:8099';
+import { startServer } from './seo/serve.mjs';
+const server = await startServer(8099);
+const BASE = server.url;
 const res=[]; const ck=(n,p,d='')=>{res.push({n,p,d});console.log(`${p?'  PASS':'  FAIL'}  ${n}${d?'  — '+d:''}`)};
-const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome',args:['--no-sandbox']});
+const b=await chromium.launch();
 const c=await b.newContext(); const p=await c.newPage();
 const errs=[]; p.on('pageerror',e=>errs.push(String(e)));
 
@@ -31,7 +33,8 @@ await p.goto(`${BASE}/roles/`,{waitUntil:'networkidle'});
 ck('hub lists 12 roles', (await p.locator('tbody tr').count())===12, String(await p.locator('tbody tr').count()));
 const sm=await p.goto(`${BASE}/sitemap.xml`);
 ck('sitemap serves 200', sm.status()===200);
-ck('sitemap has 18 urls', ((await sm.text()).match(/<loc>/g)||[]).length===18);
+const smUrls = ((await sm.text()).match(/<loc>/g)||[]).length;
+ck('sitemap has 25 urls', smUrls===25, String(smUrls));
 
 // Mobile render check
 await p.setViewportSize({width:390,height:844});
@@ -43,6 +46,7 @@ await p.setViewportSize({width:1280,height:900});
 await p.goto(`${BASE}/roles/hr-generalist/`,{waitUntil:'networkidle'});
 await p.screenshot({path:'/tmp/role-desktop.png',fullPage:false});
 await b.close();
+await server.close();
 const f=res.filter(r=>!r.p);
 console.log(`\nRESULT: ${res.length-f.length}/${res.length} passed`);
 if(f.length){f.forEach(x=>console.log('  - '+x.n+' '+x.d));process.exit(1)}
