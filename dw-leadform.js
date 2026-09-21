@@ -86,14 +86,14 @@
   // ─── INTENT COPY ────────────────────────────────────────────────────────────
   var INTENTS = {
     review_request: {
-      title: 'Book a TCO Review',
-      lede: 'Two-week engagement. We run the model on your deployment and deliver a board-ready TCO document. Fill in below and we will reply within one business day.',
-      submit: 'Request a TCO Review',
-      thanks: 'Thanks — Karthik will reply from karthik@droidwork.ai within one business day with an intake questionnaire and a proposed call time.',
+      title: 'Book a 15-min TCO Review Intake',
+      lede: '15-minute call. We will tell you if the model returns a defensible number for your case — and what a full review would cost. This is not a sales call: if a $0 or $399 tier is the right fit, we will say so.',
+      submit: 'Request an Intake',
+      thanks: 'Thanks — Karthik will reply from karthik@droidwork.ai within one business day with a couple of proposed call times.',
     },
     kit_request: {
       title: 'Get the AI Business Case Kit',
-      lede: 'Full model spreadsheet, board-deck template, worked examples across 12 roles, and 90 days of email support. $399 one-time. Fill in below to receive purchase and delivery details.',
+      lede: 'Model spreadsheet, board-deck template, worked examples across 12 roles, 90 days of email support. $399 one-time. Fill in below and we will email delivery and payment details.',
       submit: 'Request the Kit',
       thanks: 'Thanks — we will email delivery and payment details within one business day.',
     },

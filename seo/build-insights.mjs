@@ -288,15 +288,20 @@ function insightsHub() {
 <div class="crumb"><a href="/">Home</a> › Insights</div>
 <div class="pill">Insights · Agentic AI Governance</div>
 <h1>Insights</h1>
-<p class="lede">Research-backed writing on what agentic AI actually costs, and what it actually risks.</p>
+<p class="lede">Research-backed writing on what agentic AI actually costs, and what it actually risks. Written for the person defending the AI budget in front of a board — not the person selling to them.</p>
+
+<p>Each piece pairs peer-reviewed research or industry data with the shape of the cost decision it changes. If you have used any of these to push back on a vendor deck, or think one should exist that does not, <a href="mailto:karthik@droidwork.ai">let us know</a>.</p>
+
 <div class="rel" style="grid-template-columns:1fr">
 ${ARTICLES.map(a => `  <a href="/insights/${a.slug}/">${esc(a.title)}<span>${esc(a.dek)}</span></a>`).join('\n')}
 </div>
+
 <div class="cta">
   <h2>Put a number on it</h2>
   <p class="cta-sub">Every governance control described here is a line item. Model the full cost of an agentic
-  deployment against the employee it would replace.</p>
+  deployment against the employee it would replace — or have us run the model on your case.</p>
   <a class="btn" href="/calculator/?utm_source=insights&utm_medium=hub">Open the Calculator →</a>
+  <p style="margin:14px 0 0;font-size:13.5px;color:var(--muted)"><a href="#" data-dw-lead="review_request" data-dw-lead-title="Book a TCO Review">Book a 15-minute intake</a> · <a href="#" data-dw-lead="frameworks_pack">get the frameworks reference card by email</a></p>
 </div>`;
 
   return shell({

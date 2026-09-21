@@ -14,6 +14,72 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://droidwork.ai#org",
+      "name": "DroidWork.ai",
+      "url": "https://droidwork.ai",
+      "logo": "https://droidwork.ai/logo.png",
+      "description": "Independent AI vs. employee total-cost-of-ownership analysis for enterprise buyers. Open-source model, open dataset, board-ready advisory.",
+      "sameAs": [
+        "https://github.com/karthika2z/ai-tco-framework",
+        "https://www.linkedin.com/in/kbalachandran"
+      ],
+      "founder": { "@id": "https://droidwork.ai#karthik" }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://droidwork.ai#karthik",
+      "name": "Karthik Balachandran",
+      "url": "https://www.linkedin.com/in/kbalachandran",
+      "jobTitle": "Founder, DroidWork.ai",
+      "worksFor": { "@id": "https://droidwork.ai#org" },
+      "knowsAbout": [
+        "AI total cost of ownership",
+        "Agentic AI governance",
+        "Enterprise AI economics",
+        "AI security and compliance",
+        "Forward Deployed Engineering"
+      ],
+      "sameAs": [
+        "https://www.linkedin.com/in/kbalachandran",
+        "https://github.com/karthika2z"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://droidwork.ai#website",
+      "url": "https://droidwork.ai",
+      "name": "DroidWork.ai",
+      "publisher": { "@id": "https://droidwork.ai#org" },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://droidwork.ai#home",
+      "url": "https://droidwork.ai",
+      "name": "AI vs. Employee TCO Calculator",
+      "isPartOf": { "@id": "https://droidwork.ai#website" },
+      "primaryImageOfPage": "https://droidwork.ai/logo.png",
+      "about": { "@id": "https://droidwork.ai#org" },
+      "mainEntity": {
+        "@type": "WebApplication",
+        "name": "DroidWork.ai TCO Calculator",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "All",
+        "url": "https://droidwork.ai/calculator",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    }
+  ]
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -215,8 +281,9 @@ footer { padding: 40px 6%; border-top: 1px solid var(--border); display: flex; j
   <p class="hero-sub">Vendor ROI models quote token costs — roughly 20% of the picture. This calculator builds the complete AI vs. employee TCO your CFO will ask for.</p>
   <div class="hero-actions">
     <a href="/calculator/" class="btn-primary">Run My TCO Analysis →</a>
-    <a href="/calculator/methodology" class="btn-secondary">View the Methodology</a>
+    <a href="#" class="btn-secondary" data-dw-lead="review_request" data-dw-lead-title="Book a 15-min TCO Review">Book a 15-min Review</a>
   </div>
+  <p style="font-size:13px;color:var(--muted);margin:-40px 0 40px;text-align:center">Or read the <a href="/calculator/methodology" style="color:var(--brand)">full methodology</a> · <a href="/data/" style="color:var(--brand)">browse the 132-row dataset</a></p>
 
   <div class="stat-strip">
     <div class="stat-cell">

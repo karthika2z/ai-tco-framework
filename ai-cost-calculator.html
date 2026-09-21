@@ -4,6 +4,54 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DroidWork.ai — AI vs. Employee True Cost Calculator</title>
+<meta name="description" content="Free AI vs. employee TCO calculator. Models 7 cost dimensions including the Agentic Loop Multiplier and Concurrency Cliff. Board-ready PDF export in 4 minutes.">
+<link rel="canonical" href="https://droidwork.ai/calculator">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id": "https://droidwork.ai/calculator#app",
+      "name": "DroidWork.ai AI vs. Employee TCO Calculator",
+      "url": "https://droidwork.ai/calculator",
+      "applicationCategory": "BusinessApplication",
+      "applicationSubCategory": "Financial Modeling",
+      "operatingSystem": "All",
+      "isAccessibleForFree": true,
+      "browserRequirements": "JavaScript",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": [
+        "7 cost dimensions modelled per role",
+        "Agentic Loop Multiplier (4-10x per-task token cost)",
+        "Concurrency Cliff (provisioned throughput at ~50 users)",
+        "Role and level prefill via URL params",
+        "Board-ready PDF executive summary",
+        "Open-source model on GitHub"
+      ],
+      "provider": {
+        "@type": "Organization",
+        "name": "DroidWork.ai",
+        "url": "https://droidwork.ai"
+      },
+      "creator": {
+        "@type": "Person",
+        "name": "Karthik Balachandran",
+        "url": "https://www.linkedin.com/in/kbalachandran"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://droidwork.ai" },
+        { "@type": "ListItem", "position": 2, "name": "Calculator", "item": "https://droidwork.ai/calculator" }
+      ]
+    }
+  ]
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Georgia&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
@@ -1415,7 +1463,7 @@ option{background:#ffffff}
 <!-- PRINT OVERLAY -->
 <div id="print-overlay">
   <button class="btn btn-ghost print-close" onclick="closePrint()">✕ Close</button>
-  <h1>AI vs. Employee True Cost Calculator v2 — Export Summary</h1>
+  <h2 style="font-size:22px;font-weight:800;margin-bottom:6px">AI vs. Employee True Cost Calculator v2 — Export Summary</h2>
   <p style="color:#666;margin-bottom:20px;font-size:12px">Generated: <span id="print-date"></span></p>
   <div id="print-content"></div>
 </div>

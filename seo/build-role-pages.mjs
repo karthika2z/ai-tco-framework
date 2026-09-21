@@ -116,6 +116,11 @@ ${!positive ? `<div class="callout warn">
 <h2>The honest verdict</h2>
 <p>${esc(c.verdict)}</p>
 
+<div class="callout" style="border-left-color:var(--brand)">
+  <div class="callout-t">Want this defended for your team specifically?</div>
+  <p>Book a 15-minute intake. If a $0 tier is the right fit, we will say so — <a href="/advisory/">see the tiers</a> or <a href="#" data-dw-lead="review_request" data-dw-lead-title="Book a TCO Review for ${esc(c.h1Role)}" style="font-weight:700">book a review directly</a>.</p>
+</div>
+
 <div class="cta">
   <h2>Run this for your own numbers</h2>
   <p class="cta-sub">Pre-filled for ${esc(c.h1Role)}. Adjust salary, volume and risk to match your business —
@@ -182,6 +187,7 @@ base salary. Click any role for the full breakdown, or open the calculator to ru
   <p class="cta-sub">Adjust salary, task volume, concurrency and risk tolerance — then export a
   board-ready PDF executive summary.</p>
   <a class="btn" href="/calculator/?utm_source=seo&utm_medium=role_hub">Open the Calculator →</a>
+  <p style="margin:14px 0 0;font-size:13.5px;color:var(--muted)">Or <a href="#" data-dw-lead="review_request" data-dw-lead-title="Book a TCO Review">book a 15-minute intake</a> — we run the model on your deployment.</p>
 </div>
 
 <p class="disc">Modelled estimates for planning purposes only; not financial, legal or employment advice.
