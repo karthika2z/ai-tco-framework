@@ -11,7 +11,7 @@
 
 const ALLOWED_ORIGIN = 'https://droidwork.ai';
 const FROM_EMAIL     = 'DroidWork.ai <hello@droidwork.ai>';
-const NOTIFY_EMAIL   = 'your-notify-email@example.com'; // ← replace with your email
+const NOTIFY_EMAIL   = 'karthik@aviatrix.com';
 const CALC_URL       = 'https://droidwork.ai/calculator';
 const METH_URL       = 'https://droidwork.ai/calculator/methodology';
 
