@@ -109,6 +109,7 @@ export function shell({ title, desc, canonical, jsonld, body }) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="/dw-analytics.js"></script>
+<script src="/dw-leadform.js" defer></script>
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 <style>${CSS}</style>
 </head>

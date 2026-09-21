@@ -14,6 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="/dw-analytics.js"></script>
+<script src="/dw-leadform.js" defer></script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTermSet","name":"The DroidWork AI TCO Framework Glossary","url":"https://droidwork.ai/frameworks/","hasDefinedTerm":[{"@type":"DefinedTerm","name":"The Agentic Loop Multiplier","description":"The Agentic Loop Multiplier is the factor by which real per-task token consumption exceeds naive single-call estimates in an agent framework — 4×–10× in typical ReAct or tool-use deployments, driven by plan/act/observe/reflect iterations and by context growth as prior reasoning is appended to the scratchpad on every step.","url":"https://droidwork.ai/frameworks/the-agentic-loop-multiplier/"},{"@type":"DefinedTerm","name":"The Concurrency Cliff","description":"The Concurrency Cliff is the point in a cloud AI deployment — approximately 50 concurrent users for GPT-4o class models — at which pay-per-token pricing is no longer feasible and Provisioned Throughput Units, dedicated inference endpoints or reserved capacity are required. Cost structure shifts from fully variable to semi-fixed, adding $2,000–$6,000 per month before any tokens are consumed.","url":"https://droidwork.ai/frameworks/the-concurrency-cliff/"},{"@type":"DefinedTerm","name":"Constrain, Escalate, Contain","description":"Constrain, Escalate, Contain is a three-layer safety pattern for AI agents that replaces reliance on human-in-the-loop approval with (1) least-privilege runtime controls that constrain what an agent can do by default, (2) exception-based escalation that routes only rare, consequential, hard-to-undo decisions to humans, and (3) containment mechanisms — detection, circuit breakers, kill switches — that limit blast radius when the other two layers fail.","url":"https://droidwork.ai/frameworks/constrain-escalate-contain/"}]}</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -125,6 +126,7 @@ padding:16px 22px;border-radius:0 11px 11px 0;font-size:17px;color:var(--white);
   <h2>These frameworks are baked into the model</h2>
   <p class="cta-sub">Every calculation on this site applies the multipliers described above. Open the model and change the inputs to see what they do to your case.</p>
   <a class="btn" href="/calculator/?utm_source=frameworks&utm_medium=hub">Open the Calculator →</a>
+  <p style="margin:14px 0 0;font-size:13.5px;color:var(--muted)"><a href="#" data-dw-lead="frameworks_pack">Get the reference card by email</a> · <a href="#" data-dw-lead="review_request">book a TCO Review</a></p>
 </div></main>
 <footer><div class="wrap">
   <strong style="color:var(--text)">DroidWork.ai</strong> — Enterprise AI Cost Intelligence<br>

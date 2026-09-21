@@ -14,6 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="/dw-analytics.js"></script>
+<script src="/dw-leadform.js" defer></script>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Service","serviceType":"AI Total Cost of Ownership Advisory","provider":{"@type":"Organization","name":"DroidWork.ai","url":"https://droidwork.ai"},"areaServed":"Global","description":"Independent AI TCO analysis for enterprise buyers. Three tiers: a free calculator, a self-serve business-case kit, and a bespoke TCO review delivered as a board-ready document.","hasOfferCatalog":{"@type":"OfferCatalog","name":"AI TCO Advisory Tiers","itemListElement":[{"@type":"Offer","name":"Free Calculator","price":"0","priceCurrency":"USD","description":"Full DroidWork TCO model, no login, PDF export.","url":"https://droidwork.ai/calculator/"},{"@type":"Offer","name":"AI Business Case Kit","price":"399","priceCurrency":"USD","description":"Self-serve toolkit with model spreadsheet, board-deck template and worked examples across 12 roles."},{"@type":"Offer","name":"TCO Review","priceSpecification":{"@type":"PriceSpecification","price":"5000-15000","minPrice":"5000","maxPrice":"15000","priceCurrency":"USD"},"description":"We run the model on your actual deployment and deliver a board-ready TCO document. Two-week engagement."}]}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why should I trust this analysis?","acceptedAnswer":{"@type":"Answer","text":"Because the model publishes results that say \"do not buy\". Of the 12 roles we've modelled at mid level, 2 come back with AI costing more than the employee — HR Generalist and Operations Analyst. Vendor calculators cannot show this because their incentives point one way. Ours can, so it does."}},{"@type":"Question","name":"What does a TCO Review actually deliver?","acceptedAnswer":{"@type":"Answer","text":"A 15-25 page document sized for a CFO or a board committee: fully-loaded employee cost for every affected role, AI TCO across all seven cost dimensions, sensitivity to your top three assumptions, and a plain-English recommendation for each role. Everything is derived from a copy of the model configured to your inputs, so anyone can rerun it."}},{"@type":"Question","name":"How long does a TCO Review take?","acceptedAnswer":{"@type":"Answer","text":"Two weeks end-to-end. Week one: intake call, data collection, and model configuration. Week two: analysis, draft review, and final document. Rush timelines available at the top of the range."}},{"@type":"Question","name":"Do you take equity or referral fees from AI vendors?","acceptedAnswer":{"@type":"Answer","text":"No. The value of the review depends on it being independent, so we do not accept vendor referral, revenue-share or equity arrangements."}},{"@type":"Question","name":"What is the difference between the $399 kit and the review?","acceptedAnswer":{"@type":"Answer","text":"The kit is DIY: model spreadsheet, board-deck template, worked examples. You do the modelling. The review is done-for-you: we do the modelling on your deployment and deliver the document. Most buyers who care about accuracy pick the review; teams who want to learn the method pick the kit."}}]}]}</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -150,7 +151,7 @@ padding:16px 22px;border-radius:0 11px 11px 0;font-size:17px;color:var(--white);
       <li>Sensitivity-analysis playbook</li>
       <li>90 days of email support</li>
     </ul>
-    <a class="btn" href="mailto:karthik@droidwork.ai?subject=DroidWork%20TCO%20Advisory%20-%20Business%20Case%20Kit" style="display:block;text-align:center">Request Kit</a>
+    <a class="btn" href="#" data-dw-lead="kit_request" style="display:block;text-align:center">Request Kit</a>
   </div>
 
   <div style="background:var(--navy-mid);border:1px solid var(--border);border-radius:13px;padding:22px">
@@ -165,7 +166,7 @@ padding:16px 22px;border-radius:0 11px 11px 0;font-size:17px;color:var(--white);
       <li>Sensitivity on your top 3 assumptions</li>
       <li>Reviewer call to walk the numbers</li>
     </ul>
-    <a class="btn" href="mailto:karthik@droidwork.ai?subject=DroidWork%20TCO%20Advisory%20-%20TCO%20Review" style="display:block;text-align:center">Book a Review</a>
+    <a class="btn" href="#" data-dw-lead="review_request" style="display:block;text-align:center">Book a Review</a>
   </div>
 </div>
 
@@ -194,8 +195,9 @@ padding:16px 22px;border-radius:0 11px 11px 0;font-size:17px;color:var(--white);
 
 <div class="cta">
   <h2>Talk to us before your next AI budget review.</h2>
-  <p class="cta-sub">30-minute intake call. If a $0 or $399 tier is the right fit, we will say so.</p>
-  <a class="btn" href="mailto:karthik@droidwork.ai?subject=DroidWork%20TCO%20Advisory">Email karthik@droidwork.ai →</a>
+  <p class="cta-sub">15-minute intake. If a $0 or $399 tier is the right fit, we will say so — this is not a sales call.</p>
+  <a class="btn" href="#" data-dw-lead="review_request" data-dw-lead-title="Book an Intake Call" data-dw-lead-submit="Request Intake">Book an Intake →</a>
+  <p style="margin:14px 0 0;font-size:13px;color:var(--muted)">Or email <a href="mailto:karthik@droidwork.ai">karthik@droidwork.ai</a> directly.</p>
 </div>
 
 <p class="disc">Independent advisory only. No vendor referral or equity relationships. See our <a href="/calculator/methodology">methodology</a> and the <a href="https://github.com/karthika2z/ai-tco-framework">open-source model</a> before you engage.</p></main>

@@ -177,6 +177,7 @@ const body = `
 <div class="callout">
   <div class="callout-t">Downloads</div>
   <p><a href="/data/ai-tco-dataset.csv" download><strong>ai-tco-dataset.csv</strong></a> · <a href="/data/ai-tco-dataset.json" download><strong>ai-tco-dataset.json</strong></a> · Every column is documented in the <a href="/calculator/methodology">methodology reference</a>.</p>
+  <p style="margin:10px 0 0;font-size:14px"><a href="#" data-dw-lead="dataset_onepager" style="font-weight:700">Get the executive one-pager →</a> — a 2-page summary of what the dataset says, delivered by email.</p>
 </div>
 
 <h2>How to cite</h2>
@@ -234,6 +235,7 @@ node seo/extract-role-data.mjs</pre>
   <h2>Run the model on your own inputs</h2>
   <p class="cta-sub">The dataset is one path through the calculator. Adjust salary, task volume, security posture and risk tolerance to match your organisation.</p>
   <a class="btn" href="/calculator/?utm_source=dataset&utm_medium=cta">Open the Calculator →</a>
+  <p style="margin:14px 0 0;font-size:13.5px;color:var(--muted)">Or have us run it on your deployment — <a href="#" data-dw-lead="review_request" data-dw-lead-title="Book a TCO Review">book a 15-minute intake</a>.</p>
 </div>
 
 <p class="disc">Modelled estimates for planning purposes only. Not financial, legal or employment advice. Salary baselines from BLS OES, Radford/Aon and Glassdoor ${YEAR - 1}–${YEAR} data. Full assumptions in the <a href="/calculator/methodology">methodology</a>.</p>

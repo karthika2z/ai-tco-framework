@@ -188,7 +188,7 @@ constant, fast and complete. Build it so neither one has to be perfect.</p>`,
   <h2>Model the delivery cost as well as the token cost</h2>
   <p class="cta-sub">The DroidWork TCO calculator prices change-management (J-curve), residual oversight, and process-failure costs alongside tokens — the categories that decide whether an SA-delivered vs. FDE-delivered AI deployment breaks even.</p>
   <a class="btn" href="/calculator/?utm_source=insights&utm_medium=article&utm_campaign=fde-quadrant">Open the Calculator →</a>
-  <p style="margin:14px 0 0;font-size:13.5px;color:var(--muted)">Or <a href="/advisory/?utm_source=insights&utm_campaign=fde-quadrant">have us run it on your deployment</a> — two-week TCO Review, board-ready document.</p>
+  <p style="margin:14px 0 0;font-size:13.5px;color:var(--muted)"><a href="#" data-dw-lead="review_request" data-dw-lead-title="Book a TCO Review">Book a 15-minute intake</a> — we run the model on your deployment.</p>
 </div>`,
   related: `<h2>Related</h2>
 <div class="rel">
@@ -247,7 +247,7 @@ function articlePage(a) {
   behavioural monitoring, kill switches and audit logging. Our TCO model prices them as a first-class cost
   dimension, alongside tokens, hosting and residual oversight.</p>
   <a class="btn" href="/calculator/?utm_source=insights&utm_medium=article&utm_campaign=${esc(a.slug)}">Model the Security Cost →</a>
-  <p style="margin:14px 0 0;font-size:13.5px;color:var(--muted)">Or <a href="/advisory/?utm_source=insights&utm_campaign=${esc(a.slug)}">have us run the model on your deployment</a> — two-week TCO Review, board-ready document.</p>
+  <p style="margin:14px 0 0;font-size:13.5px;color:var(--muted)"><a href="#" data-dw-lead="review_request" data-dw-lead-title="Book a TCO Review">Book a 15-minute intake</a> — we run the model on your deployment.</p>
 </div>`;
 
   const refsHtml = includeRefs ? `<h2>References</h2>

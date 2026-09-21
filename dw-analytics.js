@@ -94,6 +94,30 @@
     'input[type="email"]', 'input[autocomplete="name"]', 'input[autocomplete="email"]'
   ];
 
+  var AGENT_HOSTS = [
+    { key: 'chatgpt',      re: /(^|\.)chat\.openai\.com$|(^|\.)chatgpt\.com$/i },
+    { key: 'claude',       re: /(^|\.)claude\.ai$/i },
+    { key: 'perplexity',   re: /(^|\.)perplexity\.ai$/i },
+    { key: 'bing_copilot', re: /(^|\.)bing\.com$|(^|\.)copilot\.microsoft\.com$/i },
+    { key: 'gemini',       re: /(^|\.)gemini\.google\.com$/i },
+    { key: 'poe',          re: /(^|\.)poe\.com$/i },
+    { key: 'you',          re: /(^|\.)you\.com$/i },
+    { key: 'kagi',         re: /(^|\.)kagi\.com$/i },
+  ];
+
+  function detectAgentReferral() {
+    var q = new URLSearchParams(location.search);
+    if (q.get('agent')) return q.get('agent').toLowerCase().slice(0, 24);
+    var src = (q.get('utm_source') || '').toLowerCase();
+    if (/(chatgpt|openai|claude|perplexity|copilot|gemini|bard|poe|you\.com|kagi)/.test(src)) return src.slice(0, 24);
+    if (!document.referrer) return '';
+    try {
+      var host = new URL(document.referrer).hostname;
+      for (var i = 0; i < AGENT_HOSTS.length; i++) if (AGENT_HOSTS[i].re.test(host)) return AGENT_HOSTS[i].key;
+    } catch (e) {}
+    return '';
+  }
+
   function maskPII() {
     try {
       PII_SELECTORS.forEach(function (sel) {
@@ -147,6 +171,17 @@
       ['utm_source', 'utm_medium', 'utm_campaign', 'role', 'level'].forEach(function (k) {
         if (q.get(k)) dw.tag(k, q.get(k));
       });
+    } catch (e) {}
+
+    // Agent-referral detection — arriving from ChatGPT / Claude / Perplexity /
+    // Bing Copilot / etc. is high-intent traffic, worth its own funnel event.
+    // Kept in sync with the detection in dw-leadform.js.
+    try {
+      var agent = detectAgentReferral();
+      if (agent) {
+        dw.tag('agent_referral', agent);
+        dw.track('agent_referral_landed', { agent_referral: agent });
+      }
     } catch (e) {}
 
     dw.funnel('landed', { entry_page: pageName });

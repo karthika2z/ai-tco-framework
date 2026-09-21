@@ -18,7 +18,6 @@ const negRoles = roles.filter(r => r.annualSavings < 0);
 const negNames = negRoles.map(r => r.label).join(' and ');
 
 const canonical = `${SITE}/advisory/`;
-const CONTACT_URL = 'mailto:karthik@droidwork.ai?subject=DroidWork%20TCO%20Advisory';
 
 const jsonld = {
   '@context': 'https://schema.org',
@@ -121,7 +120,7 @@ const body = `
       <li>Sensitivity-analysis playbook</li>
       <li>90 days of email support</li>
     </ul>
-    <a class="btn" href="${CONTACT_URL}%20-%20Business%20Case%20Kit" style="display:block;text-align:center">Request Kit</a>
+    <a class="btn" href="#" data-dw-lead="kit_request" style="display:block;text-align:center">Request Kit</a>
   </div>
 
   <div style="background:var(--navy-mid);border:1px solid var(--border);border-radius:13px;padding:22px">
@@ -136,7 +135,7 @@ const body = `
       <li>Sensitivity on your top 3 assumptions</li>
       <li>Reviewer call to walk the numbers</li>
     </ul>
-    <a class="btn" href="${CONTACT_URL}%20-%20TCO%20Review" style="display:block;text-align:center">Book a Review</a>
+    <a class="btn" href="#" data-dw-lead="review_request" style="display:block;text-align:center">Book a Review</a>
   </div>
 </div>
 
@@ -165,8 +164,9 @@ const body = `
 
 <div class="cta">
   <h2>Talk to us before your next AI budget review.</h2>
-  <p class="cta-sub">30-minute intake call. If a $0 or $399 tier is the right fit, we will say so.</p>
-  <a class="btn" href="${CONTACT_URL}">Email karthik@droidwork.ai →</a>
+  <p class="cta-sub">15-minute intake. If a $0 or $399 tier is the right fit, we will say so — this is not a sales call.</p>
+  <a class="btn" href="#" data-dw-lead="review_request" data-dw-lead-title="Book an Intake Call" data-dw-lead-submit="Request Intake">Book an Intake →</a>
+  <p style="margin:14px 0 0;font-size:13px;color:var(--muted)">Or email <a href="mailto:karthik@droidwork.ai">karthik@droidwork.ai</a> directly.</p>
 </div>
 
 <p class="disc">Independent advisory only. No vendor referral or equity relationships. See our <a href="/calculator/methodology">methodology</a> and the <a href="https://github.com/karthika2z/ai-tco-framework">open-source model</a> before you engage.</p>`;

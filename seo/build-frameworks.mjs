@@ -230,6 +230,7 @@ ${f.body}
   <h2>Model this on your deployment</h2>
   <p class="cta-sub">This framework is baked into the DroidWork TCO calculator. Adjust the inputs — the numbers move accordingly.</p>
   <a class="btn" href="/calculator/?utm_source=frameworks&utm_medium=article&utm_campaign=${esc(f.slug)}">Open the Calculator →</a>
+  <p style="margin:14px 0 0;font-size:13.5px;color:var(--muted)"><a href="#" data-dw-lead="frameworks_pack">Get the frameworks reference card (email)</a> · <a href="#" data-dw-lead="review_request">book a TCO Review</a></p>
 </div>
 
 <h2>Frequently asked</h2>
@@ -268,6 +269,7 @@ ${FRAMEWORKS.map(f => `  <a href="/frameworks/${f.slug}/">${esc(f.term)}<span>${
   <h2>These frameworks are baked into the model</h2>
   <p class="cta-sub">Every calculation on this site applies the multipliers described above. Open the model and change the inputs to see what they do to your case.</p>
   <a class="btn" href="/calculator/?utm_source=frameworks&utm_medium=hub">Open the Calculator →</a>
+  <p style="margin:14px 0 0;font-size:13.5px;color:var(--muted)"><a href="#" data-dw-lead="frameworks_pack">Get the reference card by email</a> · <a href="#" data-dw-lead="review_request">book a TCO Review</a></p>
 </div>`;
 
   const jsonld = {
