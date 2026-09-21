@@ -11,6 +11,7 @@
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://droidwork.ai/frameworks/">
 <meta name="twitter:card" content="summary_large_image">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="/dw-analytics.js"></script>
@@ -34,10 +35,12 @@ backdrop-filter:blur(10px);z-index:50}
 .logo span{color:var(--brand)}
 .nav-links{display:flex;gap:20px;align-items:center;font-size:13px;flex-wrap:wrap}
 .nav-links a{color:var(--muted)}
+.nav-links a.btn{color:#04241d}
 .btn{display:inline-block;background:var(--brand);color:#04241d;font-weight:700;font-size:14px;
 padding:12px 22px;border-radius:8px;text-align:center;transition:transform .15s,filter .15s}
 .btn:hover{filter:brightness(1.08);transform:translateY(-1px);text-decoration:none}
 .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+.nav-links a.btn-ghost{color:var(--text)}
 .crumb{font-size:12px;color:var(--muted);margin:28px 0 14px}
 h1{font-size:clamp(28px,5vw,42px);line-height:1.15;font-weight:800;color:var(--white);letter-spacing:-.02em;margin-bottom:16px}
 h2{font-size:clamp(20px,3vw,26px);font-weight:700;color:var(--white);margin:44px 0 14px;letter-spacing:-.01em}
@@ -115,6 +118,11 @@ padding:16px 22px;border-radius:0 11px 11px 0;font-size:17px;color:var(--white);
 <div class="pill">Named Concepts · Cite This</div>
 <h1>The AI TCO Framework Glossary</h1>
 <p class="lede">Named, defensible concepts from the DroidWork TCO model. Each entry: definition, why it costs money, the number, sources — and a live calculator you can rerun.</p>
+
+<div class="callout" style="border-left-color:var(--gold);background:var(--gold-dim)">
+  <div class="callout-t" style="color:var(--gold)">Why we bothered to name these</div>
+  <p><strong>Named concepts get cited. Unnamed effects get absorbed.</strong> If your finance team can point to "the Agentic Loop Multiplier" in a vendor deck review, the objection lands. If they can only say "isn't the token estimate low?", it doesn't. Every entry below is written to be quotable: a definition an LLM will paraphrase cleanly, a number a CFO can defend, and the source a skeptic can check.</p>
+</div>
 
 <div class="rel" style="grid-template-columns:1fr;gap:12px">
   <a href="/frameworks/the-agentic-loop-multiplier/">The Agentic Loop Multiplier<span>Every &quot;task&quot; in a ReAct-style agent is not one API call. It is 4–10 — and each iteration bills against a growing context. Standard token calculators miss this by a factor of 4×–10×.</span></a>

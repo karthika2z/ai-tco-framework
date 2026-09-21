@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>DroidWork.ai Insights</title>
+  <subtitle>Research-backed writing on agentic AI cost and governance.</subtitle>
+  <id>https://droidwork.ai/insights/</id>
+  <link rel="alternate" type="text/html" href="https://droidwork.ai/insights/"/>
+  <link rel="self" type="application/atom+xml" href="https://droidwork.ai/insights/feed.xml"/>
+  <updated>2026-09-19T12:00:00Z</updated>
+  <author><name>Karthik Balachandran</name><uri>https://www.linkedin.com/in/kbalachandran</uri></author>
+  <entry>
+    <title>A Human in the Loop Will Not Protect Your AI Agents</title>
+    <id>https://droidwork.ai/insights/human-in-the-loop-will-not-protect-your-ai-agents/</id>
+    <link rel="alternate" type="text/html" href="https://droidwork.ai/insights/human-in-the-loop-will-not-protect-your-ai-agents/"/>
+    <published>2026-09-19T12:00:00Z</published>
+    <updated>2026-09-19T12:00:00Z</updated>
+    <summary>What decades of human-factors research says about HITL — and why your approval checkpoint is a signature, not a safeguard.</summary>
+    <author><name>Karthik Balachandran</name><uri>https://www.linkedin.com/in/kbalachandran</uri></author>
+  </entry>
+  <entry>
+    <title>Where Forward Deployed Engineer Demand Comes From</title>
+    <id>https://droidwork.ai/insights/the-forward-deployed-engineer-quadrant/</id>
+    <link rel="alternate" type="text/html" href="https://droidwork.ai/insights/the-forward-deployed-engineer-quadrant/"/>
+    <published>2026-09-19T12:00:00Z</published>
+    <updated>2026-09-19T12:00:00Z</updated>
+    <summary>AI deployments do not slot into a standard product delivered by a standard SA. They drag placements out of Systems Integration and into a different quadrant — where both product and workflow have to bend at the same time.</summary>
+    <author><name>Karthik Balachandran</name><uri>https://www.linkedin.com/in/kbalachandran</uri></author>
+  </entry>
+</feed>

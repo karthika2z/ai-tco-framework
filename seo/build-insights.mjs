@@ -114,7 +114,7 @@ constant, fast and complete. Build it so neither one has to be perfect.</p>`,
   faqs: [
     ['Does human-in-the-loop make AI agents safe?', 'Not on its own. Human approval degrades predictably when a system is right most of the time — a well-documented effect called automation complacency. A JAMA study of 457 clinicians found accuracy fell from 73% to 62% under biased AI assistance. HITL records accountability; it does not provide control.'],
     ['Why does a more reliable AI agent make human review worse?', 'Because reliability trains negligence. An agent that is correct 95% of the time teaches its reviewer that checking rarely pays, so scrutiny decays. The better the agent performs, the faster the reviewer habituates.'],
-    ['What should replace human-in-the-loop for AI agents?', 'A three-layer design: constrain by default with least privilege and runtime policy checks; escalate by exception so humans see only rare, consequential and hard-to-undo decisions; and contain on failure with anomaly detection, circuit breakers and an immediate kill switch.'],
+    ['If human-in-the-loop is not enough, how do you know when to use human judgement at all?', 'The distinction from the research is whether the decision is high-frequency and low-stakes or rare and consequential. People are unreliable at spotting a rare miss buried in a stream of routine approvals — that is the failure mode automation complacency studies keep reproducing. People are reliable at reacting hard to a rare alarm that clearly matters. Design so humans only see decisions of the second shape; the pattern name for that is <a href="/frameworks/constrain-escalate-contain/">Constrain, Escalate, Contain</a>.'],
     ['Do more approval checkpoints improve AI safety?', 'No. Research on warning habituation shows the neural response to repeated warnings drops sharply after a few exposures. Ten checkpoints do not produce ten layers of review — they produce one reviewer whose attention is divided ten ways.'],
   ],
 }, {
@@ -280,7 +280,8 @@ ${a.faqs.map(([q, ans]) => `<div class="faq"><h3>${esc(q)}</h3><p>${esc(ans)}</p
 ${refsHtml}
 ${relHtml}`;
 
-  return shell({ title: `${a.title} | DroidWork.ai`, desc: a.desc, canonical, jsonld, body });
+  return shell({ title: `${a.title} | DroidWork.ai`, desc: a.desc, canonical, jsonld, body,
+    feed: { title: 'DroidWork.ai Insights', href: `${SITE}/insights/feed.xml` } });
 }
 
 function insightsHub() {
@@ -312,6 +313,7 @@ ${ARTICLES.map(a => `  <a href="/insights/${a.slug}/">${esc(a.title)}<span>${esc
       '@context': 'https://schema.org', '@type': 'Blog', name: 'DroidWork.ai Insights', url: `${SITE}/insights/`,
     },
     body,
+    feed: { title: 'DroidWork.ai Insights', href: `${SITE}/insights/feed.xml` },
   });
 }
 
@@ -325,4 +327,31 @@ for (const a of ARTICLES) {
   console.log(`  insights/${a.slug}/index.html`);
 }
 
-console.log(`\nGenerated ${ARTICLES.length} article(s) + insights hub.`);
+// ─── FEED ────────────────────────────────────────────────────────────────────
+// Atom feed for agent/LLM crawlers and RSS readers. Kept simple: title,
+// summary (the dek), canonical URL, author, dates. No full-content encoding.
+const feedUpdated = ARTICLES.map(a => a.published).sort().slice(-1)[0] + 'T12:00:00Z';
+const feedXml = `<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>DroidWork.ai Insights</title>
+  <subtitle>Research-backed writing on agentic AI cost and governance.</subtitle>
+  <id>${SITE}/insights/</id>
+  <link rel="alternate" type="text/html" href="${SITE}/insights/"/>
+  <link rel="self" type="application/atom+xml" href="${SITE}/insights/feed.xml"/>
+  <updated>${feedUpdated}</updated>
+  <author><name>${AUTHOR}</name><uri>${AUTHOR_URL}</uri></author>
+${ARTICLES.map(a => `  <entry>
+    <title>${esc(a.title)}</title>
+    <id>${SITE}/insights/${a.slug}/</id>
+    <link rel="alternate" type="text/html" href="${SITE}/insights/${a.slug}/"/>
+    <published>${a.published}T12:00:00Z</published>
+    <updated>${a.published}T12:00:00Z</updated>
+    <summary>${esc(a.dek)}</summary>
+    <author><name>${AUTHOR}</name><uri>${AUTHOR_URL}</uri></author>
+  </entry>`).join('\n')}
+</feed>
+`;
+writeFileSync(new URL('./insights/feed.xml', ROOT), feedXml);
+console.log('  insights/feed.xml');
+
+console.log(`\nGenerated ${ARTICLES.length} article(s) + insights hub + feed.`);

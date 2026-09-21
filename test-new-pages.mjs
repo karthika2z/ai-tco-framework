@@ -96,13 +96,29 @@ let parsed = null;
 try { parsed = JSON.parse(jsonBody); } catch {}
 ck('/data/ai-tco-dataset.json: parses to 132 rows', Array.isArray(parsed) && parsed.length === 132, parsed ? String(parsed.length) : 'parse failed');
 
-console.log('\n[4] llms.txt');
+console.log('\n[4] llms.txt + insights feed');
 const llms = await page.request.get(BASE + '/llms.txt');
 ck('/llms.txt: 200', llms.status() === 200);
 const llmsText = await llms.text();
 ck('/llms.txt: mentions calculator, dataset, frameworks, insights',
   ['/calculator/', '/data/', '/frameworks/', '/insights/'].every(s => llmsText.includes(s)),
   '');
+
+const feed = await page.request.get(BASE + '/insights/feed.xml');
+ck('/insights/feed.xml: 200', feed.status() === 200);
+const feedText = await feed.text();
+ck('/insights/feed.xml: valid Atom with 2 entries',
+  feedText.includes('<feed xmlns="http://www.w3.org/2005/Atom">') && (feedText.match(/<entry>/g) || []).length === 2,
+  `entries=${(feedText.match(/<entry>/g) || []).length}`);
+
+await page.goto(BASE + '/insights/', { waitUntil: 'networkidle' });
+const feedLink = await page.locator('link[rel=alternate][type="application/atom+xml"]').getAttribute('href');
+ck('/insights/: advertises feed via <link rel=alternate>', !!feedLink && feedLink.includes('feed.xml'), feedLink || '');
+
+// Button color fix — .nav-links a.btn must NOT inherit the muted color
+await page.goto(BASE + '/frameworks/the-agentic-loop-multiplier/', { waitUntil: 'networkidle' });
+const btnColor = await page.locator('.nav-links a.btn').first().evaluate(el => getComputedStyle(el).color);
+ck('nav-links a.btn: readable text (not muted teal)', btnColor === 'rgb(4, 36, 29)', btnColor);
 
 console.log('\n[5] /data/ filter + sort JS');
 await page.goto(BASE + '/data/', { waitUntil: 'networkidle' });

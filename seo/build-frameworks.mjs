@@ -261,6 +261,11 @@ function hubPage() {
 <h1>The AI TCO Framework Glossary</h1>
 <p class="lede">Named, defensible concepts from the DroidWork TCO model. Each entry: definition, why it costs money, the number, sources — and a live calculator you can rerun.</p>
 
+<div class="callout" style="border-left-color:var(--gold);background:var(--gold-dim)">
+  <div class="callout-t" style="color:var(--gold)">Why we bothered to name these</div>
+  <p><strong>Named concepts get cited. Unnamed effects get absorbed.</strong> If your finance team can point to "the Agentic Loop Multiplier" in a vendor deck review, the objection lands. If they can only say "isn't the token estimate low?", it doesn't. Every entry below is written to be quotable: a definition an LLM will paraphrase cleanly, a number a CFO can defend, and the source a skeptic can check.</p>
+</div>
+
 <div class="rel" style="grid-template-columns:1fr;gap:12px">
 ${FRAMEWORKS.map(f => `  <a href="/frameworks/${f.slug}/">${esc(f.term)}<span>${esc(f.dek)}</span></a>`).join('\n')}
 </div>
